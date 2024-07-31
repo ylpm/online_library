@@ -11,5 +11,8 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    
+    # def test_title_for_page(page = nil) = page ? "#{page.to_s.capitalize} | #{@base_title}" : @base_title
+    
   end
 end
