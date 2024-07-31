@@ -1,6 +1,7 @@
 module ApplicationHelper
-  def full_title(page_title = '')
-    base_title = "Sample App"
-    page_title.blank? ? base_title : "#{page_title} | #{base_title}"
-  end
+  
+  BASE_TITLE = "Sample App"
+  
+  def full_title(page_title = '') = page_title.blank? ? BASE_TITLE : "#{page_title} | #{BASE_TITLE}"
+    
 end
