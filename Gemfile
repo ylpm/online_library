@@ -81,3 +81,5 @@ end
 group :production do
   gem "pg", "1.5.6"
 end
+
+gem "bootstrap", "= 5.3.3"
