@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+john_at_hey:
+  address: "john@hey.com"
+  person:  john
+
+john_at_gmail:
+  address: "john@gmail.com"
+  person:  john
+  
+john_at_yahoo:
+  address: "john@yahoo.com"
+  person:  john
+  
+mary_at_gmail:
+  address: "mary@gmail.com"
+  person:  mary
