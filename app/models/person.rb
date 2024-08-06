@@ -1,29 +1,32 @@
 class Person < ApplicationRecord
   
-  VALID_FIRST_NAME_FORMAT = /\A[a-zA-Z]{3,50}\Z/i.freeze
+  has_many :email_addresses, dependent: :destroy
+  
+  VALID_FIRST_NAME_FORMAT = /\A[a-z]{3,50}\Z/i.freeze # solo letras
   validates :first_name, presence: true,
                            # length: {minimum: 3, maximum: 50},
                            format: {with: VALID_FIRST_NAME_FORMAT}
-                          
-  VALID_MIDDLE_NAME_FORMAT = /\A([a-z\d]+(\s[a-z\d]+)*)*\Z/i.freeze
-  validates :middle_name, presence: false,
-                            length: {maximum: 50},
-                            format: {with: VALID_MIDDLE_NAME_FORMAT}
-  
-  VALID_LAST_NAME_FORMAT = /\A[a-z\d]+(\s[a-z\d]+)*\Z/i.freeze
+                            
+  # comienza con letra y puede contener espacios y giones, p.e., "De Varens", "Perez-Gonzalez". 
+  # NO puede estar ausente pero puede ser de longitud 1
+  VALID_LAST_NAME_FORMAT = /\A[a-z]([a-z\s\-]+)*\Z/i.freeze 
   validates :last_name, presence: true,
                           length: {maximum: 50},
                           format: {with: VALID_LAST_NAME_FORMAT}
+    
+   # EL MISMO FORMATO DE ast_name, solo que
+   # NO puede estar ausente, de ahi /\A(...)?\Z/i
+   VALID_MIDDLE_NAME_FORMAT = /\A(#{VALID_LAST_NAME_FORMAT})?\Z/i.freeze 
+   validates :middle_name, presence: false,
+                             length: {maximum: 50},
+                             format: {with: VALID_MIDDLE_NAME_FORMAT}
   
-  validates :sex, presence: false
-  
-  # VALID_BIRTHDAY_FORMAT = /\A[\d]{4}-[\d]{2}-[\d]{2}\Z/i.freeze
   validates :birthday, presence: false
-                       # format: {with: VALID_BIRTHDAY_FORMAT}
-                       
-  def sex
-    return 'male' if self.sex == 0
-    return 'female' if self.sex == 1
-    nil
+  
+  def full_name
+    middle_name ? "#{first_name} #{middle_name} #{last_name}"
+                : "#{first_name} #{last_name}"
   end
+  
+  def to_s = "#{self.full_name} <#{email_addresses.first}>"        
 end

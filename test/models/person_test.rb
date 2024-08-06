@@ -78,3 +78,55 @@ class LengthPersonAttrsTest < PersonTest
   end
 end
 
+class FormatPersonAttrsTest < PersonTest
+  def setup
+    super
+    @valid_names = ["Pierre", "De Maria", "De La Rosa", "Jose-Maria", "M"]
+    @invalid_names = ["123", ".", ".F", "-Foo", " Foo"]
+  end
+  
+  test "should accept valid first names" do
+    valid_names = ["Jean","Foo"+"o"*47]
+    valid_names.each do |valid_name|
+      @test_person.first_name = valid_name
+      assert @test_person.valid?, "\"#{valid_name}\" should be a valid first name"
+    end
+  end
+  
+  test "should reject invalid first names" do
+    invalid_names = %w[Fo Fo. 123 1Fo Foo1 Fo_o]
+    invalid_names.each do |invalid_name|
+      @test_person.first_name = invalid_name
+      assert_not @test_person.valid?, "\"#{invalid_name}\" should be an invalid first name"
+    end
+  end
+  
+  test "should accept valid middle names" do
+    @valid_names.each do |valid_name|
+      @test_person.middle_name = valid_name
+      assert @test_person.valid?, "\"#{valid_name}\" should be a valid middle name"
+    end
+  end
+  
+  test "should reject invalid middle names" do
+    @invalid_names.each do |invalid_name|
+      @test_person.first_name = invalid_name
+      assert_not @test_person.valid?, "\"#{invalid_name}\" should be an invalid middle name"
+    end
+  end
+  
+  test "should accept valid last names" do
+    @valid_names.each do |valid_name|
+      @test_person.middle_name = valid_name
+      assert @test_person.valid?, "\"#{valid_name}\" should be a valid middle name"
+    end
+  end
+  
+  test "should reject invalid last names" do
+    @invalid_names.each do |invalid_name|
+      @test_person.first_name = invalid_name
+      assert_not @test_person.valid?, "\"#{invalid_name}\" should be an invalid middle name"
+    end
+  end
+end
+
