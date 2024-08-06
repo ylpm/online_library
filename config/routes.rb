@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   
   get :about, to: 'static_pages#about'
   
+  get :login, to: 'static_pages#home'
+  
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   
