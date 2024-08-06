@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+john:
+  first_name:  "John"
+  middle_name: "Doe"
+  last_name: "Johnson"
+  birthday: 1982-12-08
+
+mary:
+  first_name: "Mary"
+  middle_name: "Darlene"
+  last_name: Johnson
+  birthday: 2000-08-06
