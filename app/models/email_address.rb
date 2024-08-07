@@ -19,6 +19,8 @@ class EmailAddress < ApplicationRecord
                         format: {with: VALID_EMAIL_FORMAT},
                         uniqueness: true # { case_sensitive: false }
   
+  validates :person_id, presence: true
+  
   def to_s = address
     
   private

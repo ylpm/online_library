@@ -14,7 +14,6 @@ end
 class PresenceEmailAddressAttrsTest < EmailAddressTest
   def setup
     super
-    
   end
   
   test "address should not be nil" do
@@ -29,6 +28,11 @@ class PresenceEmailAddressAttrsTest < EmailAddressTest
   
   test "address should not be blank" do
     @test_email.address = '   '
+    assert_not @test_email.valid?
+  end
+  
+  test "person id should be present" do
+    @test_email.person_id = nil
     assert_not @test_email.valid?
   end
 end
