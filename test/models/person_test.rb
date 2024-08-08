@@ -44,8 +44,17 @@ class PresencePersonAttrsTest < PersonTest
     @test_person.birthday = nil
     assert @test_person.valid?, "The birthday attribute can be missing"
   end
+  
+  test "personable type (subclass) should be present" do
+    @test_person.personable_type = ''
+    assert_not @test_person.valid?, "The personable type attribute (subclass) can't be missing"
+  end
+  
+  test "personable id should be present" do
+    @test_person.personable = nil
+    assert_not @test_person.valid?, "The personable id can't be missing"
+  end
 end
-
 
 class LengthPersonAttrsTest < PersonTest
 

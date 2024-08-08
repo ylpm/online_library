@@ -25,6 +25,10 @@ class Person < ApplicationRecord
   
   validates :birthday, presence: false
   
+  # validates :personable_type, presence: true # esta validacion no es necesaria puesto que la relacion 
+                                               # delegate_type declarada al inicio ya exige la presencia 
+                                               # de un personable.
+  
   def full_name
     middle_name ? "#{first_name} #{middle_name} #{last_name}"
                 : "#{first_name} #{last_name}"
