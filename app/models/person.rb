@@ -1,5 +1,7 @@
 class Person < ApplicationRecord
   
+  delegated_type :personable, types: %w[ User Author ], dependent: :destroy
+  
   has_many :email_addresses, dependent: :destroy
   
   VALID_FIRST_NAME_FORMAT = /\A[a-z]{3,50}\Z/i.freeze # solo letras

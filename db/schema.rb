@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_07_142459) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_07_184654) do
   create_table "email_addresses", force: :cascade do |t|
     t.string "address", null: false
     t.integer "person_id", null: false
@@ -27,6 +27,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_07_142459) do
     t.date "birthday"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "personable_type", null: false
+    t.integer "personable_id", null: false
+    t.index ["personable_type", "personable_id"], name: "index_people_on_personable_type_and_personable_id", unique: true
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "username", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "email_addresses", "people"
