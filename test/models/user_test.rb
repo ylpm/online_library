@@ -5,7 +5,22 @@ class UserTest < ActiveSupport::TestCase
     @test_user = users(:john)
   end
 
-  test "should be valid" do
+  test "fixture user should be valid" do
+    assert @test_user.valid?
+  end
+end
+
+class UserCreationTest < UserTest
+  def setup
+    @test_user = Person.create(first_name: "Sample", last_name: "Person", personable: User.new(username:"sample_username")).user
+  end
+  
+  test "created user should be valid" do
+    assert @test_user.valid?
+  end
+  
+  test "created user with custom create method should be valid" do
+    @test_user = User.custom_create(first_name: "Another", middle_name: "Sample", last_name: "Person", username:"another_username")
     assert @test_user.valid?
   end
 end
