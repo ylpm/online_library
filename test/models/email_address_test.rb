@@ -5,10 +5,21 @@ class EmailAddressTest < ActiveSupport::TestCase
     @test_email = email_addresses(:john_at_hey)
   end
   
-  test "should be valid" do
+  test "fixture email should be valid" do
     assert @test_email.valid?
+  end  
+end
+
+
+class EmailAddressCreationTest < EmailAddressTest
+  def setup
+    @test_person = people(:john)
+    @test_email = @test_person.email_addresses.create(address: "john123_sample@example.com")
   end
   
+  test "created email address should be valid" do
+    assert @test_email.valid?
+  end
 end
 
 class PresenceEmailAddressAttrsTest < EmailAddressTest
