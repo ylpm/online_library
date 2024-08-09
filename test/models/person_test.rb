@@ -1,7 +1,6 @@
 require "test_helper"
 
 class PersonTest < ActiveSupport::TestCase
-
   def setup
     # @test_person = Person.new first_name: "John", last_name: "Johnson"
     @test_person = people(:john)
@@ -135,6 +134,20 @@ class FormatPersonAttrsTest < PersonTest
     @invalid_names.each do |invalid_name|
       @test_person.first_name = invalid_name
       assert_not @test_person.valid?, "\"#{invalid_name}\" should be an invalid middle name"
+    end
+  end
+end
+
+class AssociatedEmailAddressesDestructionTest < PersonTest
+  def setup
+    @test_person = Person.new(first_name: "Example", last_name: "User", personable: User.new(username: "xdffgt34r_0ooi"))
+  end
+  
+  test "associated email addresses should be destroyed" do
+    @test_person.save
+    @test_person.email_addresses.create(address: "h66trtlop01@example.com")
+    assert_difference 'EmailAddress.count', -1 do
+      @test_person.destroy
     end
   end
 end
