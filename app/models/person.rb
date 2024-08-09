@@ -16,8 +16,8 @@ class Person < ApplicationRecord
                           length: {maximum: 50},
                           format: {with: VALID_LAST_NAME_FORMAT}
     
-   # EL MISMO FORMATO DE ast_name, solo que
-   # NO puede estar ausente, de ahi /\A(...)?\Z/i
+   # EL MISMO FORMATO DE last_name, solo que
+   # puede estar ausente, de ahi /\A(...)?\Z/i
    VALID_MIDDLE_NAME_FORMAT = /\A(#{VALID_LAST_NAME_FORMAT})?\Z/i.freeze 
    validates :middle_name, presence: false,
                              length: {maximum: 50},
@@ -26,7 +26,7 @@ class Person < ApplicationRecord
   validates :birthday, presence: false
   
   # validates :personable_type, presence: true # esta validacion no es necesaria puesto que la relacion 
-                                               # delegate_type declarada al inicio ya exige la presencia 
+                                               # delegated_type declarada al inicio ya exige la presencia 
                                                # de un personable.
   
   def full_name
