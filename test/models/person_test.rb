@@ -1,9 +1,17 @@
 require "test_helper"
 
 class PersonTest < ActiveSupport::TestCase
+  
+  TEST_PASSWORD = "*Abc123*".freeze
+  
   def setup
     # @test_person = Person.new first_name: "John", last_name: "Johnson"
-    @test_person = people(:john)
+    # @test_person = people(:john)
+    @test_person = Person.create(first_name: "Sample", 
+                                last_name: "Person", 
+                               personable: User.new(username:"sample_username", 
+                                                    password: TEST_PASSWORD,
+                                                    password_confirmation: TEST_PASSWORD))
   end
 
   test "should be valid" do
@@ -140,7 +148,9 @@ end
 
 class AssociatedEmailAddressesDestructionTest < PersonTest
   def setup
-    @test_person = Person.new(first_name: "Example", last_name: "User", personable: User.new(username: "xdffgt34r_0ooi"))
+    @test_person = Person.new(first_name: "Example", last_name: "User", personable: User.new(username: "xdffgt34r_0ooi",
+                                                                                             password: TEST_PASSWORD,
+                                                                                             password_confirmation: TEST_PASSWORD))
   end
   
   test "associated email addresses should be destroyed" do
