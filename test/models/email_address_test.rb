@@ -5,10 +5,21 @@ class EmailAddressTest < ActiveSupport::TestCase
     @test_email = email_addresses(:john_at_hey)
   end
   
-  test "should be valid" do
+  test "fixture email address should be valid" do
     assert @test_email.valid?
+  end  
+end
+
+
+class EmailAddressCreationTest < EmailAddressTest
+  def setup
+    @test_person = people(:john)
+    @test_email = @test_person.email_addresses.create(address: "john123_sample@example.com")
   end
   
+  test "created email address through Person model should be valid" do
+    assert @test_email.valid?
+  end
 end
 
 class PresenceEmailAddressAttrsTest < EmailAddressTest
@@ -107,9 +118,8 @@ class UniquenessEmailAddressAttrsTest < EmailAddressTest
   
   test "email address should be unique" do
     duplicated_test_email = @test_email.dup
-    # duplicated_test_email.address.upcase!
     @test_email.save 
-    # duplicated_test_email.address.upcase!
+    # duplicated_test_email.address.upcase! # ya no es necesario cuando se agrega el callback downcase_address
     assert_not duplicated_test_email.valid?
   end
 

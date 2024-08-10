@@ -5,9 +5,13 @@ john:
   middle_name: "Doe"
   last_name: "Johnson"
   birthday: 1982-12-08
+  personable_type: "User"
+  personable: john
 
 mary:
   first_name: "Mary"
   middle_name: "Darlene"
   last_name: Johnson
   birthday: 2000-08-06
+  personable_type: "User"
+  personable: mary

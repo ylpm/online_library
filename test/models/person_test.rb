@@ -1,10 +1,17 @@
 require "test_helper"
 
 class PersonTest < ActiveSupport::TestCase
-
+  
+  TEST_PASSWORD = "*Abc123*".freeze
+  
   def setup
     # @test_person = Person.new first_name: "John", last_name: "Johnson"
-    @test_person = people(:john)
+    # @test_person = people(:john)
+    @test_person = Person.create(first_name: "Sample", 
+                                last_name: "Person", 
+                               personable: User.new(username:"sample_username", 
+                                                    password: TEST_PASSWORD,
+                                                    password_confirmation: TEST_PASSWORD))
   end
 
   test "should be valid" do
@@ -44,8 +51,17 @@ class PresencePersonAttrsTest < PersonTest
     @test_person.birthday = nil
     assert @test_person.valid?, "The birthday attribute can be missing"
   end
+  
+  test "personable type (subclass) should be present" do
+    @test_person.personable_type = ''
+    assert_not @test_person.valid?, "The personable type attribute (subclass) can't be missing"
+  end
+  
+  test "personable id should be present" do
+    @test_person.personable = nil
+    assert_not @test_person.valid?, "The personable id can't be missing"
+  end
 end
-
 
 class LengthPersonAttrsTest < PersonTest
 
@@ -126,6 +142,22 @@ class FormatPersonAttrsTest < PersonTest
     @invalid_names.each do |invalid_name|
       @test_person.first_name = invalid_name
       assert_not @test_person.valid?, "\"#{invalid_name}\" should be an invalid middle name"
+    end
+  end
+end
+
+class AssociatedEmailAddressesDestructionTest < PersonTest
+  def setup
+    @test_person = Person.new(first_name: "Example", last_name: "User", personable: User.new(username: "xdffgt34r_0ooi",
+                                                                                             password: TEST_PASSWORD,
+                                                                                             password_confirmation: TEST_PASSWORD))
+  end
+  
+  test "associated email addresses should be destroyed" do
+    @test_person.save
+    @test_person.email_addresses.create(address: "h66trtlop01@example.com")
+    assert_difference 'EmailAddress.count', -1 do
+      @test_person.destroy
     end
   end
 end

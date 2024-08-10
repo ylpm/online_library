@@ -83,3 +83,5 @@ group :production do
 end
 
 gem "bootstrap", "= 5.3.3"
+
+gem "bcrypt", "= 3.1.20"
