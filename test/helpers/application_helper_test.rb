@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ApplicationHelperTest < ActionView::TestCase
   def setup
-    @base_title = 'Sample App'
+    @base_title = 'Online Library'
     @custom_title = 'This Page'
   end
 

@@ -1,0 +1,6 @@
+<% unless first[:error_message].blank? && second[:error_message].blank? %>	
+	<div class="row text-small">
+		<div class="col"><%= render "field_error_message", field: first[:field], error_message: first[:error_message] %></div>
+		<div class="col"><%= render "field_error_message", field: second[:field], error_message: second[:error_message] %></div>
+	</div>
+<% end %>

@@ -1,5 +1,9 @@
 @import "bootstrap";
 
+$medium-gray: rgb(80, 78, 76);
+$dark-gray: rgb(24, 23, 23);
+
+
 .form-control-dark {
   border-color: var(--bs-gray);
 }
@@ -33,4 +37,30 @@
 
 .center h1 {
   margin-bottom: 10px;
+}
+
+/* Flash messages*/
+
+div.top-alert {
+  //margin: 0;
+  border-radius: 0;
+}
+
+/*#error_explanation {
+  color: red;
+  ul {
+    color: red;
+    margin: 0 0 30px 0;
+  }
+}*/
+
+.form-links {
+  a {
+    color: $medium-gray;
+    text-decoration: none;
+    &:hover{
+      color: $dark-gray;
+      text-decoration: none;
+    }
+  }
 }

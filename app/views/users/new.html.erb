@@ -1,0 +1,16 @@
+<%= provide :title, "Sign up" %>
+<% provide :submit_button_label, 'Sign up' %>
+
+<div class="row">
+	<div class="col-md-7 col-lg-5">
+		<%= render "form", user: @user, email_address: @email_address, context: :signup %>
+	</div>
+	<div class="col">
+		<div class="row">
+			<%= image_tag("signup-colors.svg", class: "bi me-2") %>
+		</div>
+	</div>
+</div>
+
+
+

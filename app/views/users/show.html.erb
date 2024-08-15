@@ -1,0 +1,20 @@
+<% provide :title, @user.person.first_name %>
+
+<div class="row">
+	<div class="col">
+  <strong>Full name: </strong><%= @user.person.full_name %>
+</div>
+</div>
+<div class="row">
+	<div class="col">
+	<strong>Username: </strong><%= @user.username %>
+  </div>
+</div>
+<div class="row">
+	<div class="col">
+	<strong>Emails: </strong>
+	<% @user.person.email_addresses.each do |email_address| %>
+	<br><%= email_address %>
+	<% end %>
+  </div>
+</div>

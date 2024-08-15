@@ -10,12 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_09_223128) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_12_121242) do
   create_table "email_addresses", force: :cascade do |t|
     t.string "address", null: false
     t.integer "person_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "activation_digest"
+    t.boolean "activated", default: false
+    t.datetime "activated_at"
     t.index ["address"], name: "index_email_addresses_on_address", unique: true
     t.index ["person_id"], name: "index_email_addresses_on_person_id"
   end

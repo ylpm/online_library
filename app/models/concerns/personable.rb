@@ -2,9 +2,12 @@ module Personable
   extend ActiveSupport::Concern
 
   included do
-    has_one :person, as: :personable, touch: true
+    has_one :person, as: :personable, touch: true, dependent: :destroy
   end
   
+  class_methods do
+  end
+    
   # ESTO QUE SIGUE FUNCIONA PERO EL PROBLEMA ESTA CUANDO SE LLAMAN LOS METODOS DE ACTIVE RECORD COMO update
   # update_attribute:
   # def first_name

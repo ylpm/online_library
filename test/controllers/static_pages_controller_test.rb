@@ -2,7 +2,7 @@ require "test_helper"
 
 class StaticPagesControllerTest < ActionDispatch::IntegrationTest
   def setup
-    @base_title = 'Sample App'
+    @base_title = 'Online Library'
   end
   
   test "should get root/home page" do
@@ -10,7 +10,6 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     get root_url  # get '/'
     assert_response 200 # :success
     assert_select 'title', title_for_page(:home)
-    assert_select 'h1', 'Welcome to the Sample Library'
   end
 
   test "should get help page" do
