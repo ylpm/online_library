@@ -6,11 +6,11 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_no_difference 'User.count' do
       post users_path, params: {user: {person:{first_name: '1',
-                                                 last_name: '',
-                                             email_address: {address: 'foo@'}},
-                                      username: '**',
-                                      password: 'foo',
-                         password_confirmation: 'bar'}}
+                                                last_name: '',
+                                            email_address: {address: 'foo@'}},
+                                     username: '**',
+                                     password: 'foo',
+                        password_confirmation: 'bar'}}
     end
     assert_response :unprocessable_entity
     assert_template 'users/new'
