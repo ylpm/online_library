@@ -8,12 +8,14 @@ module ApplicationHelper
     
   def errors_from(models: [])
     errors = {}
-    models.each do |model| 
-      model_error = {}
-      model.errors.messages.each do |field, error_messages|
-         model_error[field] = error_messages.first
-      end 
-      errors[model.class.to_s.downcase.to_sym] = model_error
+    models.each do |model|
+      model_errors = {}
+      if model.errors.any?
+        model.errors.messages.each do |field, error_messages|
+           model_errors[field] = error_messages.first
+        end 
+        errors[model.class.to_s.downcase.to_sym] = model_errors if model_errors.any?
+      end
     end
     errors
   end

@@ -24,6 +24,7 @@ class UsersController < ApplicationController
             redirect_to @user, status: :see_other
           end
         else
+          format.turbo_stream
           format.html { render :new, status: :unprocessable_entity }
         end
       end                               
