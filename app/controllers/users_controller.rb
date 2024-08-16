@@ -9,8 +9,7 @@ class UsersController < ApplicationController
     
   def new
     @user = User.new(person: Person.new)
-    @email_address = EmailAddress.new(person: @user.person)
-    @user.person.email_addresses.append(@email_address)
+    @email_address = @user.person.email_addresses.new
   end
     
   def create    
