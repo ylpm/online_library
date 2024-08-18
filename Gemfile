@@ -12,8 +12,8 @@ gem "sassc-rails", "2.1.2"
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails", "3.5.1"
 
-# Use sqlite3 as the database for Active Record
-# gem "sqlite3", "~> 1.4" # la sample app incluye esta gema solo en el grupo :development y :test
+# Use pg as the database for Active Record
+# gem "pg", "~> 1.4" # la sample app incluye esta gema solo en el grupo :development y :test
 
 # Use the Puma web server [https://github.com/puma/puma]
 # gem "puma", ">= 5.0"
@@ -30,6 +30,9 @@ gem "stimulus-rails", "1.3.3"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder", "2.12.0"
+
+# Use PostgreSQL database adapter
+gem "pg", "1.5.6"
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
@@ -50,7 +53,7 @@ gem "bootsnap", "1.18.3", require: false
 # gem "image_processing", "~> 1.2"
 
 group :development, :test do
-  gem "sqlite3", "1.7.3"
+  # gem "sqlite3", "1.7.3"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", "1.9.2", platforms: %i[ mri windows ]
 end
@@ -79,7 +82,7 @@ group :test do
 end
 
 group :production do
-  gem "pg", "1.5.6"
+  # gem "pg", "1.5.6"
 end
 
 gem "bootstrap", "= 5.3.3"
@@ -87,3 +90,4 @@ gem "bootstrap", "= 5.3.3"
 gem "bcrypt", "= 3.1.20"
 
 gem "rename", "= 1.1.0"
+
