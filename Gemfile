@@ -85,3 +85,5 @@ end
 gem "bootstrap", "= 5.3.3"
 
 gem "bcrypt", "= 3.1.20"
+
+gem "rename", "= 1.1.0"
