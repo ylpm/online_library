@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   include Personable
   
+  has_many :sessions, dependent: :destroy
+  
   has_secure_password # requires a password_digest field at database level users table and the bcrypt gem
                       # adds two virtual attributes to User model: password and password_digest
   
