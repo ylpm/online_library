@@ -1,17 +1,5 @@
-      <ul class="nav nav-pills text-small">
-				<li class="nav-item"><%= link_to "Home", root_path, class: "nav-link" %></li>
-				<li class="nav-item"><%= link_to "About", about_path, class: "nav-link" %></li>
-        <li class="nav-item"><%= link_to "Help", help_path, class: "nav-link" %></li>
-				<% if logged_in? %>
-				<li class="nav-item">
-					<%= render 'layouts/user_menu' %>
-				</li>
-				<% else %>
-				<li class="nav-item">
-					<%= link_to "Log in", login_path, class: "nav-link" %>
-				</li>
-				<li class="nav-item">
-					<%= link_to "Sign up now!", signup_path, class: "btn btn-md btn-primary" %>
-				</li>
-				<% end %>
-			</ul>
+<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+  <li><%= link_to "Home", root_path, class: "nav-link px-2 link-secondary" %></li>
+  <li><%= link_to "About", about_path, class: "nav-link px-2" %></li>
+  <li><%= link_to "Help", help_path, class: "nav-link" %></li>
+</ul>
