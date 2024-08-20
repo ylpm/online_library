@@ -1,6 +1,6 @@
 <% if logged_in? %>
 	<%= render 'layouts/user_menu' %>
 <% else %>
-	<%= link_to "Login", '#', class: "btn btn-outline-primary me-2" %>
+	<%= link_to "Login", login_path, class: "btn btn-outline-primary me-2" %>
 	<%= link_to "Sign up now!", signup_path, class: "btn btn-md btn-primary" %>
 <% end %>

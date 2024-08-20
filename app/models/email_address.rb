@@ -1,6 +1,6 @@
 class EmailAddress < ApplicationRecord
-  belongs_to :person
-  
+  belongs_to :owner, class_name: 'Person'
+    
 	# ## CALLBACKS:
 	# ### Hay dos formas de usar los callbacks:
 	# ### 	1. pasandoles un bloque
@@ -17,7 +17,7 @@ class EmailAddress < ApplicationRecord
   validates :address, presence: true,
                         length: {maximum: 255},
                         format: {with: VALID_EMAIL_FORMAT},
-                        uniqueness: true # { case_sensitive: false }
+                    uniqueness: true # { case_sensitive: false }
   
   def to_s = address
     

@@ -24,7 +24,7 @@ class UsersController < ApplicationController
           end
         else
           format.turbo_stream
-          format.html { render :new, status: :unprocessable_entity }
+          format.html {render :new, status: :unprocessable_entity}
         end
       end                               
     end

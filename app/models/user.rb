@@ -45,6 +45,18 @@ class User < ApplicationRecord
   end
 
   def to_s = "#{self.person.first_name} #{self.person.last_name} <#{self.username}>"
+  
+  # Find user for authentication
+  def User.find_by_login(arg)
+    unless arg.blank?
+      arg.downcase!
+      if user = find_by_username(arg) 
+        return user 
+      elsif email = EmailAddress.find_by_address(arg) 
+        return email.owner.user
+      end
+    end
+  end
 
 
   private

@@ -4,15 +4,15 @@ Rails.application.routes.draw do
   
   get :help, to: 'static_pages#help'
   
-  get :about, to: 'static_pages#about'
+  get :about, to: 'static_pages#about'  
   
-  get :login, to: 'static_pages#home'
-  
-  
-  resources :users
+  resources :users, except: :new
   
   get :signup, to: "users#new"
   
+  get :login, to: "sessions#new"
+  
+  post :login, to: "sessions#create"
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   

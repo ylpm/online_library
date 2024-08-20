@@ -43,7 +43,7 @@ class PresenceEmailAddressAttrsTest < EmailAddressTest
   end
   
   test "person id should be present" do
-    @test_email.person_id = nil
+    @test_email.owner_id = nil
     assert_not @test_email.valid?
   end
 end

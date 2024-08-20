@@ -16,14 +16,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_19_112235) do
 
   create_table "email_addresses", force: :cascade do |t|
     t.string "address", null: false
-    t.bigint "person_id", null: false
+    t.bigint "owner_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "activation_digest"
     t.boolean "activated", default: false
     t.datetime "activated_at"
     t.index ["address"], name: "index_email_addresses_on_address", unique: true
-    t.index ["person_id"], name: "index_email_addresses_on_person_id"
+    t.index ["owner_id"], name: "index_email_addresses_on_owner_id"
   end
 
   create_table "people", force: :cascade do |t|
@@ -54,6 +54,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_19_112235) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
-  add_foreign_key "email_addresses", "people"
+  add_foreign_key "email_addresses", "people", column: "owner_id"
   add_foreign_key "sessions", "users"
 end

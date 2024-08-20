@@ -2,16 +2,16 @@
 
 john_at_hey:
   address: "john@hey.com"
-  person:  john
+  owner:  john
 
 john_at_gmail:
   address: "john@gmail.com"
-  person:  john
+  owner:  john
   
 john_at_yahoo:
   address: "john@yahoo.com"
-  person:  john
+  owner:  john
   
 mary_at_gmail:
   address: "mary@gmail.com"
-  person:  mary
+  owner:  mary

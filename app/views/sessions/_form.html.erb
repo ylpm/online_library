@@ -1,0 +1,32 @@
+<div class="row">
+  <%#= image_tag "login_icon" %>
+	<%= render 'shared/user_icon' %>
+</div>
+
+<%= form_with url: login_path , scope: :session do |session_form| %>
+  <% if defined? login_error %>
+	<div class="row mb-3">
+		<div class="col">
+		<%= render 'login_error_message', login_error_message: login_error %>
+		</div>	
+  </div>
+	<% end %>
+
+	<div class="row mb-3">
+		<div class="col">
+		<%= session_form.label :login, class: "form-label" %>
+		<%= session_form.text_field :login, autofocus: true, class: "form-control", placeholder: "username or email" %>
+	  </div>
+	</div>
+
+	<div class="row mb-4">
+		<div class="col">
+		<%= session_form.label :password, class: "form-label" %>
+		<%= session_form.password_field :password, class: "form-control" %>
+	  </div>
+	</div>
+
+	<div class="actions center mb-3">
+	<%= session_form.submit "Login", class: "btn btn-primary w-50" %>
+	</div>
+<% end %>

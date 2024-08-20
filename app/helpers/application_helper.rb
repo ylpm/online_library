@@ -3,8 +3,6 @@ module ApplicationHelper
   def base_title = "Online Library"
   
   def full_title(page_title = '') = page_title.blank? ? base_title : "#{page_title} | #{base_title}"
-  
-  def logged_in? = false
     
   def errors_from(models: [])
     errors = {}
