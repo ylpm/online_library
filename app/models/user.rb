@@ -4,7 +4,7 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
   
   has_secure_password # requires a password_digest field at database level users table and the bcrypt gem
-                      # adds two virtual attributes to User model: password and password_digest
+                      # adds two virtual attributes to User model: password and password_confirmation
   
   before_save :downcase_username
   
@@ -18,15 +18,19 @@ class User < ApplicationRecord
   validates :password, presence: true,
                          length: { minimum: 8 }, # maximum: 50 }
                          format: { with: VALID_PASSWORD_REGEXP }  
+  validates :password_confirmation, presence: true
+
 
   def User.custom_create(attrs = {})
-    # return nil if !attrs[:first_name] || !attrs[:last_name] || !attrs[:username]
+    # return nil unless attrs[:first_name] && attrs[:last_name] && attrs[:username]
 
     person = Person.create first_name: attrs[:first_name],
                             last_name: attrs[:last_name],
                            personable: User.new(username: attrs[:username],
                                                 password: attrs[:password],
                                                 password_confirmation: attrs[:password_confirmation])
+
+    return nil unless person && person.valid?
 
     person.update_attribute(:middle_name, attrs[:middle_name]) if attrs[:middle_name]
     person.update_attribute(:birthday, attrs[:birthday]) if attrs[:birthday]
@@ -48,12 +52,14 @@ class User < ApplicationRecord
   
   # Find user for authentication
   def User.find_by_login(arg)
+    raise ArgumentError, "Argument must be a String, not a #{arg.class}" unless arg.instance_of? String
+    
     unless arg.blank?
       arg.downcase!
       if user = find_by_username(arg) 
         return user 
-      elsif email = EmailAddress.find_by_address(arg) 
-        return email.owner.user
+      elsif email = EmailAddress.find_by_address(arg)
+        return email.owner.user if email.activated?
       end
     end
   end

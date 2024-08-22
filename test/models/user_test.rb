@@ -8,28 +8,13 @@ class UserTest < ActiveSupport::TestCase
     # @test_user = users(:john)
     @test_user = Person.create(first_name: "Sample", 
                                 last_name: "Person", 
-                               personable: User.new(username:"sample_username", 
+                               personable: User.new(username: "sample_username",
                                                     password: TEST_PASSWORD,
                                                     password_confirmation: TEST_PASSWORD)
                                ).user
   end
 
   test "user should be valid" do
-    assert @test_user.valid?
-  end
-end
-
-class UserCustomCreationTest < UserTest
-  def setup
-    @test_user = User.custom_create(first_name: "Another",
-                                   middle_name: "Sample",
-                                     last_name: "Person",
-                                      username: "another_username",
-                                      password: TEST_PASSWORD,
-                                      password_confirmation: TEST_PASSWORD)
-  end
-
-  test "created user with custom create method should be valid" do
     assert @test_user.valid?
   end
 end
@@ -150,8 +135,36 @@ class UniquenessUserAttrsTest < UserTest
 
   test "username should be unique" do
     @duplicated_test_user = @test_user.dup
-    @test_user.save
+    assert @test_user.save
     # @duplicated_test_user.username.upcase! # ya no es necesario cuando se agrega el callback downcase_username
     assert_not @duplicated_test_user.valid?, "The username \'#{@duplicated_test_user.username}\' has been taken by another user before"
+  end
+end
+
+class CustomUserMethodsTest < UserTest
+  def setup
+    @test_username = "another_username"
+    @test_user = User.custom_create(first_name: "Another",
+                                   middle_name: "Sample",
+                                     last_name: "Person",
+                                      username: @test_username,
+                                      password: TEST_PASSWORD,
+                                      password_confirmation: TEST_PASSWORD)
+  end
+
+  test "created user with custom create method should be valid" do
+    assert @test_user.valid?
+  end
+
+  test "user should be found by username" do
+    found_user = User.find_by_login(@test_username)
+    assert_equal @test_user.id, found_user.id
+  end
+
+  test "user should be found by email address" do
+    email_address = "sample_user@example.com"
+    @test_user.person.email_addresses.create address: email_address, activated: true
+    found_user = User.find_by_login(email_address)
+    assert_equal @test_user.id, found_user.id
   end
 end
