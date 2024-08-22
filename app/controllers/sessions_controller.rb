@@ -3,7 +3,8 @@ class SessionsController < ApplicationController
     @user = User.find_by_login(params[:session][:login])
     respond_to do |format|
       if @user&.authenticate(params[:session][:password])
-        # login
+        reset_session
+        log_in(@user)
         format.html do
           flash[:success] = "You have logged in successfully!"
           redirect_to(@user, status: :see_other) and return
