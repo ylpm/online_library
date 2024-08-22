@@ -7,7 +7,7 @@
 	<!-- <div class="col col-lg-5 p-md-5 m-4 bg-light rounded-3"> -->
   <div class="col col-sh-5 mx-5 p-5 bg-light rounded-3">
 		<div class="row mx-3" id="login_form">
-	  <%= render 'form' %>
+	  <%= render 'form', login_error: @login_error ? @login_error : nil %>
 	  </div>
 
 		<div class="row mx-3">
