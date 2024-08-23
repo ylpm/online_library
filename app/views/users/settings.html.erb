@@ -1,3 +1,4 @@
 <% provide :title, 'Settings' %>
 <h1>Your Settings...</h1>
 <h2>Under construction</h2>
+<p><%= link_to "Remove account", user_path(current_user.username), data: {turbo_method: :delete, turbo_confirm: "You are removing your account permanently. You won't be able to recover it. Are you sure?"}%></p>

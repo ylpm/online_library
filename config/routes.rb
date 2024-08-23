@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   
   root 'static_pages#home'   # equivalente a get '/', to: 'static_pages#home', as: 'root'
   
-  get :help, to: 'static_pages#help'
+  # get :help, to: 'static_pages#help'
   
   get :about, to: 'static_pages#about' 
   
@@ -12,13 +12,13 @@ Rails.application.routes.draw do
   
   delete "/logout", to: "sessions#destroy"
   
-  resources :users, only: [:create, :destroy]
+  get "/signup", to: "users#new"
   
-  get :signup, to: "users#new"
-  
-  get "/:username", to: "users#profile", as: :user_profile
-  
-  get "/:username/settings", to: "users#settings", as: :user_settings
+  resources :users, param: :username, except: :index do
+    member do
+      get :settings
+    end
+  end
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   

@@ -1,0 +1,23 @@
+<% provide :title, @user.person.full_name %>
+
+<div class="row">	
+	<h1>Public profile</h1>
+</div>
+<div class="row">
+	<div class="col">
+		<div class="row">
+			<div class="col">
+		    <strong>Full name: </strong><%= @user.person.full_name %>
+			</div>
+		</div>
+							
+		<div class="row">
+			<div class="col">
+			  <strong>Username: </strong><%= @user.username %>
+			</div>
+		</div>
+  </div>
+	
+	<div class="col">	
+  </div>
+</div>

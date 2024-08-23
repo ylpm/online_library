@@ -1,20 +1,21 @@
 class UsersController < ApplicationController
   include PersonableHandler
   
-  # before_action :set_user, only: [:show, :profile]
+  before_action :check_not_logged_in, only: [:new, :create]
+    
+  before_action :check_logged_in, except: [:new, :create] #only: [:show, :profile, :settings, :destroy]
   
-  before_action :check_logged_in, only: [:settings, :destroy]
-  
-  before_action :check_the_requested_user_exists, only: [:profile, :settings, :destroy]
+  before_action :check_the_requested_user_exists, except: [:new, :create]
   
   before_action :check_the_requested_user_is_the_current_user, only: [:settings, :destroy]
-    
+      
   def new
     @user = User.new(person: Person.new)
     @email_address = @user.person.email_addresses.new
   end
   
-  def profile
+  def show
+    render :profile if current_user?(@user)
   end
     
   def create    
@@ -41,12 +42,22 @@ class UsersController < ApplicationController
   end
   
   def destroy
+    current_user.destroy
+    log_out
+    flash[:success] = "Your account has been removed"
+    redirect_to root_path, status: :see_other
   end
   
   private
   
-  def set_user = @user = User.find_by_id(params[:id]) || User.find_by_username(params[:username])
-    
+  def check_the_requested_user_exists
+    redirect_unless(flash_message: "User not found") { @user = User.find_by_username(params[:user_username] || params[:username]) }
+  end
+  
+  def check_the_requested_user_is_the_current_user
+    redirect_unless(with_flash: false) { current_user?(@user) }
+  end
+      
   def user_params 
     params.require(:user).permit(
       :username, 

@@ -4,8 +4,8 @@
 		<svg class="rounded-circle" width="32" height="32"><use xlink:href="#people-circle"/></svg>
   </a>
   <ul class="dropdown-menu text-small">
-    <li><%= link_to "Your profile", user_profile_path(current_user.username), class: "dropdown-item"%></li>
-		<li><%= link_to "Settings", user_settings_path(current_user.username), class: "dropdown-item"%></li>
+    <li><%= link_to "Your profile", user_path(current_user.username), class: "dropdown-item"%></li>
+		<li><%= link_to "Settings", settings_user_path(current_user.username), class: "dropdown-item"%></li>
     <li><hr class="dropdown-divider"></li>
     <li><%= link_to "Logout", logout_path, class: "dropdown-item", data: {turbo_method: :delete} %></a></li>
   </ul>
