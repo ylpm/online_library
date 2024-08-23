@@ -1,6 +1,8 @@
 <% provide :title, 'Home' %>
 
 <div class="center">
-  <!--<h1>Welcome!</h1>-->
+  <% if logged_in? %>
+	<h1>Welcome! <%= current_user.person.first_name %></h1>
+	<% end %>
   <%= image_tag("colors.svg", class: "bi me-2", width: "60%", height: "60%") %>
 </div>

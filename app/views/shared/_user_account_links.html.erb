@@ -1,10 +1,6 @@
 <% if logged_in? %>
     <% if context == :edit %>
         <div class="row">
-            <div class="col gravatar_edit">
-                <%= gravatar_for current_user %>
-                <%= link_to "change", "https://gravatar.com/emails", target: "_blank", rel: "noopener" %><br />
-            </div>
             <div class="col">
                 <%= link_to 'Remove account', user_path(current_user), data: { turbo_method: :delete,
                                                                                turbo_confirm: "You are removing your account permanently. You won't be able to recover it. Are you sure?" } %>

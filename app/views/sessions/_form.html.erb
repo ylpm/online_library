@@ -1,6 +1,7 @@
 <div class="row">
   <%#= image_tag "login_icon" %>
 	<%= render 'shared/user_icon' %>
+	<svg class="bi d-block mx-auto mb-4" width="32" height="32"><use xlink:href="#people-circle"/></svg>
 </div>
 
 <%= form_with url: login_path , scope: :session do |session_form| %>

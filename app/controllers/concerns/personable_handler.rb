@@ -20,7 +20,9 @@ module PersonableHandler
                                                birthday: person_params[:birthday],
                                              personable: personable).valid?
     
-    valid &= personable.person.email_addresses.new(address: person_params[:email_address][:address]).valid?
+    valid &= personable.person.email_addresses.new(address: person_params[:email_address][:address],
+                                                 activated: true).valid? 
+                                                 # activated is true by default until the email activation implementation
     
     if valid
       personable.save

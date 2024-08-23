@@ -1,0 +1,58 @@
+<% provide :title, @user.person.first_name %>
+
+<% private_profile = logged_in? && current_user?(@user) %>
+
+<div class="row">
+	<div class="col">
+		<% if private_profile %>
+		<h1>Your profile</h1>
+		<hr>
+		<% end %>
+		
+		<div class="row">
+			<div class="col">
+				<div class="row">
+					<div class="col">
+		  			<strong>Full name: </strong><%= @user.person.full_name %>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col">
+			      <strong>Username: </strong><%= @user.username %>
+				  </div>
+				</div>
+				
+				<% if @user.person.birthday %>
+				<div class="row">
+					<div class="col">
+			      <strong>Birthday: </strong><%= @user.person.birthday %>
+				  </div>
+				</div>
+				<% end %>
+		  </div>
+			
+			<% if private_profile %>
+			<div class="col">
+				<div class="row">
+					<div class="col">
+					<strong>Emails: </strong>
+					<% @user.person.email_addresses.each do |email_address| %>
+					<br><%= email_address %> (<em><%= email_address.activated? ? "activated" : "not activated" %></em>)
+					<% end %>
+				  </div>
+				</div>
+			</div>
+			<% end %>
+		</div>
+  </div>
+	
+	<div class="col">		
+		<div class="row">
+			<h2>Your posts</h2>
+	  </div>
+		
+		<div class="row">
+	  </div>
+  </div>
+</div>

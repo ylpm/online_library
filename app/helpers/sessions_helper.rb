@@ -28,4 +28,19 @@ module SessionsHelper
   def logged_in?
     !current_session.nil?
   end
+  
+  def log_out
+    if logged_in?
+      reset_session
+      @current_user = @current_session = nil
+    end
+  end
+  
+  def store_requested_url
+    session[:_rurl] = request.original_url if request.get?
+  end
+
+  def requested_url
+    session[:_rurl]
+  end
 end

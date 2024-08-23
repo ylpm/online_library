@@ -1,13 +1,20 @@
-class SessionsController < ApplicationController  
+class SessionsController < ApplicationController
+  
+  before_action :check_logged_in, only: [:destroy]
+  
+  def new
+  end
+  
   def create
     @user = User.find_by_login(params[:session][:login])
     respond_to do |format|
       if @user&.authenticate(params[:session][:password])
+        forwarding_url = requested_url
         reset_session
         log_in(@user)
         format.html do
           flash[:success] = "You have logged in successfully!"
-          redirect_to(@user, status: :see_other) and return
+          redirect_to(forwarding_url || root_path, status: :see_other) and return
         end
       else
         @login_error = "ooops! no match"
@@ -17,4 +24,9 @@ class SessionsController < ApplicationController
     end
   end
   
+  def destroy
+    log_out
+    flash[:success] = "You have logged out successfully!"
+    redirect_to root_url, status: :see_other
+  end
 end

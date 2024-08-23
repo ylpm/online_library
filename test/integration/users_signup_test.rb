@@ -30,9 +30,9 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
                                      password: 'Abcde123*',
                         password_confirmation: 'Abcde123*'}}
     end
-    assert_redirected_to User.last
+    assert_redirected_to root_url
     follow_redirect!
-    assert_template 'users/show'
+    assert_template 'static_pages/home'
     assert_not flash.empty?
     assert_select 'div.alert-success', 'Welcome!'
   end
