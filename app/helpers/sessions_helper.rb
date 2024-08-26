@@ -1,6 +1,12 @@
 module SessionsHelper
-  def log_in(user)
-    user_session = user.sessions.create
+  def log_in(arg)
+    if arg.instance_of?(User)
+      user_session = arg.sessions.create
+    elsif arg.instance_of?(EmailAddress)
+      user_session = arg.owner.user.sessions.create(email_address: arg)
+    else
+      raise ArgumentError
+    end
     session[:_sid] = user_session.id
     user_session
   end
@@ -8,8 +14,8 @@ module SessionsHelper
   def current_session
     return @current_session if @current_session
     if session_id = session[:_sid]
-      user_session = Session.find_by_id(session_id)
-      @current_session = user_session
+      @current_session = Session.find_by_id(session_id)
+      # @current_session = user_session
     end
   end
   

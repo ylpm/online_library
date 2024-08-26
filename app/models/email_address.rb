@@ -1,6 +1,8 @@
 class EmailAddress < ApplicationRecord
   belongs_to :owner, class_name: 'Person'
-    
+  
+  has_many :sessions, inverse_of: :email_address
+      
 	# ## CALLBACKS:
 	# ### Hay dos formas de usar los callbacks:
 	# ### 	1. pasandoles un bloque
