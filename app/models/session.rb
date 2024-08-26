@@ -4,7 +4,6 @@ class Session < ApplicationRecord
   belongs_to :email_address, required: false, inverse_of: :sessions
   
   def login_identifier
-    return email_address.address if email_address
-    user.username
+    (email_address.address if email_address) || user.username
   end
 end
