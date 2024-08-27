@@ -1,9 +1,9 @@
 class UsersController < ApplicationController
   include PersonableHandler
   
-  before_action :check_not_logged_in, only: [:new, :create]
+  before_action :redirect_if_logged_in, only: [:new, :create]
     
-  before_action :check_logged_in, except: [:new, :create] #only: [:show, :profile, :settings, :destroy]
+  before_action :redirect_unless_logged_in, except: [:new, :create] #only: [:show, :profile, :settings, :destroy]
   
   before_action :check_the_requested_user_exists, except: [:new, :create]
   

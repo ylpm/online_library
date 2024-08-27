@@ -1,4 +1,6 @@
 module SessionsHelper
+  include RedirectableHandler
+  
   def log_in(arg)
     if arg.instance_of?(User)
       @current_session = arg.sessions.create
@@ -41,11 +43,28 @@ module SessionsHelper
     end
   end
   
+  def redirect_if_logged_in
+    redirect_unless(with_flash: false) { !logged_in? }
+  end
+  
+  def redirect_unless_logged_in
+    redirect_unless(login_url, flash_message: "Please, log in", flash_type: :info) { logged_in? }
+  end
+  
   def store_requested_url
     session[:_rurl] = request.original_url if request.get?
   end
 
   def requested_url
     session[:_rurl]
+  end
+  
+  def reset_requested_url
+    session[:_rurl] = nil
+  end
+  
+  def doing_login?
+    request.original_url.match?(login_url)
+    # params[:controller].match?('sessions') && params[:action].match?(/new|create/)
   end
 end

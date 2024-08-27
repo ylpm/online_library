@@ -1,10 +1,10 @@
 class SessionsController < ApplicationController
   
-  before_action :check_not_logged_in, only: [:new, :create]
+  before_action :redirect_if_logged_in, only: [:new, :create]
   
   before_action :set_user, only: :create
   
-  before_action :check_logged_in, only: [:destroy]
+  before_action :redirect_unless_logged_in, only: [:destroy]
   
   def new
   end
