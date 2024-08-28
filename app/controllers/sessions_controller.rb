@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
   
   before_action :set_user, only: :create
   
-  before_action :redirect_unless_logged_in, only: [:destroy]
+  before_action :redirect_unless_logged_in, only: [:update_status, :destroy]
   
   def new
   end
@@ -25,6 +25,9 @@ class SessionsController < ApplicationController
         format.html {render :new, status: :unprocessable_entity}
       end
     end
+  end
+  
+  def update_status
   end
   
   def destroy
