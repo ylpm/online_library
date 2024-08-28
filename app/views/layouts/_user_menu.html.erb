@@ -4,9 +4,9 @@
 		<svg class="rounded-circle" width="32" height="32"><use xlink:href="#people-circle"/></svg>
   </a>
   <ul class="dropdown-menu text-small">
-		<li class="dropdown-item">
+		<li class="dropdown-header">
+      <div class="user-identifier"><%= current_session.login_identifier %></div>
 			<div class=""><%= current_user.person.full_name %></div>
-			<div class=""><%= "Logged in as: #{current_session.login_identifier}" %></div>
 		</li>
 		<li><hr class="dropdown-divider"></li>
     <li><%= link_to "Your profile", user_path(current_user.username), class: "dropdown-item"%></li>
