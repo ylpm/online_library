@@ -1,10 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-# john:
-#   username: "john"
-#   password_digest: "dasd67a6s7svvcxvcvcxv"
-#
-# mary:
-#   username: "mary"
-#   password: "foobar"
-#   password_digest: "dasd67a6s7svvcxvcvcxv"
+john:
+  username: "john"
+  password_digest: <%= User.digest("Abcde123*") %>
+
+mary:
+  username: "mary"
+  password_digest: <%= User.digest("Abcde123*") %>

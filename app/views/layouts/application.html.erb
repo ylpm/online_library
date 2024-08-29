@@ -8,7 +8,7 @@
   </head>
 
   <body>
-		<%= render 'layouts/flash' %>
+		<%= render 'layouts/flash' if flash.any? %>
 		<%= render 'layouts/header' %>
 		<%= render 'layouts/section' %>
 		<%= render 'layouts/footer' %>

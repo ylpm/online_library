@@ -4,7 +4,9 @@ class SessionsController < ApplicationController
   
   before_action :set_user, only: :create
   
-  before_action :redirect_unless_logged_in, only: [:update_status, :destroy]
+  before_action :redirect_unless_logged_in, only: :update_status
+  
+  before_action -> { redirect_unless_logged_in(root_url, with_flash: false) }, only: :logout # :destroy
   
   def new
   end
@@ -30,7 +32,8 @@ class SessionsController < ApplicationController
   def update_status
   end
   
-  def destroy
+  # def destroy
+  def logout
     log_out
     flash[:success] = "You have logged out successfully!"
     redirect_to root_url, status: :see_other

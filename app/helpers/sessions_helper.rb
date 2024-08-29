@@ -46,9 +46,9 @@ module SessionsHelper
   def redirect_if_logged_in
     redirect_unless(with_flash: false) { !logged_in? }
   end
-  
-  def redirect_unless_logged_in
-    redirect_unless(login_url, flash_message: "Please, log in", flash_type: :info) { logged_in? }
+
+  def redirect_unless_logged_in(url = login_url, with_flash: true, flash_message: "Please, log in", flash_type: :info)
+    redirect_unless(url, with_flash: with_flash, flash_message: flash_message, flash_type: flash_type) { logged_in? }
   end
   
   def store_requested_url

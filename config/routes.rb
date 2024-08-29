@@ -10,7 +10,11 @@ Rails.application.routes.draw do
   
   post "/login", to: "sessions#create"
   
-  delete "/logout", to: "sessions#destroy"
+  # delete "/logout", to: "sessions#destroy" # usando delete no ocurre el redirect esperado cuando se hace un logout 
+                                             # y seguidamente se emite otro desde otra ventana del mismo navegador. 
+                                             # A causa de la peticion delete manejada por turbo_stream, 
+                                             # Puma me dice: Can't verify CSRF token authenticity.
+  get "/logout", to: "sessions#logout"
   
   get "/signup", to: "users#new"
   

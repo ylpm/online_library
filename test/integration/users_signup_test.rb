@@ -22,11 +22,11 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
   test "valid signup information" do
     get signup_path
     assert_response :success
-    assert_difference 'User.count', 1 do
-      post users_path, params: {user: {person: {first_name: 'John',
-                                                 last_name: 'Johnson',
-                                             email_address: {address: 'foo@bar.com'}},
-                                     username: 'john',
+    assert_difference 'User.count', 1, "A new user should be signed up" do
+      post users_path, params: {user: {person: {first_name: 'Example',
+                                                 last_name: 'User',
+                                             email_address: {address: 'user@example.com'}},
+                                     username: 'example_user',
                                      password: 'Abcde123*',
                         password_confirmation: 'Abcde123*'}}
     end
