@@ -1,18 +1,27 @@
+<%= render 'shared/user_icon' %>
 <div class="dropdown text-end">
   <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-		<%= render 'shared/user_icon' %>
 		<svg class="rounded-circle" width="32" height="32"><use xlink:href="#people-circle"/></svg>
   </a>
   <ul class="dropdown-menu text-small">
 		<li class="dropdown-header">
-      <div class="login-identifier"><%= current_session.login_identifier %></div>
-			<div class=""><%= current_user.person.full_name %></div>
+			<div class="d-flex gap-2">
+			  <svg class="rounded-circle" width="40" height="40"><use xlink:href="#people-circle"/></svg>
+				<div>
+			    <div class="login-identifier emph-item"><%= current_session.login_identifier %></div>
+					<%= current_user.full_name %>
+				</div>
+		  </div>
+			<%= link_to "View your profile", user_path(current_user.username), class: "btn btn-md btn-outline-primary mt-2 w-100" %>
 		</li>
 		<li><%= link_to "Set status", "#", class: "dropdown-item"%><%#= link_to "Set status", status_path, class: "dropdown-item", data: {turbo_method: :post} %></li>
 		<li><hr class="dropdown-divider"></li>
-    <li><%= link_to "Your profile", user_path(current_user.username), class: "dropdown-item"%></li>
+		<li class="dropdown-header emph-item"">Account</li>
 		<li><%= link_to "Settings", settings_user_path(current_user.username), class: "dropdown-item"%></li>
+		<li><hr class="dropdown-divider"></li>
+		<li class="dropdown-header emph-item"">Posts</li>
+		<li><%= link_to "New", "#", class: "dropdown-item"%></li>
     <li><hr class="dropdown-divider"></li>
-    <li><%= link_to "Logout", logout_path, class: "dropdown-item" %><%#= link_to "Logout", logout_path, class: "dropdown-item", data: {turbo_method: :delete} %></a></li>
+    <li><%= link_to "Logout", logout_path, class: "dropdown-item", data: {turbo_method: :delete} %><%#= link_to "Logout", logout_path, class: "dropdown-item" %></li>
   </ul>
 </div>

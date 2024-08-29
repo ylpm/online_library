@@ -7,14 +7,16 @@ module Personable
   
   class_methods do
   end
+  
+  def first_name = self.person.first_name
+  
+  def middle_name = self.person.middle_name
+  
+  def last_name = self.person.last_name
     
-  # ESTO QUE SIGUE FUNCIONA PERO EL PROBLEMA ESTA CUANDO SE LLAMAN LOS METODOS DE ACTIVE RECORD COMO update
-  # update_attribute:
-  # def first_name
-  #   self.person.first_name
-  # end
-  #
-  # def first_name=(first_name)
-  #   self.person.first_name = first_name
-  # end
+  def full_name = self.person.full_name
+  
+  def birthday = self.person.birthday
+  
+  def email_addresses = self.person.email_addresses
 end

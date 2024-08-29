@@ -1,4 +1,4 @@
-<% provide :title, current_user.person.first_name %>
+<% provide :title, current_user.full_name %>
 
 <div class="row">
 	<div class="col">
@@ -9,7 +9,7 @@
 			<div class="col">
 				<div class="row">
 					<div class="col">
-		  			<strong>Full name: </strong><%= current_user.person.full_name %>
+		  			<strong>Full name: </strong><%= current_user.full_name %>
 					</div>
 				</div>
 				
@@ -19,21 +19,21 @@
 				  </div>
 				</div>
 				
-				<% if current_user.person.birthday %>
+				<% if current_user.birthday %>
 				<div class="row">
 					<div class="col">
-			      <strong>Birthday: </strong><%= current_user.person.birthday %>
+			      <strong>Birthday: </strong><%= current_user.birthday %>
 				  </div>
 				</div>
 				<% end %>
 		  </div>
 			
 			<div class="col">
-				<% if current_user.person.email_addresses.any? %>
+				<% if current_user.email_addresses.any? %>
 				<div class="row">
 					<div class="col">
 					<strong>Emails: </strong>
-					<% current_user.person.email_addresses.each do |email_address| %>
+					<% current_user.email_addresses.each do |email_address| %>
 					<br><%= email_address %> (<em><%= email_address.activated? ? "activated" : "not activated" %></em>)
 					<% end %>
 				  </div>
