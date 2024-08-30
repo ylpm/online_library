@@ -12,7 +12,7 @@
 					<%= current_user.full_name %>
 				</div>
 		  </div>
-			<%= link_to "View your profile", user_path(current_user.username), class: "btn btn-md btn-outline-primary mt-2 w-100" %>
+			<%= link_to "View your profile", user_path(current_user.username), class: "btn btn-md btn-outline-primary mt-2 w-100 rounded-5" %>
 		</li>
 		<li><%= link_to "Set status", "#", class: "dropdown-item"%><%#= link_to "Set status", status_path, class: "dropdown-item", data: {turbo_method: :post} %></li>
 		<li><hr class="dropdown-divider"></li>

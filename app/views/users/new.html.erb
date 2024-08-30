@@ -1,24 +1,19 @@
 <%= provide :title, "Sign up" %>
 
 <div class="row">
-	<div class="col col-lg-5 p-md-5 bg-light rounded-3">
-		<div class="row"id="user_form">
-		<%= render "form", user: @user, email_address: @email_address, context: :signup %>
+	<div class="col-auto bg-light rounded-3 p-5">
+		<div id="user_form">
+		  <%= render "form", user: @user, email_address: @email_address, context: :signup %>
 	  </div>
-		
-		<div class="row">
-			<br>
-			<hr class="my-2">
-			<div class="form-links text-small">
-			  <%= render 'shared/user_account_links', context: :signup %>
-	    </div>
+	  <br>
+		<hr class="my-2">
+		<div class="form-links text-small">
+	    <%= render 'shared/user_account_links', context: :signup %>
 	  </div>
 	</div>
-	
+
 	<div class="col">
-		<div class="row">
-			<%= image_tag("colors.svg", class: "bi me-2") %>
-		</div>
+	  <%= image_tag("colors.svg") %>
 	</div>
 </div>
 
