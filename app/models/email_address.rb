@@ -14,6 +14,7 @@ class EmailAddress < ApplicationRecord
 	# end
 	# ### ejemplo de callback referenciando un metodo
   before_save :downcase_address
+  before_save :activate_email_address
   
   VALID_EMAIL_FORMAT = /\A[a-z][a-z0-9\.\+\-\_]*@[a-z0-9]+[a-z\d\-]*(\.[a-z\d\-]+)*\.[a-z]{2,}\z/i.freeze
   validates :address, presence: true,
@@ -27,4 +28,11 @@ class EmailAddress < ApplicationRecord
   
   # # to be invoked in the before_save callback
   def downcase_address = address.downcase!
+  
+  # provisional until the email activation subsystem get ready
+  def activate_email_address
+    # self.activation_digest = EmailAddress.digest(address)
+    self.activated_at = Time.now
+    self.activated = true
+  end
 end

@@ -14,5 +14,8 @@ module ActiveSupport
     
     # def test_title_for_page(page = nil) = page ? "#{page.to_s.capitalize} | #{@base_title}" : @base_title
     
+    def is_logged_in?
+      !session[:_sid].nil?
+    end
   end
 end

@@ -12,6 +12,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
                                      password: 'foo',
                         password_confirmation: 'bar'}}
     end
+    assert_not is_logged_in?
     # REFACTORIZAR LO QUE SIGUE PARA QUE SE AJUSTE A TURBO-STREAM
     # assert_response :unprocessable_entity
     # assert_template 'users/new'
@@ -30,6 +31,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
                                      password: 'Abcde123*',
                         password_confirmation: 'Abcde123*'}}
     end
+    assert is_logged_in?
     assert_redirected_to root_url
     follow_redirect!
     assert_template 'static_pages/home'

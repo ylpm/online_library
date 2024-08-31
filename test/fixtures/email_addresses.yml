@@ -3,14 +3,17 @@
 john_at_hey:
   address: "john@hey.com"
   owner: john
+  activated: true
 
 john_at_gmail:
   address: "john@gmail.com"
   owner: john
+  activated: true
 
 john_at_yahoo:
   address: "john@yahoo.com"
   owner: john
+  activated: true
 
 mary_at_gmail:
   address: "mary@gmail.com"
