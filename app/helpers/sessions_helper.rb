@@ -60,7 +60,7 @@ module SessionsHelper
   end
   
   def reset_requested_url
-    session[:_rurl] = nil
+    session.delete(:_rurl)
   end
   
   def doing_login?
