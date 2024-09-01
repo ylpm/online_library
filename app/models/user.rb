@@ -10,14 +10,19 @@ class User < ApplicationRecord
   
   VALID_USERNAME_REGEXP = /\A[a-z]([\-\_\.]?[a-z\d]+)+\Z/i.freeze
   validates :username, presence: true,
-                         length: { minimum: 3, maximum: 30 }, # se puede incluir en el formato, y se quita de aqui
-                         format: { with: VALID_USERNAME_REGEXP },
+                         length: { minimum: 3, maximum: 30,
+                                 too_short: "allows 3 chars minimum", 
+                                  too_long: "allows 30 chars maximum" },
+                         format: { with: VALID_USERNAME_REGEXP, 
+                                message: "starts with a letter and allows hyphens, dots and numbers after, p.e. john.doe"},
                          uniqueness: true # { case_sensitive: false } esto no es necesario cuando se añade el callback downcase_username
                          
   VALID_PASSWORD_REGEXP = /\A(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\W]).{8,}$\z/
   validates :password, presence: true,
-                         length: { minimum: 8 }, # maximum: 50 }
-                         format: { with: VALID_PASSWORD_REGEXP }  
+                         length: { minimum: 8,
+                                 too_short: "allows 8 chars minimum"},
+                         format: { with: VALID_PASSWORD_REGEXP, 
+                                message: "must have numbers, as well as uppercase, lowercase and special characters"}  
   validates :password_confirmation, presence: true
 
 
