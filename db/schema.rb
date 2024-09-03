@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_08_26_113354) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_02_180636) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -43,6 +43,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_26_113354) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "email_address_id"
+    t.string "session_digest"
     t.index ["email_address_id"], name: "index_sessions_on_email_address_id"
     t.index ["user_id", "created_at"], name: "index_sessions_on_user_id_and_created_at", unique: true
     t.index ["user_id"], name: "index_sessions_on_user_id"

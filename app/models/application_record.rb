@@ -7,4 +7,12 @@ class ApplicationRecord < ActiveRecord::Base
                                                 : BCrypt::Engine.cost
     BCrypt::Password.create(string, cost: cost)
   end
+  
+  def self.new_token
+    SecureRandom.urlsafe_base64
+  end
+  
+  def self.token_match?(token, digest)
+    digest.blank? ? false : BCrypt::Password.new(digest).is_password?(token)
+  end
 end

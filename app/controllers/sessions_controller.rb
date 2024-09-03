@@ -13,10 +13,9 @@ class SessionsController < ApplicationController
   
   def create
     respond_to do |format|
-      if @user&.authenticate(params[:session][:password]) 
+      if @user&.authenticate(params[:session][:password])
         forwarding_url = requested_url
-        reset_session
-        log_in(@email_address || @user)
+        start_session_for @user, email_address: @email_address, persistent: true # persistent by defaul until "remember me" be ready
         format.html do
           flash[:success] = "You have logged in successfully!"
           redirect_to(forwarding_url || root_path, status: :see_other) and return
@@ -34,7 +33,7 @@ class SessionsController < ApplicationController
   
   # def logout
   def destroy
-    log_out
+    finish_current_session
     flash[:success] = "You have logged out successfully!"
     redirect_to root_url, status: :see_other
   end

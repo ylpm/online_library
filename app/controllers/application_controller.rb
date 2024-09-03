@@ -1,8 +1,8 @@
 class ApplicationController < ActionController::Base
-  include SessionsHelper
+  include SessionsHelper # requires a current_session method
 
   before_action -> { cancel_friendly_forwarding_unless {logged_in? || doing_login?} }
-
+  
   private
 
   def cancel_friendly_forwarding_unless
