@@ -18,6 +18,8 @@ Rails.application.routes.draw do
                                              # Pero esto me cierra la sesion con solo pasar el mouse sobre el enlace logout
                                              # en el menu desplegable del usuario
   
+  # patch "toggle_session_status", to: "sessions#update_status"
+  
   get "/signup", to: "users#new"
   
   resources :users, param: :username, except: :index do

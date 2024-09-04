@@ -4,9 +4,9 @@ class SessionsController < ApplicationController
   
   before_action :set_user, only: :create
   
-  before_action :redirect_unless_logged_in, only: :update_status
+  # before_action :redirect_unless_logged_in, only: ...
   
-  before_action -> { redirect_unless_logged_in(root_url, with_flash: false) }, only: :destroy # :logout
+  before_action -> { redirect_unless_logged_in(root_url, with_flash: false) }, only: [:update_status, :destroy] # :logout
   
   def new
   end
@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
     respond_to do |format|
       if @user&.authenticate(params[:session][:password])
         forwarding_url = requested_url
-        start_session_for @user, email_address: @email_address, persistent: true # persistent by defaul until "remember me" be ready
+        new_session_for @user, email_address: @email_address, persistent: true # persistent by defaul until "remember me" be ready
         format.html do
           flash[:success] = "You have logged in successfully!"
           redirect_to(forwarding_url || root_path, status: :see_other) and return
@@ -29,6 +29,7 @@ class SessionsController < ApplicationController
   end
   
   def update_status
+    # (params[:session][:remember_me] == 1) ? remember_current_session : forget_current_session
   end
   
   # def logout

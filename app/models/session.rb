@@ -24,8 +24,16 @@ class Session < ApplicationRecord
     !session_digest.nil?
   end
   
+  def forgotten?
+    session_digest.nil?
+  end
+  
   def remembered_with?(remember_token)
     Session.token_match?(remember_token, session_digest)
+  end
+  
+  def rescue_remember_token(remember_token)
+    @remember_token = remember_token if remembered? && @remember_token.blank? && remembered_with?(remember_token)
   end
   
   private

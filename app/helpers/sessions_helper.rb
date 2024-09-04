@@ -2,7 +2,7 @@ module SessionsHelper
   
   include RedirectableHandler
   
-  def start_session_for(user, email_address: nil, persistent: false)
+  def new_session_for(user, email_address: nil, persistent: false)
     raise ArgumentError, "Invalid user" unless user.instance_of? User
     raise ArgumentError, "Invalid email address" unless email_address.nil? || email_address.instance_of?(EmailAddress)
     @current_user = user
@@ -11,24 +11,43 @@ module SessionsHelper
     start_session_tracking # set necessary cookies
   end
   
+  def remember_current_session
+    current_session.remember
+    set_remember_cookies
+  end
+  
+  def forget_current_session
+    current_session.forget
+    delete_remember_cookies
+  end
+  
   def finish_current_session
     raise "No current session" if !logged_in?
-    stop_session_tracking # unset cookies
+    reset_session_tracking # unset cookies
     current_session.destroy
     @current_user = @current_session = nil
   end
   
   def current_session
     return @current_session if @current_session
+    
     if session_id = session[:_sid]
       @current_session = Session.find_by_id(session_id)
     elsif old_session_id = cookies.encrypted[:_sid]
+      old_remember_token = cookies[:_rt]
+      reset_session_tracking
       old_session = Session.find_by_id(old_session_id)
-      if old_session&.remembered_with?(cookies[:_rt])
-        start_session_for(old_session.user, email_address: old_session.email_address, persistent: true)
+      if old_session
+        if old_session.remembered_with?(old_remember_token)
+          new_session_for(old_session.user, email_address: old_session.email_address, persistent: true)        
+        end
         old_session.destroy
       end
     end
+    if @current_session && @current_session.remember_token.blank?
+      @current_session.rescue_remember_token(cookies[:_rt])
+    end
+    @current_session
   end
   
   def logged_in?
@@ -48,7 +67,6 @@ module SessionsHelper
     raise ArgumentError, "Argument must be an instance of User" unless user.instance_of? User
     user == current_user
   end
-
 
   # ******************************************
   # Pasar esto para otro modulo mas apropiado:
@@ -88,7 +106,10 @@ module SessionsHelper
     raise "No current session" unless current_session
     reset_session
     session[:_sid] = current_session.id
-    
+    set_remember_cookies
+  end
+  
+  def set_remember_cookies
     if current_session.remembered?
       # set permanent cookies.                                 # cookies.permanent method is equivalent to:
       cookies.permanent.encrypted[:_sid] = current_session.id  # cookies.encrypted[:_sid] = {value: current_session.id, 
@@ -98,11 +119,15 @@ module SessionsHelper
     end
   end
   
-  def stop_session_tracking
+  def reset_session_tracking
     reset_session
-    if current_session.remembered?
+    delete_remember_cookies
+  end
+  
+  def delete_remember_cookies
+    # if current_session.forgotten?
       cookies.delete(:_sid)
       cookies.delete(:_rt)
-    end
+    # end
   end
 end

@@ -24,7 +24,7 @@ class UsersController < ApplicationController
       @email_address = @user.person.email_addresses.first
       respond_to do |format|
         if @user.persisted?
-          start_session_for @user
+          new_session_for @user
           format.html do
             flash[:success] = "Welcome!"
             redirect_to root_url, status: :see_other
