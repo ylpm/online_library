@@ -20,12 +20,19 @@
 	  </div>
 	</div>
 
-	<div class="row mb-4">
+	<div class="row mb-3">
 		<div class="col">
 		<%= session_form.label :password, class: "form-label" %>
 		<%= session_form.password_field :password, class: "form-control" %>
 	  </div>
 	</div>
+	
+  <div class="checkbox mb-4">
+    <label>
+      <%= session_form.check_box :remember_me %> Remember me
+      <%#= f.label :remember_me %>
+    </label>
+  </div>
 
 	<div class="actions center mb-3">
 	<%= session_form.submit "Login", class: "btn btn-primary w-50" %>

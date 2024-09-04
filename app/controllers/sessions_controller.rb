@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
     respond_to do |format|
       if @user&.authenticate(params[:session][:password])
         forwarding_url = requested_url
-        new_session_for @user, email_address: @email_address, persistent: true # persistent by defaul until "remember me" be ready
+        new_session_for @user, email_address: @email_address, persistent: (params[:session][:remember_me] == '1')
         format.html do
           flash[:success] = "You have logged in successfully!"
           redirect_to(forwarding_url || root_path, status: :see_other) and return
