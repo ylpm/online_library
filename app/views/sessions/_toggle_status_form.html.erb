@@ -1,0 +1,8 @@
+<% toggle_session_status_path = current_session.remembered? ? forget_me_path : remember_me_path%>
+
+<%= form_with model: current_session, url: toggle_session_status_path, method: :patch do |f| %>
+	<%= link_to toggle_session_status_path, class: "dropdown-item", data: {turbo_method: :patch} do %>
+	  <%= f.check_box :remember_me, checked: current_session.remembered? %>
+	  Remember me
+	<% end %>
+<% end %>

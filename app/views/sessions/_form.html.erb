@@ -28,10 +28,10 @@
 	</div>
 	
   <div class="checkbox mb-4">
-    <label>
-      <%= session_form.check_box :remember_me %> Remember me
-      <%#= f.label :remember_me %>
-    </label>
+		<%= session_form.label :remember_me, class: "form-label" do %>
+      <%= session_form.check_box :remember_me %>
+		  Remember me
+    <% end %>
   </div>
 
 	<div class="actions center mb-3">

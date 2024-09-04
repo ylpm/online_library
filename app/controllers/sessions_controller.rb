@@ -6,7 +6,7 @@ class SessionsController < ApplicationController
   
   # before_action :redirect_unless_logged_in, only: ...
   
-  before_action -> { redirect_unless_logged_in(root_url, with_flash: false) }, only: [:update_status, :destroy] # :logout
+  before_action -> { redirect_unless_logged_in(root_url, with_flash: false) }, only: [:toggle_status, :destroy] # :logout
   
   def new
   end
@@ -28,8 +28,11 @@ class SessionsController < ApplicationController
     end
   end
   
-  def update_status
-    # (params[:session][:remember_me] == 1) ? remember_current_session : forget_current_session
+  def toggle_status
+    toggle_session_status
+    respond_to do |format|
+      format.turbo_stream
+    end
   end
   
   # def logout

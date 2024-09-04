@@ -22,6 +22,8 @@
 		<li class="dropdown-header emph-item"">Posts</li>
 		<li><%= link_to "New", "#", class: "dropdown-item"%></li>
     <li><hr class="dropdown-divider"></li>
+		<li class="dropdown-header emph-item">Current session</li>
+		<li id="remember_me" ><%= render 'sessions/toggle_status_form' %></li>
     <li><%= link_to "Logout", logout_path, class: "dropdown-item", data: {turbo_method: :delete} %><%#= link_to "Logout", logout_path, class: "dropdown-item" %></li>
   </ul>
 </div>

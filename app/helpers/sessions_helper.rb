@@ -21,6 +21,10 @@ module SessionsHelper
     delete_remember_cookies
   end
   
+  def toggle_session_status
+    current_session.remembered? ? forget_current_session : remember_current_session
+  end
+  
   def finish_current_session
     raise "No current session" if !logged_in?
     reset_session_tracking # unset cookies

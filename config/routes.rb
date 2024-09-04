@@ -7,9 +7,9 @@ Rails.application.routes.draw do
   get :about, to: 'static_pages#about' 
   
   get "/login", to: "sessions#new"
-  
   post "/login", to: "sessions#create"
-  
+  patch "/remember_me", to: "sessions#toggle_status"
+  patch "/forget_me", to: "sessions#toggle_status"
   delete "/logout", to: "sessions#destroy"   # usando delete no ocurre el redirect esperado cuando se hace un logout
                                              # y seguidamente se emite otro desde otra ventana del mismo navegador.
                                              # A causa de la peticion delete manejada por turbo_stream,
@@ -18,10 +18,8 @@ Rails.application.routes.draw do
                                              # Pero esto me cierra la sesion con solo pasar el mouse sobre el enlace logout
                                              # en el menu desplegable del usuario
   
-  # patch "toggle_session_status", to: "sessions#update_status"
-  
   get "/signup", to: "users#new"
-  
+    
   resources :users, param: :username, except: :index do
     member do
       get :settings
