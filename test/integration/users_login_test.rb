@@ -129,3 +129,37 @@ class ValidLoginTest < UserLoginTest
     assert flash.empty? # testing the custom call of redirect_unless_logged_in before destroy action
   end
 end
+
+class RememberMeTest < UserLoginTest
+
+  test "login with remembering" do
+    assert_difference 'Session.count', 1 do
+      login_as(@test_user, password: 'Abcde123*', remember_me: true)
+    end
+    assert is_logged_in?
+    assert assigns(:current_session).remembered?
+    assert_not cookies[:_rt].blank?
+    assert_equal cookies[:_rt], assigns(:current_session).remember_token
+    assert_difference 'Session.count', -1 do
+      delete logout_path
+    end
+    assert_not is_logged_in?
+    assert assigns(:current_session).nil?
+    assert cookies[:_rt].blank?
+  end
+
+  test "login without remembering" do
+    assert_difference 'Session.count', 1 do
+      login_as(@test_user, password: 'Abcde123*', remember_me: false)
+    end
+    assert is_logged_in?
+    assert_not assigns(:current_session).remembered?
+    assert cookies[:_rt].blank?
+    assert assigns(:current_session).remember_token.nil?
+    assert_difference 'Session.count', -1 do
+      delete logout_path
+    end
+    assert_not is_logged_in?
+    assert assigns(:current_session).nil?
+  end
+end
