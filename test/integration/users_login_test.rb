@@ -162,4 +162,22 @@ class RememberMeTest < UserLoginTest
     assert_not is_logged_in?
     assert assigns(:current_session).nil?
   end
+  
+  test "toggling user-menu remeber-me option" do
+    # login with remembering:
+    login_as(@test_user, password: 'Abcde123*', remember_me: true)
+    assert is_logged_in?
+    assert_redirected_to root_url
+    # verify that the remember-me checkbox in the user menu is CHECKED:
+    follow_redirect!
+    assert_template 'static_pages/home'
+    assert_select 'a[href=?]', forget_me_path
+    assert_select 'input#remember-me[type="checkbox"][checked]', true
+    # toggle the status of the remember-me checkbox in the user menu:
+    patch forget_me_path, xhr: true # xhr indica que la respuesta es con turbo stream
+    # verify that the remember-me checkbox in the user menu is NOT CHECKED:
+    assert_select 'a[href=?]', remember_me_path
+    assert_select 'input#remember-me[type="checkbox"][checked]', false
+    delete logout_path
+  end
 end

@@ -2,7 +2,7 @@
 
 <%= form_with model: current_session, url: toggle_session_status_path, method: :patch do |f| %>
 	<%= link_to toggle_session_status_path, class: "dropdown-item", data: {turbo_method: :patch} do %>
-	  <%= f.check_box :remember_me, checked: current_session.remembered? %>
+	  <%= f.check_box :remember_me, checked: current_session.remembered?, id: "remember-me" %>
 	  Remember me
 	<% end %>
 <% end %>
