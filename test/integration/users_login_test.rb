@@ -15,14 +15,15 @@ class InvalidLoginTest < UserLoginTest
   
   test "login with invalid information" do
     assert_no_difference "Session.count" do
-      post login_path, params: {session: {login: "invalid_username", password: ""}}
+      post login_path, params: {session: {login: "invalid_username", password: ""}}, 
+                          xhr: true # xhr indica que la respuesta es con turbo stream
     end
     check_status_after_failed_login
   end
   
   test "login with invalid password" do
     assert_no_difference "Session.count" do
-      post login_path, params: {session: {login: @test_user.username, password: "invalid"}}
+      post login_path, params: {session: {login: @test_user.username, password: "invalid"}}, xhr: true
     end
     check_status_after_failed_login
   end

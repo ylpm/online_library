@@ -6,18 +6,18 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_no_difference 'User.count' do
       post users_path, params: {user: {person:{first_name: '1',
+                                              middle_name: '123',
                                                 last_name: '',
+                                                 birthday: 5.years.from_now, # nacimiento en el futuro
                                             email_address: {address: 'foo@'}},
                                      username: '**',
                                      password: 'foo',
-                        password_confirmation: 'bar'}}
+                        password_confirmation: 'bar'}},
+                        xhr: true # xhr indica que la respuesta es con turbo stream
     end
     assert_not is_logged_in?
-    # REFACTORIZAR LO QUE SIGUE PARA QUE SE AJUSTE A TURBO-STREAM
-    # assert_response :unprocessable_entity
-    # assert_template 'users/new'
-    # assert_select 'div#error_count'
-    # assert_select 'div.alert', 'The form contains 6 errors'
+    assert_select 'div#error_count'
+    assert_select 'div.alert', 'The form contains 8 errors'
   end
   
   test "valid signup information" do
