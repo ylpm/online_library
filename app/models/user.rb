@@ -22,8 +22,10 @@ class User < ApplicationRecord
                          length: { minimum: 8,
                                  too_short: "allows 8 chars minimum"},
                          format: { with: VALID_PASSWORD_REGEXP, 
-                                message: "must have numbers, as well as uppercase, lowercase and special characters"}  
-  validates :password_confirmation, presence: true
+                                message: "must have numbers, as well as uppercase, lowercase and special characters"} ,
+                      allow_nil: true
+  # validates :password_confirmation, presence: true, 
+  #                                  allow_nil: true
 
 
   def User.custom_create(attrs = {})

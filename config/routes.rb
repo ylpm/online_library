@@ -19,10 +19,12 @@ Rails.application.routes.draw do
                                              # en el menu desplegable del usuario
   
   get "/signup", to: "users#new"
-    
-  resources :users, param: :username, except: :index do
+  post "/signup", to: "users#create"
+  resources :users, param: :username, only: [:show, :destroy] do # except: [:index, :new, :create, :edit, :update] do
     member do
       get :settings
+      patch :update
+      put :update
     end
   end
   

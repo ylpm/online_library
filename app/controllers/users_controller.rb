@@ -7,11 +7,13 @@ class UsersController < ApplicationController
   
   before_action :check_the_requested_user_exists, except: [:new, :create]
   
-  before_action :check_the_requested_user_is_the_current_user, only: [:settings, :destroy]
+  before_action :check_the_requested_user_is_the_current_user, only: [:settings, :update, :destroy]
       
   def new
-    @user = User.new(person: Person.new)
-    @email_address = @user.person.email_addresses.new
+    new_personable(User) do |new_user, new_email_address|
+      @user = new_user
+      @email_address = new_email_address
+    end
   end
   
   def show
@@ -19,7 +21,7 @@ class UsersController < ApplicationController
   end
     
   def create    
-    create_personable User, user_params do |new_user|
+    create_personable(User, user_params) do |new_user|
       @user = new_user
       @email_address = @user.person.email_addresses.first
       respond_to do |format|
@@ -38,13 +40,33 @@ class UsersController < ApplicationController
   end
   
   def settings
+    @user = current_user
+  end
+
+  def update
+    update_personable(current_user, user_params) do |updated_user, updated|
+      respond_to do |format|
+        if updated
+          format.html do
+            flash[:success] = "You have updated your settings successfully!"
+            redirect_to user_url(current_user.username), status: :see_other
+          end
+        else
+          @user = updated_user
+          format.turbo_stream
+          format.html {render :new, status: :unprocessable_entity}
+        end
+      end
+    end
+    
   end
   
   def destroy
-    current_user.destroy
-    log_out
-    flash[:success] = "Your account has been removed"
-    redirect_to root_path, status: :see_other
+    destroy_personable(current_user) do
+      terminate_current_session
+      flash[:success] = "Your account has been removed"
+      redirect_to root_path, status: :see_other
+    end
   end
   
   private
@@ -59,10 +81,10 @@ class UsersController < ApplicationController
       
   def user_params 
     params.require(:user).permit(
-      :username, 
+      :username,
       :password,
-      :password_confirmation) 
+      :password_confirmation)
   end
-    
+
   def person_params = params[:user][:person]
 end

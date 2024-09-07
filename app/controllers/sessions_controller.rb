@@ -37,9 +37,10 @@ class SessionsController < ApplicationController
   
   # def logout
   def destroy
-    finish_current_session
-    flash[:success] = "You have logged out successfully!"
-    redirect_to root_url, status: :see_other
+    terminate_current_session do
+      flash[:success] = "You have logged out successfully!"
+      redirect_to root_url, status: :see_other
+    end
   end
   
   private

@@ -12,7 +12,7 @@
 <% end %>
 
 <div class="row">
-<%= form_with model: user do |user_form| %>
+<%= form_with model: user, url: (user.persisted? ? user_path(user.username) : signup_path) do |user_form| %>
 		
   <%= user_form.fields_for :person, user.person do |person_form| %>
 			
@@ -43,25 +43,40 @@
 		<%= person_form.date_field :birthday, class: "form-control" %>	
 		</div>
 	</div>					
-			
+	
 	<%= render("two_error_messages", first: {field: :email,
 		                               error_message: errors[:emailaddress] ? errors[:emailaddress][:address] : nil},
 	                                second: {field: :username,
 																	 error_message: errors[:user] ? errors[:user][:username] : nil}
 						) if errors[:emailaddress] || errors[:user] %>
 	<div class="row pb-5">
-		<% if email_address %>
+		<%# if email_address %>
+		<div class="col">
+		<% if context == :signup %>
 		  <%= person_form.fields_for :email_address, email_address do |email_form| %>
-				<div class="col">
 				<%= email_form.label :email_address, class: "form-label" %>
 				<%= email_form.email_field :address, class: "form-control" %>	
-				</div>
+		  <% end %>
+		<% elsif context == :settings %>
+		  <div class="form-label">Email Addresses:</div>
+		  <% user.email_addresses.each do |email_address| %>
+		  <div>
+				<%= email_address.address %>
+				<% if !email_address.activated? %>
+				<%= link_to "Activate", "#", class: "form-links text-small" %>
+				<% end %>
+			</div>
 		  <% end %>
 		<% end %>
+	  </div>
   <% end %>
 		<div class="col">
 			<%= user_form.label :username, class: "form-label" %>
+			<% if context == :signup %>
 			<%= user_form.text_field :username, class: "form-control" %>
+			<% elsif context == :settings %>
+			<div><%= user.username %></div>
+			<% end %>
 		</div>
 	</div>
 			
@@ -82,7 +97,7 @@
 	</div>
 			
 	<div class="actions center p-3">
-		<%= user_form.submit context == :signup ? "Sign up" : "Update user", class: "w-50 btn btn-primary"  %>
+		<%= user_form.submit context == :signup ? "Sign up" : "Update settings", class: "w-50 btn btn-primary"  %>
   </div>
 			
 <% end %>

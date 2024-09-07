@@ -54,11 +54,12 @@ module SessionsHelper
     # current_session.remembered? ? forget_current_session : remember_current_session
   end
   
-  def finish_current_session
+  def terminate_current_session
     raise "No current session" unless logged_in?
-    reset_session_tracking
-    current_session.destroy
+    current_session.destroy if current_session.persisted?
     @current_user = @current_session = nil
+    reset_session_tracking
+    yield if block_given?
   end
     
   def current_user
