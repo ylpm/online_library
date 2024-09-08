@@ -60,11 +60,11 @@ module PersonableHandler
   private
   
   def check_personable_class(personable_class)
-    raise ArgumentError, "#{personable_class} (instance of #{personable_class.class}) is not a personable" unless personable_class.is_a?(Class) && personable_class.include?(Personable)
+    raise ArgumentError, "#{personable_class} (instance of #{personable_class.class}) is not a Prsonable" unless personable_class.is_a?(Class) && personable_class.include?(Personable)
   end
   
   def check_personable(personable)
-    raise ArgumentError, "#{personable} (instance of #{personable.class}) is not a personable" unless personable.class.include?(Personable)
+    raise ArgumentError, "#{personable} (instance of #{personable.class}) is not a Personable" unless personable.class.include?(Personable)
   end
   
 end

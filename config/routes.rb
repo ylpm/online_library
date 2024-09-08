@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   
   get "/signup", to: "users#new"
   post "/signup", to: "users#create"
-  resources :users, param: :username, only: [:show, :destroy] do # except: [:index, :new, :create, :edit, :update] do
+  resources :users, param: :username, only: [:index, :show, :destroy] do # except: [:index, :new, :create, :edit, :update] do
     member do
       get :settings
       patch :update

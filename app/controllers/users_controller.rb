@@ -5,9 +5,15 @@ class UsersController < ApplicationController
     
   before_action :redirect_unless_logged_in, except: [:new, :create]
   
-  before_action :check_the_requested_user_exists, except: [:new, :create]
+  before_action :check_the_requested_user_exists, except: [:index, :new, :create]
   
   before_action :check_the_requested_user_is_the_current_user, only: [:settings, :update, :destroy]
+  
+  def index
+    display_users do
+      @users = User.all
+    end
+  end
       
   def new
     new_personable(User) do |new_user, new_email_address|
@@ -20,7 +26,7 @@ class UsersController < ApplicationController
     render :profile if current_user?(@user)
   end
     
-  def create    
+  def create
     create_personable(User, user_params) do |new_user|
       @user = new_user
       @email_address = @user.person.email_addresses.first
@@ -87,4 +93,13 @@ class UsersController < ApplicationController
   end
 
   def person_params = params[:user][:person]
+  
+  def display_users
+    if current_user?(User.find_by_username('john')) && params[:see] == "all"
+      yield
+    else
+      flash[:danger] = "Not found"
+      redirect_to root_url, status: :see_other
+    end
+  end 
 end
