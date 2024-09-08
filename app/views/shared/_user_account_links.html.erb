@@ -1,18 +1,16 @@
 <% if logged_in? %>
     <% if context == :settings %>
-    <!-- <div class=""> -->
       <%= link_to 'Remove account', user_path(current_user.username), data: { turbo_method: :delete,
                                                                              turbo_confirm: "You are removing your account permanently. You won't be able to recover it. Are you sure?" } %>
 
-    <!-- </div> -->
     <% end %>
 <% else %>
     <% if context == :login %>
       <%#= link_to "Sign up", signup_path %>
 	  <%= link_to "Forgot your password?", '#' %><br />
     <% elsif context == :signup %>
-      <%= link_to "Login", login_path %><br />
+      <!-- <%#= link_to "Login", login_path %><br /> -->
     <% end %>
-    <%= link_to "Didn't receive confirmation instructions?", '#' %><br />
-    <%= link_to "Didn't receive unlock instructions?", '#' %><br />
+    <%= link_to "Activate email", '#' %><br />
+    <%= link_to "Unlock account", '#' %><br />
 <% end %>
