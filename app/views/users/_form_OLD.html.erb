@@ -1,0 +1,104 @@
+<% errors = errors_from models: [user, user.person, email_address] %>
+
+<div class="row">
+  <%= render 'shared/user_icon' %>
+	<svg class="bi d-block mx-auto mb-4" width="32" height="32"><use xlink:href="#people-circle"/></svg>
+</div>
+
+<% if errors.any? %>
+<div class="row">
+  <%= render "error_count_message", models: [user, user.person, email_address] %>
+</div>
+<% end %>
+
+<div class="row">
+<%= form_with model: user, url: (user.persisted? ? settings_user_path(user.username) : signup_path) do |user_form| %>
+		
+  <%= user_form.fields_for :person, user.person do |person_form| %>
+			
+	<%= render("two_error_messages", first: {field: :first_name,  error_message: errors[:person][:first_name]}, 
+			                            second: {field: :middle_name, error_message: errors[:person][:middle_name]}
+						) if errors[:person] %>
+	<div class="row pb-5">
+		<div class="col">
+		<%= person_form.label :first_name, class: "form-label" %>
+		<%= person_form.text_field :first_name, autofocus: true, class: "form-control" %>
+		</div>
+		<div class="col">
+		<%= person_form.label :middle_name, class: "form-label" %>
+		<%= person_form.text_field :middle_name, class: "form-control" %>
+		</div>
+	</div>
+			
+	<%= render("two_error_messages", first: {field: :last_name, error_message: errors[:person][:last_name]}, 
+			                            second: {field: :birthday,  error_message: errors[:person][:birthday]}
+						) if errors[:person] %>
+	<div class="row pb-5">
+		<div class="col">
+		<%= person_form.label :last_name, class: "form-label" %>
+		<%= person_form.text_field :last_name, class: "form-control" %>
+		</div>
+		<div class="col">
+		<%= person_form.label :birthday, class: "form-label" %>
+		<%= person_form.date_field :birthday, class: "form-control" %>	
+		</div>
+	</div>					
+	
+	<%= render("two_error_messages", first: {field: :email,
+		                               error_message: errors[:emailaddress] ? errors[:emailaddress][:address] : nil},
+	                                second: {field: :username,
+																	 error_message: errors[:user] ? errors[:user][:username] : nil}
+						) if errors[:emailaddress] || errors[:user] %>
+	<div class="row pb-5">
+		<%# if email_address %>
+		<div class="col">
+		<% if context == :signup %>
+		  <%= person_form.fields_for :email_address, email_address do |email_form| %>
+				<%= email_form.label :email_address, class: "form-label" %>
+				<%= email_form.email_field :address, class: "form-control" %>	
+		  <% end %>
+		<% elsif context == :settings %>
+		  <div class="form-label">Email Addresses:</div>
+		  <% user.email_addresses.each do |email_address| %>
+		  <div>
+				<%= email_address.address %>
+				<% if !email_address.activated? %>
+				<%= link_to "Activate", "#", class: "form-links text-small" %>
+				<% end %>
+			</div>
+		  <% end %>
+		<% end %>
+	  </div>
+  <% end %>
+		<div class="col">
+			<%= user_form.label :username, class: "form-label" %>
+			<% if context == :signup %>
+			<%= user_form.text_field :username, class: "form-control" %>
+			<% elsif context == :settings %>
+			<div><%= user.username %></div>
+			<% end %>
+		</div>
+	</div>
+	
+	<%= render("two_error_messages", first: {field: :password, 
+		                               error_message: errors[:user][:password]}, 
+	                                second: {field: :password_confirmation, 
+																	 error_message: errors[:user][:password_confirmation]}
+						) if errors[:user] %>
+	<div class="row pb-3">
+		<div class="col">
+		<%= user_form.label :password, class: "form-label" %>
+		<%= user_form.password_field :password, class: "form-control" %>
+		</div>
+		<div class="col">
+		<%= user_form.label :password_confirmation, class: "form-label" %>
+		<%= user_form.password_field :password_confirmation, class: "form-control" %>	
+		</div>
+	</div>
+			
+	<div class="actions center py-3">
+		<%= user_form.submit context == :signup ? "Sign up" : "Update settings", class: "w-50 btn btn-primary"  %>
+  </div>
+			
+<% end %>
+</div>

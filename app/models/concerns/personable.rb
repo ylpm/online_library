@@ -3,6 +3,7 @@ module Personable
 
   included do
     has_one :person, as: :personable, touch: true, dependent: :destroy
+    accepts_nested_attributes_for :person
   end
   
   class_methods do

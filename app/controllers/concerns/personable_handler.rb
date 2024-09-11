@@ -9,31 +9,26 @@ module PersonableHandler
     #...
   end
   
-  def new_personable(personable_class)
-    check_personable_class(personable_class)
-    personable = personable_class.new(person: Person.new)
-    email_address = personable.person.email_addresses.new
-    yield(personable, email_address) if block_given?
+  def new_personable(klass)
+    check_personable_class(klass)
+
+    personable = klass.new(person: Person.new)
+    
+    # personable.person.email_addresses.build if klass.equal?(User) # when a new personable is created and it is a User
+                                                                  # it is mandatory to associate an email address with him
+                                                                  # but it is better to do this in the users controller
+
+    return personable unless block_given?
+
+    yield personable
   end
   
-  def create_personable(personable_class, personable_params)
-    check_personable_class(personable_class)
+  def create_personable(klass, personable_params)
+    check_personable_class(klass)
     
-    valid = (personable = personable_class.new personable_params).valid?
-
-    valid &= (personable.person = Person.new first_name: person_params[:first_name],
-                                            middle_name: person_params[:middle_name],
-                                              last_name: person_params[:last_name],
-                                               birthday: person_params[:birthday],
-                                             personable: personable).valid?
+    personable = klass.create(personable_params)
     
-    valid &= personable.person.email_addresses.new(address: person_params[:email_address][:address]).valid?
-    
-    if valid
-      personable.save
-      personable.person.save
-      personable.person.email_addresses.first.save
-    end
+    return personable unless block_given?
 
     yield personable
   end
@@ -42,19 +37,16 @@ module PersonableHandler
     check_personable(personable)
  
     updated = personable.update(personable_params)
-
-    updated &= personable.person.update(first_name: person_params[:first_name],
-                                       middle_name: person_params[:middle_name],
-                                         last_name: person_params[:last_name],
-                                          birthday: person_params[:birthday])
     
-    yield(personable, updated)
+    return updated unless block_given?
+    
+    yield updated
   end
   
   def destroy_personable(personable)
     check_personable(personable)
     personable.destroy if personable.persisted?
-    yield personable if block_given?
+    yield if block_given?
   end
 
   private

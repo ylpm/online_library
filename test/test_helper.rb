@@ -37,9 +37,9 @@ module ActionDispatch
   class IntegrationTest
     
     def login_as(user, password: 'Abcde123*', email_address: nil, remember_me: false)
-      post login_path, params: {session: {login: email_address ? email_address : user.username,
-                                       password: password,
-                                    remember_me: remember_me ? '1' : '0'}}
+      post login_path, params: {login: {identifier: email_address ? email_address : user.username,
+                                          password: password,
+                                       remember_me: remember_me ? '1' : '0'}}
     end 
     
   end

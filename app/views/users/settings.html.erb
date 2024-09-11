@@ -1,14 +1,3 @@
 <% provide :title, 'Your settings' %>
 
-<div class="row">
-	<div class="mx-auto col-lg-7 bg-light rounded-3 p-5">
-	  <div id="user_form">
-	    <%= render "form", user: @user, email_address: @email_address, context: :settings %>
-	  </div>
-	  <br>
-	  <hr class="my-2">
-	  <div class="form-links text-small">
-	    <%= render 'shared/user_account_links', context: :settings %>
-	  </div>
-    </div>
-</div>
+<%= render 'user_form' %>

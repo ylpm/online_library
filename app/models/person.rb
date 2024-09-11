@@ -3,6 +3,7 @@ class Person < ApplicationRecord
   delegated_type :personable, types: %w[User Author], dependent: :destroy
   
   has_many :email_addresses, inverse_of: :owner, dependent: :destroy
+  accepts_nested_attributes_for :email_addresses
   
   VALID_FIRST_NAME_REGEXP = /\A[a-z]{3,50}\Z/i.freeze # solo letras
   validates :first_name, presence: true,

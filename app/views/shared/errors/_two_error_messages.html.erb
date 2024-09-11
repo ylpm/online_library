@@ -1,0 +1,10 @@
+<% unless first[:error_message].blank? && second[:error_message].blank? %>	
+<div class="d-flex flex-wrap mb-3">
+	<div class="flex-fill me-2 mb-3">
+	<%= render "shared/errors/field_error_message", field: first[:field], error_message: first[:error_message] %>
+	<div>
+	<div class="flex-fill me-2">
+	<%= render "shared/errors/field_error_message", field: second[:field], error_message: second[:error_message] %>
+  </div>
+</div>
+<% end %>

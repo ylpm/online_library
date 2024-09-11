@@ -1,0 +1,5 @@
+<% unless error_message.blank? %>
+<!-- <div class="alert alert-danger"> -->
+  <%= "#{field.to_s.gsub('_',' ').capitalize} #{error_message}" %>    
+<!-- </div> -->
+<% end %>

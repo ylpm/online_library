@@ -1,9 +1,9 @@
-<%= render 'shared/user_icon' %>
-<div class="dropdown text-end">
+<%= tag.div class:"dropdown text-end" do %>
   <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-		<svg class="rounded-circle" width="32" height="32"><use xlink:href="#people-circle"/></svg>
+		<%= render 'shared/user_icon', css_class:"rounded-circle" %>
   </a>
-  <ul class="dropdown-menu text-small">
+	
+  <%= tag.ul class:"dropdown-menu text-small" do %>
 		<li class="dropdown-header">
 			<div class="d-flex gap-2">
 			  <svg class="rounded-circle" width="40" height="40"><use xlink:href="#people-circle"/></svg>
@@ -14,7 +14,7 @@
 		  </div>
 			<%= link_to "View your profile", user_path(current_user.username), class: "btn btn-sm btn-outline-primary mt-2 w-100 rounded-5" %>
 		</li>
-		<li><%= link_to "Set status", "#", class: "dropdown-item"%><%#= link_to "Set status", status_path, class: "dropdown-item", data: {turbo_method: :post} %></li>
+		<li><%= link_to "Set status", "#", class: "dropdown-item"%></li>
 		<li><hr class="dropdown-divider"></li>
 		<li class="dropdown-header emph-item"">Account</li>
 		<li><%= link_to "Settings", settings_user_path(current_user.username), class: "dropdown-item"%></li>
@@ -24,6 +24,7 @@
     <li><hr class="dropdown-divider"></li>
 		<li class="dropdown-header emph-item">Current session</li>
 		<li id="remember_me" ><%= render 'sessions/toggle_status_form' %></li>
-    <li><%= link_to "Logout", logout_path, class: "dropdown-item", data: {turbo_method: :delete} %><%#= link_to "Logout", logout_path, class: "dropdown-item" %></li>
-  </ul>
-</div>
+    <li><%= link_to "Logout", logout_path, class: "dropdown-item", data: {turbo_method: :delete} %></li>
+  <% end %>
+	
+<% end %>

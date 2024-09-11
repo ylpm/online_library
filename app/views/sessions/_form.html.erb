@@ -1,40 +1,28 @@
-<div class="row">
-  <%#= image_tag "login_icon" %>
-	<%= render 'shared/user_icon' %>
-	<svg class="bi d-block mx-auto mb-4" width="32" height="32"><use xlink:href="#people-circle"/></svg>
-</div>
+<%= render 'shared/user_icon', css_class:"bi d-block mx-auto mb-4 rounded-circle" %>
 
-<%= form_with url: login_path , scope: :session do |session_form| %>
-  <% if defined? login_error %>
-	<div class="row mb-3">
-		<div class="col">
-		<%= render 'login_error_message', login_error_message: login_error %>
-		</div>	
-  </div>
-	<% end %>
+<%= render 'shared/errors/error_message', error_message: @login_error_message %>
 
-	<div class="row mb-3">
-		<div class="col">
-		<%= session_form.label :login, class: "form-label" %>
-		<%= session_form.text_field :login, class: "form-control", placeholder: "username or email" %>
-	  </div>
+<%= form_with url: login_path , scope: :login do |session_form| %>
+	<div class="d-flex flex-wrap">
+		<div class="mb-3 w-100">
+			<%= session_form.label :login, class: "form-label" %>
+			<%= session_form.text_field :identifier, class: "form-control", placeholder: "username or email", value: @login_identifier, required: true %>
+		</div>
+
+		<div class="mb-3 w-100">
+			<%= session_form.label :password, class: "form-label" %>
+			<%= session_form.password_field :password, class: "form-control", required: true %>
+		</div>
 	</div>
 
-	<div class="row mb-3">
-		<div class="col">
-		<%= session_form.label :password, class: "form-label" %>
-		<%= session_form.password_field :password, class: "form-control" %>
-	  </div>
-	</div>
-	
   <div class="checkbox mb-4">
 		<%= session_form.label :remember_me, class: "form-label" do %>
-      <%= session_form.check_box :remember_me %>
+      <%= session_form.check_box :remember_me, checked: @remember_me %>
 		  Remember me
     <% end %>
   </div>
 
 	<div class="actions center mb-5">
-	<%= session_form.submit "Login", class: "btn btn-primary w-50" %>
+	<%= session_form.submit "Login", class: "btn btn-primary w-100" %>
 	</div>
 <% end %>

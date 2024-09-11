@@ -1,17 +1,3 @@
-<%= provide :title, "Sign up" %>
+<% provide :title, 'Sign up' %>
 
-<div class="row">
-	<div class="mx-auto col-lg-7 bg-light rounded-3 p-5">
-		<div id="user_form">
-		  <%= render "form", user: @user, email_address: @email_address, context: :signup %>
-	  </div>
-	  <!-- <br /> -->
-		<hr class="">
-		<div class="form-links text-small">
-	    <%= render 'shared/user_account_links', context: :signup %>
-	  </div>
-	</div>
-</div>
-
-
-
+<%= render 'user_form' %>

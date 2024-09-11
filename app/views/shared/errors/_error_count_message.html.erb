@@ -1,0 +1,9 @@
+<% models.delete_if { |model| model.nil? || !model.class.ancestors.include?(ApplicationRecord) || model.errors.empty? } %>
+
+<% if (count = models.map{|model| model.errors.messages.count}.sum) > 0 %>
+<div id="error_count">
+  <div class="alert alert-danger text-small">
+    The form contains <%= pluralize(count, "error") %>
+  </div>
+</div>
+<% end %>

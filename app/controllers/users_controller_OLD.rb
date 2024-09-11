@@ -16,10 +16,9 @@ class UsersController < ApplicationController
   end
 
   def new
-    new_personable(User) do |new_user|
+    new_personable(User) do |new_user, new_email_address|
       @user = new_user
-      @user.person.email_addresses.build # 2.times { @user.person.email_addresses.build }
-      render :user_form
+      @email_address = new_email_address
     end
   end
 
@@ -30,6 +29,7 @@ class UsersController < ApplicationController
   def create
     create_personable(User, user_params) do |new_user|
       @user = new_user
+      @email_address = @user.person.email_addresses.first
       respond_to do |format|
         if @user.persisted?
           new_session_for @user
@@ -39,7 +39,7 @@ class UsersController < ApplicationController
           end
         else
           format.turbo_stream
-          format.html {render :user_form, status: :unprocessable_entity}
+          format.html {render :new, status: :unprocessable_entity}
         end
       end                               
     end
@@ -47,21 +47,20 @@ class UsersController < ApplicationController
 
   def settings
     @user = current_user
-    render :user_form
   end
 
   def update
-    update_personable(current_user, user_params) do |success|
+    update_personable(current_user, user_params) do |updated_user, updated|
       respond_to do |format|
-        if success
+        if updated
           format.html do
             flash[:success] = "You have updated your settings successfully!"
             redirect_to user_url(current_user.username), status: :see_other
           end
         else
-          @user = current_user
+          @user = updated_user
           format.turbo_stream
-          format.html {render :user_form, status: :unprocessable_entity}
+          format.html {render :new, status: :unprocessable_entity}
         end
       end
     end
@@ -90,15 +89,7 @@ class UsersController < ApplicationController
     params.require(:user).permit(
       :username,
       :password,
-      :password_confirmation,
-      person_attributes: [:first_name,
-                          :middle_name,
-                          :last_name,
-                          :birthday,
-                          :id,
-                          email_addresses_attributes: [:address]
-                         ]
-      )
+      :password_confirmation)
   end
 
   def person_params = params[:user][:person]
