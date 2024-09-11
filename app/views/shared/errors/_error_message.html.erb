@@ -1,5 +1,5 @@
 <% unless error_message.blank? %>
-<div class="text-small"> <!-- alert alert-danger => pasado al form -->
-  <%= error_message.capitalize %>
-</div>
+	<%= tag.div class: "#{ defined?(css_class) ? css_class : 'alert alert-danger text-small' }" do %> <!-- alert alert-danger => pasado al form -->
+	  <%= error_message.capitalize %>
+	<% end %>
 <% end %>
