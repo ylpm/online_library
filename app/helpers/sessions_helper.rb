@@ -123,7 +123,7 @@ module SessionsHelper
   def start_session_tracking
     reset_session
     session[:_sid] = @current_session.id # current_session.id
-    set_remember_cookies
+    set_remember_cookies if current_session.remembered?
   end
   
   def set_remember_cookies
