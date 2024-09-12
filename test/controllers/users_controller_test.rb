@@ -18,6 +18,18 @@ class UsersControllerUnloggedAccessTest < UsersControllerTest
     check_redirection_to_login_page
   end
   
+  test "should redirect from credentials action when not logged in" do
+    get credentials_path
+    assert_response :see_other
+    assert_redirected_to root_url
+  end
+  
+  test "should redirect from authenticate action when not logged in" do
+    post authenticate_path
+    assert_response :see_other
+    assert_redirected_to root_url
+  end
+  
   test "should redirect from destroy action when not logged in" do
     delete user_path(@test_user.username)
     check_redirection_to_login_page

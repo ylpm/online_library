@@ -9,6 +9,7 @@ module SessionsHelper
     @current_session = @current_user.sessions.create!(email_address: email_address)
     @current_session.remember if persistent
     start_session_tracking # set necessary cookies
+    confirm_authenticity
   end
   
   def current_session
@@ -71,6 +72,16 @@ module SessionsHelper
     raise ArgumentError, "Argument must be an instance of User" unless user.instance_of? User
     user == current_user
   end
+  
+  def confirm_authenticity
+    cookies.delete(:_auth)
+    cookies[:_auth] = { value:   true,
+                        expires: 5.minutes.from_now.utc }
+  end
+
+  def authenticity_confirmed?
+    cookies[:_auth]
+  end
 
   # ******************************************
   # Pasar esto para otro modulo mas apropiado:
@@ -101,6 +112,10 @@ module SessionsHelper
     # params[:controller].match?('sessions') && params[:action].match?(/new|create/)
   end
   
+  def access_settings?
+    request.original_url.match?(settings_user_url(current_user))
+  end
+  
   # ******************************************
   
   private
@@ -114,9 +129,9 @@ module SessionsHelper
   def set_remember_cookies
     # SET PERMANENT COOKIES.                                   # cookies.permanent method is equivalent to:
     cookies.permanent.encrypted[:_sid] = @current_session.id   # cookies.encrypted[:_sid] = {value: current_session.id, 
-                                                               #                           expires: 20.years.from_now.utc}
+                                                               #                           expires: 6.months.from_now.utc}
     cookies.permanent[:_rt] = @current_session.remember_token  # cookies[:_rt] = {value: current_session.remember_token, 
-                                                               #                expires: 20.years.from_now.utc}
+                                                               #                expires: 6.months.from_now.utc}
   end
   
   def reset_session_tracking

@@ -3,11 +3,19 @@ class UsersController < ApplicationController
 
   before_action :redirect_if_logged_in, only: [:new, :create]
   
-  before_action :redirect_unless_logged_in, except: [:new, :create]
+  before_action :redirect_unless_logged_in, except: [:index, :new, :create, :credentials, :authenticate]
+  
+  before_action -> { redirect_unless_logged_in(root_url, with_flash: false) }, only: [:index, :credentials, :authenticate]
+  
+  before_action only: :credentials do
+    redirect_unless(root_url, with_flash: false) { !authenticity_confirmed? }
+  end
 
-  before_action :check_the_requested_user_exists, except: [:index, :new, :create]
+  before_action :check_the_requested_user_exists, except: [:index, :new, :create, :credentials, :authenticate]
 
   before_action :check_the_requested_user_is_the_current_user, only: [:settings, :update, :destroy]
+  
+  before_action :check_authenticity, only: [:settings, :update, :destroy]
 
   def index
     display_users do
@@ -44,14 +52,35 @@ class UsersController < ApplicationController
       end                               
     end
   end
+  
+  def credentials
+  end
+  
+  def authenticate
+    respond_to do |format|
+      if current_user.authenticate(params[:credentials][:password])
+        format.html do
+          confirm_authenticity
+          redirect_to(settings_user_url(current_user.username), status: :see_other) and return
+        end
+      else
+        # @credentials_error_message = 'Wrong password'
+        # format.turbo_stream
+        flash.now[:danger] = 'Wrong password'
+        format.html {render :credentials, status: :unprocessable_entity}
+      end
+    end
+  end
 
   def settings
     @user = current_user
+    confirm_authenticity
     render :user_form
   end
 
   def update
     update_personable(current_user, user_params) do |success|
+      confirm_authenticity
       respond_to do |format|
         if success
           format.html do

@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   
   get "/signup", to: "users#new"
   post "/signup", to: "users#create"
+  get "/credentials", to: "users#credentials"
+  post "/authenticate", to: "users#authenticate"
   resources :users, param: :username, only: [:index, :show, :destroy] do # except: [:new, :create, :edit] do
     member do
       get :settings

@@ -12,4 +12,8 @@ class ApplicationController < ActionController::Base
       reset_requested_url
     end
   end
+  
+  def check_authenticity
+    redirect_unless(credentials_url, with_flash: false) { authenticity_confirmed? }
+  end
 end
