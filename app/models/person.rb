@@ -5,10 +5,16 @@ class Person < ApplicationRecord
   has_many :email_addresses, inverse_of: :owner, dependent: :destroy
   accepts_nested_attributes_for :email_addresses
   
+  enum gender: {
+      Not_Specified: "Not Specified",
+      Man: "Man",
+      Woman: "Woman"
+    }
+  
   VALID_FIRST_NAME_REGEXP = /\A[a-z]{3,50}\Z/i.freeze # solo letras
   validates :first_name, presence: true,
                            length: {minimum: 3, maximum: 50,
-                                  too_short: "allows 3 chars minimum", 
+                                  too_short: "allows 3 chars minimum",
                                    too_long: "allows 50 chars maximum"},
                            format: {with: VALID_FIRST_NAME_REGEXP, 
                                  message: "only allows letters" }

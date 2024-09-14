@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_02_180636) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_13_192922) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -35,6 +35,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_02_180636) do
     t.datetime "updated_at", null: false
     t.string "personable_type", null: false
     t.integer "personable_id", null: false
+    t.string "gender", default: "Not Specified", null: false
     t.index ["personable_type", "personable_id"], name: "index_people_on_personable_type_and_personable_id", unique: true
   end
 

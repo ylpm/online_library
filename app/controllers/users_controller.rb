@@ -124,6 +124,7 @@ class UsersController < ApplicationController
                           :middle_name,
                           :last_name,
                           :birthday,
+                          :gender,
                           :id,
                           email_addresses_attributes: [:address]
                          ]
