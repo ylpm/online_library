@@ -96,14 +96,14 @@
 			  
 				  <%= person_form.label :gender, class: "form-label" %>
 			  
-				  <% if @user.person.gender.match?("Not_Specified") %>
-					  <%= tag.div class: "flex-fill me-2 mb-3" do %>
-					    <%= person_form.select :gender, Person.genders.values, class: "form-control" %>
+				  <% if @user.gender? %>
+					  <%= tag.div do %>
+						  <strong><%= @user.gender %></strong>
 						<% end %>
 					<% else %>
-					  <%= tag.div do %>
-						  <strong><%= @user.person.gender %></strong>
-						<% end %>
+					  <%= tag.div class: "flex-fill me-2 mb-3" do %>
+					    <%= person_form.select :gender, Person.genders.values, class: "form-control" %>
+						<% end %> 
 					<% end %>
 					
 				<% end %>

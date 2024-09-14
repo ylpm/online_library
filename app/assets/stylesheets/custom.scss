@@ -31,6 +31,13 @@ $dark-gray: rgb(24, 23, 23);
   outline: 0;
 }
 
+/* lo mismo anterior
+// no pone el borde al hacer click en el dropdown menu
+.dropdown-toggle {
+  outline: 0;
+}
+*/
+
 .emph-item {
   color: black;
   font-weight: bold;

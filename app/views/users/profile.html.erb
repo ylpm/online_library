@@ -19,6 +19,14 @@
 				  </div>
 				</div>
 				
+				<% if current_user.gender? %>
+				<div class="row">
+					<div class="col">
+			      <strong>Gender: </strong><%= current_user.gender %>
+				  </div>
+				</div>
+				<% end %>
+				
 				<% if current_user.birthday %>
 				<div class="row">
 					<div class="col">

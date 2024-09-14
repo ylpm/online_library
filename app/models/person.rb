@@ -10,6 +10,8 @@ class Person < ApplicationRecord
       Man: "Man",
       Woman: "Woman"
     }
+    
+  def gender? = (self.gender.match?("Man") || self.gender.match?("Woman"))
   
   VALID_FIRST_NAME_REGEXP = /\A[a-z]{3,50}\Z/i.freeze # solo letras
   validates :first_name, presence: true,

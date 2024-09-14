@@ -16,6 +16,10 @@ module Personable
   def last_name = self.person.last_name
     
   def full_name = self.person.full_name
+    
+  def gender = self.person.gender
+    
+  def gender? = self.person.gender?
   
   def birthday = self.person.birthday
   
