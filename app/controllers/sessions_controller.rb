@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
   
   # before_action :redirect_unless_logged_in, only: ...
   
-  before_action -> { redirect_unless_logged_in(root_url, with_flash: false) }, only: [:toggle_status, :destroy]
+  before_action -> { redirect_unless_logged_in(root_url) }, only: [:toggle_status, :destroy]
   
   def new
   end

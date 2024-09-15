@@ -1,11 +1,11 @@
 module RedirectableHandler
   extend ActiveSupport::Concern
   
-  def redirect_unless(url = root_url, status: :see_other, with_flash: true , flash_message: "Access denied", flash_type: :danger)
+  def redirect_unless(url, status: :see_other, with_flash: {message: nil, type: nil})
     if block_given?
       unless yield
-        flash[flash_type] = flash_message if with_flash
-        store_requested_url if url.match?(login_url)
+        flash[with_flash[:type]] = with_flash[:message] if with_flash[:message] && with_flash[:type]
+        # store_requested_url if url.match?(login_url)
         redirect_to(url, status: status) and return
       end
     end

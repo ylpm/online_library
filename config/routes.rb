@@ -4,7 +4,20 @@ Rails.application.routes.draw do
   
   # get :help, to: 'static_pages#help'
   
-  get :about, to: 'static_pages#about' 
+  get :about, to: 'static_pages#about'
+  
+  resource :user, as: :me, path: :me, only: :nil do
+    member do
+      get '/', action: :profile, as: :profile
+      get :credential
+      post :credential, to: "users#authenticate"
+      get :setting
+      patch :setting, to: "users#update"
+      delete '/', to: "users#destroy", as: :remove
+    end
+  end
+  resolve('User') { [:user] }
+  
   
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
@@ -20,15 +33,8 @@ Rails.application.routes.draw do
   
   get "/signup", to: "users#new"
   post "/signup", to: "users#create"
-  get "/credentials", to: "users#credentials"
-  post "/authenticate", to: "users#authenticate"
-  resources :users, param: :username, only: [:index, :show, :destroy] do # except: [:new, :create, :edit] do
-    member do
-      get :settings
-      patch :settings, to: "users#update"
-      put :settings, to: "users#update"
-    end
-  end
+
+  resources :users, param: :username, only: [:index, :show]
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   

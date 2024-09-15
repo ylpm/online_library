@@ -2,7 +2,7 @@
 
 <%#= render 'shared/errors/error_count_message', models: [@user] %>
 
-<%= form_with model: @user, url: (@user.persisted? ? settings_user_path(@user.username) : signup_path) do |user_form| %>
+<%= form_with model: @user, url: (@user.persisted? ? setting_me_path : signup_path) do |user_form| %>
 
   <%= user_form.fields_for :person do |person_form| %>
 

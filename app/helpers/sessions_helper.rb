@@ -88,11 +88,20 @@ module SessionsHelper
   # ******************************************
   
   def redirect_if_logged_in
-    redirect_unless(with_flash: false) { !logged_in? }
+    redirect_unless(root_url) { !logged_in? }
   end
 
-  def redirect_unless_logged_in(url = login_url, with_flash: true, flash_message: "Please, log in", flash_type: :info)
-    redirect_unless(url, with_flash: with_flash, flash_message: flash_message, flash_type: flash_type) { logged_in? }
+  def redirect_unless_logged_in(url, with_flash: {message: nil, type: nil})
+    redirect_unless(url, with_flash: {message: with_flash[:message], type: with_flash[:type]}) { logged_in? }
+  end
+  
+  def do_friendly_forwarding_unless(url, with_flash: {message: nil, type: nil})
+    if block_given?
+      unless yield
+        store_requested_url
+        redirect_unless(url, with_flash: {message: with_flash[:message], type: with_flash[:type]}) { false }
+      end
+    end
   end
   
   def store_requested_url
@@ -110,6 +119,10 @@ module SessionsHelper
   def doing_login?
     request.original_url.match?(login_url)
     # params[:controller].match?('sessions') && params[:action].match?(/new|create/)
+  end
+  
+  def doing_credential_me?
+    request.original_url.match?(credential_me_url)
   end
   
   def access_settings?

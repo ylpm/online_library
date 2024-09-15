@@ -12,19 +12,19 @@
 					<%= current_user.full_name %>
 				</div>
 		  </div>
-			<%= link_to "View your profile", user_path(current_user.username), class: "btn btn-sm btn-outline-primary mt-2 w-100 rounded-5" %>
+			<%= link_to "View your profile", profile_me_path, class: "btn btn-sm btn-outline-primary mt-2 w-100 rounded-5" %>
 		</li>
 		<li><%= link_to "Set status", "#", class: "dropdown-item"%></li>
 		<li><hr class="dropdown-divider"></li>
 		<li class="dropdown-header emph-item"">Account</li>
-		<li><%= link_to "Settings", settings_user_path(current_user.username), class: "dropdown-item"%></li>
+		<li><%= link_to "Settings", setting_me_path, class: "dropdown-item"%></li>
 		<li><hr class="dropdown-divider"></li>
 		<li class="dropdown-header emph-item"">Posts</li>
 		<li><%= link_to "New", "#", class: "dropdown-item"%></li>
     <li><hr class="dropdown-divider"></li>
 		<li class="dropdown-header emph-item">Current session</li>
 		<li id="remember_me" ><%= render 'sessions/toggle_status_form' %></li>
-    <li><%= link_to "Logout", logout_path, class: "dropdown-item", data: {turbo_method: :delete} %></li>
+    <li><%= link_to "Log out", logout_path, class: "dropdown-item", data: {turbo_method: :delete} %></li>
   <% end %>
 	
 <% end %>

@@ -3,19 +3,23 @@ class UsersController < ApplicationController
 
   before_action :redirect_if_logged_in, only: [:new, :create]
   
-  before_action :redirect_unless_logged_in, except: [:index, :new, :create, :credentials, :authenticate]
+  before_action -> { redirect_unless_logged_in(root_url) }, only: [:index, :credential, :authenticate]
   
-  before_action -> { redirect_unless_logged_in(root_url, with_flash: false) }, only: [:index, :credentials, :authenticate]
-  
-  before_action only: :credentials do
-    redirect_unless(root_url, with_flash: false) { !authenticity_confirmed? }
+  before_action only: :credential do
+    (redirect_to root_url and return) if authenticity_confirmed?
   end
 
-  before_action :check_the_requested_user_exists, except: [:index, :new, :create, :credentials, :authenticate]
-
-  before_action :check_the_requested_user_is_the_current_user, only: [:settings, :update, :destroy]
+  before_action only: [:show, :profile, :setting, :update, :destroy] do
+    do_friendly_forwarding_unless(login_url, with_flash: {message: "Please, log in?", type: :info}) { logged_in? }
+  end
   
-  before_action :check_authenticity, only: [:settings, :update, :destroy]
+  before_action only: [:setting, :update, :destroy] do
+    do_friendly_forwarding_unless(credential_me_url) { authenticity_confirmed? }
+  end
+  
+  # before_action :redirect_unless_authenticity_confirmed, only: [:setting, :update, :destroy]
+
+  before_action :check_the_requested_user_exists, only: :show  
 
   def index
     display_users do
@@ -33,6 +37,9 @@ class UsersController < ApplicationController
 
   def show
     render :profile if current_user?(@user)
+  end
+  
+  def profile
   end
 
   def create
@@ -53,28 +60,29 @@ class UsersController < ApplicationController
     end
   end
   
-  def credentials
+  def credential
   end
   
   def authenticate
     respond_to do |format|
-      if current_user.authenticate(params[:credentials][:password])
+      if current_user.authenticate(params[:credential][:password])
         format.html do
           confirm_authenticity
-          redirect_to(settings_user_url(current_user.username), status: :see_other) and return
+          redirect_to(requested_url, status: :see_other) and return
+          # redirect_to(setting_me_url, status: :see_other) and return
         end
       else
         # @credentials_error_message = 'Wrong password'
         # format.turbo_stream
         flash.now[:danger] = 'Wrong password'
-        format.html {render :credentials, status: :unprocessable_entity}
+        format.html {render :credential, status: :unprocessable_entity}
       end
     end
   end
 
-  def settings
+  def setting
     @user = current_user
-    confirm_authenticity
+    # confirm_authenticity
     render :user_form
   end
 
@@ -85,7 +93,8 @@ class UsersController < ApplicationController
         if success
           format.html do
             flash[:success] = "You have updated your settings successfully!"
-            redirect_to user_url(current_user.username), status: :see_other
+            redirect_to profile_me_url, status: :see_other
+            # redirect_to user_url(current_user.username), status: :see_other
           end
         else
           @user = current_user
@@ -108,11 +117,11 @@ class UsersController < ApplicationController
   private
 
   def check_the_requested_user_exists
-    redirect_unless(flash_message: "User not found") { @user = User.find_by_username(params[:user_username] || params[:username]) }
+    redirect_unless(root_url, with_flash: {message: "User not found", type: :danger}) { @user = User.find_by_username(params[:user_username] || params[:username]) }
   end
 
   def check_the_requested_user_is_the_current_user
-    redirect_unless(with_flash: false) { current_user?(@user) }
+    redirect_unless(root_url) { current_user?(@user) }
   end
     
   def user_params
@@ -135,6 +144,7 @@ class UsersController < ApplicationController
 
   def display_users
     if current_user?(User.find_by_username('john')) && params[:see] == "all"
+      do_friendly_forwarding_unless(credential_me_url){ authenticity_confirmed? }
       yield
     else
       flash[:danger] = "Not found"

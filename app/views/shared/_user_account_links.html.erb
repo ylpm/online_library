@@ -1,7 +1,7 @@
 <% if logged_in? %>
     <% if context == :settings %>
-      <%= link_to 'Remove account', user_path(current_user.username), data: { turbo_method: :delete,
-                                                                             turbo_confirm: "You are removing your account permanently. You won't be able to recover it. Are you sure?" } %>
+      <%= link_to 'Remove my account', remove_me_path, data: { turbo_method: :delete,
+                                                              turbo_confirm: "You are removing your account permanently. You won't be able to recover it. Are you sure?" } %>
 
     <% end %>
 <% else %>
