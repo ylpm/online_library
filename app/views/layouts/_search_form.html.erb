@@ -1,3 +1,7 @@
-<form class="col col-lg-auto me-lg-3" role="search">
+<%= form_with url: "#", method: :get, scope: :search, class: "col col-lg-auto me-lg-3", role: "search" do |search_form| %>
+  <%= search_form.search_field :key, class: "form-control", placeholder: "Search...(under construction)" %>
+<% end %>
+
+<!-- <form class="col col-lg-auto me-lg-3" role="search">
   <input type="search" class="form-control" placeholder="Search...(under construction)" aria-label="Search">
-</form>
+</form> -->

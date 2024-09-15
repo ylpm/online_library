@@ -10,10 +10,8 @@
 		
 			<%= tag.div class: "flex-fill me-2 mb-3" do %>	
 					
-				<%= person_form.label :first_name, class: "form-label" do %>
-				  First name*
-				<% end %>
-			
+				<%= person_form.label :first_name, "First name*", class: "form-label" %>
+						
 			  <% if @user.person.errors.messages[:first_name].any? %>
 				  <%= tag.div class: "alert alert-danger" do %>
 					  <%= render 'shared/errors/error_message', error_message: @user.person.errors.messages[:first_name].first %>
@@ -51,9 +49,7 @@
 		
 			<%= tag.div class: "flex-fill me-2 mb-3" do %>	
 			
-				<%= person_form.label :last_name, class: "form-label" do %>
-				  Last name*
-				<% end %>
+				<%= person_form.label :last_name, "Last name*", class: "form-label" %>
 			
 			  <% if @user.person.errors.messages[:last_name].any? %>
 				  <%= tag.div class: "alert alert-danger" do %>
@@ -111,13 +107,19 @@
 			<% end %>
 		
 			<%= tag.div class: "flex-fill me-2 mb-3" do %>
+	
+				<% if @user.persisted? %>
+				
+				  <%= user_form.label :username, "Username", class: "form-label" %>
+					
+				  <%= tag.div do %>
+					  <strong><%= @user.username %></strong>
+					<% end %>
 
-			  <%= user_form.label :username, class: "form-label" do %>
-				  Username<%= "*" unless @user.persisted? %>
-				<% end %>
-	
-				<% unless @user.persisted? %>
-	
+				<% else %>
+
+				  <%= user_form.label :username, "Username*", class: "form-label" %>
+
 			 	  <% if @user.errors.messages[:username].any? %>
 			 		  <%= tag.div class: "alert alert-danger" do %>
 			 			  <%= render 'shared/errors/error_message', error_message: @user.errors.messages[:username].first %>
@@ -126,35 +128,12 @@
 			 		<% else %>
 			 		  <%= user_form.text_field :username, class: "form-control", required: true %>
 			 		<% end %>
-	
-				<% else %>
-				  <%= tag.div do %>
-					  <strong><%= @user.username %></strong>
-					<% end %>
+
 				<% end %>
 	
 			<% end %>
 
-			<% unless @user.persisted? %>
-			
-				<%= person_form.fields_for :email_addresses do |email_form| %>
-					<%= tag.div class: "flex-fill me-2 mb-3" do %>
-					  <%= email_form.label :email_address, class: "form-label" do %>
-						  Email address*
-						<% end %>
-					
-					  <% if email_form.object.errors.messages[:address].any? %>
-						  <%= tag.div class: "alert alert-danger" do %>
-							  <%= render 'shared/errors/error_message', error_message: email_form.object.errors.messages[:address].first %>
-								<%= email_form.email_field :address, class: "form-control", required: true %>
-							<% end %>
-						<% else %>
-						  <%= email_form.email_field :address, class: "form-control", required: true %>
-						<% end %>				
-					<% end %>
-				<% end %>
-				
-			<% else %>
+			<% if @user.persisted? %>
 			
 			  <%= tag.div class: "flex-fill me-2 mb-3" do %>
 				  
@@ -172,19 +151,49 @@
 				  <% end %>
 					
 				<% end %>
-				
+
+			<% else %>
+
+				<%= person_form.fields_for :email_addresses do |email_form| %>
+					<%= tag.div class: "flex-fill me-2 mb-3" do %>
+					  <%= email_form.label :email_address, class: "form-label" do %>
+						  Email address*
+						<% end %>
+
+					  <% if email_form.object.errors.messages[:address].any? %>
+						  <%= tag.div class: "alert alert-danger" do %>
+							  <%= render 'shared/errors/error_message', error_message: email_form.object.errors.messages[:address].first %>
+								<%= email_form.email_field :address, class: "form-control", required: true %>
+							<% end %>
+						<% else %>
+						  <%= email_form.email_field :address, class: "form-control", required: true %>
+						<% end %>				
+					<% end %>
+				<% end %>
+
 		  <% end %>	
 
 		<% end %>
 			
   <% end %> <!-- end of: user_form.fields_for :person ... -->
+	
+	
+  <% if @user.persisted? %>
+	  
+		<%= tag.div class: "d-flex flex-wrap mt-5 mb-3" do %>
+		 <strong>CHANGE PASSWORD</strong>
+	  <% end %>
+	<% #else %>
+	
+	<% end %>
+	
 
   <%= tag.div class: "d-flex flex-wrap" do %>
 		
 		<%= tag.div class: "flex-fill me-2 mb-3" do %>
 		
 			<%= user_form.label :password, class: "form-label" do %>
-			  Password<%= "*" unless @user.persisted? %>
+			  <%= @user.persisted? ? "New Password" : "Password*" %>
 			<% end %>	
 			
 		  <% if @user.errors.messages[:password].any? %>
