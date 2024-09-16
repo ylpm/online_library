@@ -92,14 +92,14 @@ class ValidLoginTest < UserLoginTest
     assert_template "static_pages/home"
     assert_not flash.empty?
     assert_select "div.alert-success", "You have logged in successfully!"
-    assert_select "h1", text: "Welcome! #{@test_user.person.first_name}", count: 1
+    assert_select "h1", text: "Welcome! #{@test_user.first_name}", count: 1
     assert_select "a[href=?]", login_path, count: 0
     assert_select "a[href=?]", signup_path, count: 0
     assert_select "ul.dropdown-menu", count: 1
     assert_select "div.login-identifier", text: @test_user.sessions.last.login_identifier, count: 1
-    assert_select "a[href=?]", user_path(@test_user.username), count: 1, text: "View your profile"
-    assert_select "a[href=?]", settings_user_path(@test_user.username), count: 1, text: "Settings"
-    assert_select "a[href=?]", logout_path, count: 1, text: "Logout"   
+    assert_select "a[href=?]", profile_me_path, count: 1, text: "View your profile"
+    assert_select "a[href=?]", setting_me_path, count: 1, text: "Settings"
+    assert_select "a[href=?]", logout_path, count: 1, text: "Log out"   
   end
 
   def check_status_after_logging_out
