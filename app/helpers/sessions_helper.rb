@@ -116,6 +116,10 @@ module SessionsHelper
     session.delete(:_rurl)
   end
   
+  def friendly_forwarding_abandoned?
+    (!doing_login? && !doing_credential_me?)
+  end
+  
   def doing_login?
     request.original_url.match?(login_url)
     # params[:controller].match?('sessions') && params[:action].match?(/new|create/)
@@ -125,8 +129,8 @@ module SessionsHelper
     request.original_url.match?(credential_me_url)
   end
   
-  def access_settings?
-    request.original_url.match?(settings_user_url(current_user))
+  def credential_needed?
+    !requested_url.nil?
   end
   
   # ******************************************

@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   before_action -> { redirect_unless_logged_in(root_url) }, only: [:index, :credential, :authenticate]
   
   before_action only: :credential do
-    (redirect_to root_url and return) if authenticity_confirmed?
+    redirect_to root_url if authenticity_confirmed? || !credential_needed?
   end
 
   before_action only: [:show, :profile, :setting, :update, :destroy] do
@@ -17,8 +17,6 @@ class UsersController < ApplicationController
     do_friendly_forwarding_unless(credential_me_url) { authenticity_confirmed? }
   end
   
-  # before_action :redirect_unless_authenticity_confirmed, only: [:setting, :update, :destroy]
-
   before_action :check_the_requested_user_exists, only: :show  
 
   def index
@@ -53,7 +51,7 @@ class UsersController < ApplicationController
           end
         else
           format.turbo_stream
-          format.html {render :user_form, status: :unprocessable_entity}
+          format.html {render :new, status: :unprocessable_entity}
         end
       end                               
     end
@@ -97,7 +95,7 @@ class UsersController < ApplicationController
         else
           @user = current_user
           format.turbo_stream
-          format.html {render :user_form, status: :unprocessable_entity}
+          format.html {render :setting, status: :unprocessable_entity}
         end
       end
     end
@@ -115,7 +113,10 @@ class UsersController < ApplicationController
   private
 
   def check_the_requested_user_exists
-    redirect_unless(root_url, with_flash: {message: "User not found", type: :danger}) { @user = User.find_by_username(params[:user_username] || params[:username]) }
+    unless @user = User.find_by_username(params[:user_username] || params[:username])
+      flash[:danger] = "User not found"
+      redirect_to root_url and return
+    end
   end
 
   def check_the_requested_user_is_the_current_user

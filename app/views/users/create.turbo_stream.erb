@@ -1,5 +1,5 @@
-<%= turbo_stream.update "user_form" do %>
+<%= turbo_stream.update "signup_form" do %>
 	
-	<%= render partial: 'signup_form', locals: {user: @user, email_address: @email_address, context: :signup} %>
+	<%= render partial: 'signup_form' %> <%#, locals: {user: @user, email_address: @email_address, context: :signup} %>
 
 <% end %>

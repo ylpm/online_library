@@ -6,9 +6,7 @@ class SessionsController < ApplicationController
     set_user
     remember_me?
   end
-  
-  # before_action :redirect_unless_logged_in, only: ...
-  
+    
   before_action -> { redirect_unless_logged_in(root_url) }, only: [:toggle_status, :destroy]
   
   def new
@@ -24,7 +22,7 @@ class SessionsController < ApplicationController
           redirect_to(forwarding_url || root_path, status: :see_other) and return
         end
       else
-        @login_error_message = "ooops! no match"
+        @login_error_message = "Ooops! no match"
         format.turbo_stream
         format.html {render :new, status: :unprocessable_entity}
       end
