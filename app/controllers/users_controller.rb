@@ -31,7 +31,6 @@ class UsersController < ApplicationController
     new_personable(User) do |new_user|
       @user = new_user
       @user.person.email_addresses.build # 2.times { @user.person.email_addresses.build }
-      render :user_form
     end
   end
 
@@ -83,7 +82,6 @@ class UsersController < ApplicationController
   def setting
     @user = current_user
     # confirm_authenticity
-    render :user_form
   end
 
   def update

@@ -1,0 +1,117 @@
+<%= render 'shared/user_icon', css_class:"bi d-block mx-auto mb-4 rounded-circle" %>
+
+<%= form_with model: @user, url: signup_url do |user_form| %>
+
+  <%= user_form.fields_for :person do |person_form| %>
+
+	  <%= tag.div class: "d-flex flex-wrap" do %>
+		
+			<%= tag.div class: "flex-fill me-2 mb-3" do %>	
+					
+				<%= person_form.label :first_name, "First name*", class: "form-label" %>
+						
+			  <% if @user.person.errors.messages[:first_name].any? %>
+				  <%= tag.div class: "alert alert-danger" do %>
+					  <%= render 'shared/errors/error_message', error_message: @user.person.errors.messages[:first_name].first %>
+						<%= person_form.text_field :first_name, class: "form-control", required: true, autofocus: true %>
+					<% end %>
+				<% else %>
+				  <%= person_form.text_field :first_name, class: "form-control", required: true, autofocus: true %>
+				<% end %>
+				
+			<% end %>
+			
+			<%= tag.div class: "flex-fill me-2 mb-3" do %>	
+			
+				<%= person_form.label :last_name, "Last name*", class: "form-label" %>
+			
+			  <% if @user.person.errors.messages[:last_name].any? %>
+				  <%= tag.div class: "alert alert-danger" do %>
+					  <%= render 'shared/errors/error_message', error_message: @user.person.errors.messages[:last_name].first %>
+						<%= person_form.text_field :last_name, class: "form-control", required: true%>
+					<% end %>
+				<% else %>
+				  <%= person_form.text_field :last_name, class: "form-control", required: true %>
+				<% end %>
+				
+			<% end %>
+			
+		<% end %>	
+	
+	  <%= tag.div class: "d-flex flex-wrap" do %>
+		
+			<%= tag.div class: "flex-fill me-2 mb-3" do %>
+
+				  <%= user_form.label :username, "Username*", class: "form-label" %>
+
+			 	  <% if @user.errors.messages[:username].any? %>
+			 		  <%= tag.div class: "alert alert-danger" do %>
+			 			  <%= render 'shared/errors/error_message', error_message: @user.errors.messages[:username].first %>
+			 				<%= user_form.text_field :username, class: "form-control", required: true %>
+			 			<% end %>
+			 		<% else %>
+			 		  <%= user_form.text_field :username, class: "form-control", required: true %>
+			 		<% end %>
+	
+			<% end %>
+
+			<%= person_form.fields_for :email_addresses do |email_form| %>
+				<%= tag.div class: "flex-fill me-2 mb-3" do %>
+				  <%= email_form.label :email_address, "Email address*", class: "form-label"%>
+
+				  <% if email_form.object.errors.messages[:address].any? %>
+					  <%= tag.div class: "alert alert-danger" do %>
+						  <%= render 'shared/errors/error_message', error_message: email_form.object.errors.messages[:address].first %>
+							<%= email_form.email_field :address, class: "form-control", required: true %>
+						<% end %>
+					<% else %>
+					  <%= email_form.email_field :address, class: "form-control", required: true %>
+					<% end %>				
+				<% end %>
+			<% end %>
+
+		<% end %>
+			
+  <% end %> <!-- end of: user_form.fields_for :person ... -->
+	
+
+  <%= tag.div class: "d-flex flex-wrap" do %>
+		
+		<%= tag.div class: "flex-fill me-2 mb-3" do %>
+		
+			<%= user_form.label :password, "Password*", class: "form-label"%>
+			
+		  <% if @user.errors.messages[:password].any? %>
+			  <%= tag.div class: "alert alert-danger" do %>
+				  <%= render 'shared/errors/error_message', error_message: @user.errors.messages[:password].first %>
+					<%= user_form.password_field :password, class: "form-control", required: true %>
+				<% end %>
+			<% else %>
+			  <%= user_form.password_field :password, class: "form-control", required: true %>
+			<% end %>
+			
+		<% end %>
+		
+		<%= tag.div class: "flex-fill me-2 mb-3" do %>
+		
+			<%= user_form.label :password_confirmation, "Confirmation*", class: "form-label"%>
+		
+		  <% if @user.errors.messages[:password_confirmation].any? %>
+			  <%= tag.div class: "alert alert-danger" do %>
+				  <%= render 'shared/errors/error_message', error_message: @user.errors.messages[:password_confirmation].first %>
+					<%= user_form.password_field :password_confirmation, class: "form-control", required: true %>
+				<% end %>
+			<% else %>
+			  <%= user_form.password_field :password_confirmation, class: "form-control", required: true %>
+			<% end %>
+			
+		<% end %>
+		
+	<% end %>
+			
+  <%= tag.div class: "actions center py-3" do %>
+		<%= user_form.submit "Sign up", class: "btn btn-primary w-100"  %>
+	<% end %>	
+
+			
+<% end %>

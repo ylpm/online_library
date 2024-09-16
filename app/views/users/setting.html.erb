@@ -1,13 +1,13 @@
-<% provide :title, @user.persisted? ? 'Your settings' : 'Sign up' %>
+<% provide :title, 'Your settings' %>
 
 <div class="d-flex">
 	<div class="mx-auto col-lg-4 bg-light rounded-3 p-5"> <!-- col-lg-7 => para esten de dos en dos, pero se altera cuando hay errores-->
 		<div id="user_form">
-		  <%= render "form" %>
+		  <%= render "settings_form" %>
 	  </div>
 		<hr class="">
 		<div class="form-links text-small">
-	    <%= render 'shared/user_account_links', context: @user.persisted? ? :settings : :signup %>
+	    <%= render 'shared/user_account_links', context: :settings %>
 	  </div>
 	</div>
 </div>
