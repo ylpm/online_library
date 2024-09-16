@@ -99,12 +99,12 @@ class ValidLoginTest < UserLoginTest
     assert_select "div.login-identifier", text: @test_user.sessions.last.login_identifier, count: 1
     assert_select "a[href=?]", profile_me_path, count: 1, text: "View your profile"
     assert_select "a[href=?]", setting_me_path, count: 1, text: "Settings"
-    assert_select "a[href=?]", logout_path, count: 1, text: "Log out"   
+    assert_select "a[href=?]", logout_me_path, count: 1, text: "Log out"   
   end
 
   def check_status_after_logging_out
     # -> Do log out
-    delete logout_path # get logout_path
+    delete logout_me_path # get logout_path
     assert_not is_logged_in?
     assert_response :see_other
     assert_redirected_to root_url
@@ -122,10 +122,10 @@ class ValidLoginTest < UserLoginTest
 
   def simulate_a_second_logout_from_another_window
     assert_not is_logged_in?
-    delete logout_path  # aqui en el entorno de pruebas 
-                        # si me funciona correctamente el redirect para el segundo logout con delete, 
-                        # pero no en el entorno de desarrollo ni production con el navegador real.
-                        # use get logout_path pero en desarrollo y produccion get no es apropiado
+    delete logout_me_path  # aqui en el entorno de pruebas 
+                           # si me funciona correctamente el redirect para el segundo logout con delete, 
+                           # pero no en el entorno de desarrollo ni production con el navegador real.
+                           # use get logout_path pero en desarrollo y produccion get no es apropiado
     assert_response :see_other
     assert_redirected_to root_url
     follow_redirect!
@@ -145,7 +145,7 @@ class RememberMeTest < UserLoginTest
     assert_not cookies[:_rt].blank?
     assert_equal cookies[:_rt], assigns(:current_session).remember_token
     assert_difference 'Session.count', -1 do
-      delete logout_path
+      delete logout_me_path
     end
     assert_not is_logged_in?
     assert assigns(:current_session).nil?
@@ -161,7 +161,7 @@ class RememberMeTest < UserLoginTest
     assert cookies[:_rt].blank?
     assert assigns(:current_session).remember_token.nil?
     assert_difference 'Session.count', -1 do
-      delete logout_path
+      delete logout_me_path
     end
     assert_not is_logged_in?
     assert assigns(:current_session).nil?
@@ -182,6 +182,6 @@ class RememberMeTest < UserLoginTest
     # verify that the remember-me checkbox in the user menu is NOT CHECKED:
     assert_select 'a[href=?]', remember_me_path
     assert_select 'input#remember-me[type="checkbox"][checked]', false
-    delete logout_path
+    delete logout_me_path
   end
 end
