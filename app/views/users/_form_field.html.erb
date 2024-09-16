@@ -1,0 +1,10 @@
+<%= form.label field[:sym], field[:str], class: "form-label" %>
+		
+<% if form.object.errors.messages[field[:sym]].any? %>
+  <%= tag.div class: "alert alert-danger" do %>
+	  <%= render 'shared/errors/error_message', error_message: form.object.errors.messages[field[:sym]].first %>
+		<%= form.send(field[:type], field[:sym], class: "form-control", required: required, autofocus: autofocus) %>
+	<% end %>
+<% else %>
+  <%= form.send(field[:type], field[:sym], class: "form-control", required: required, autofocus: autofocus) %>
+<% end %>

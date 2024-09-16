@@ -1,0 +1,4 @@
+<%= tag.div do %>
+	<%= email_address %>
+	<%= link_to("Activate", "#", class: "form-links text-small") unless email_address.activated? %>
+<% end %>

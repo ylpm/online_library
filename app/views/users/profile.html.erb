@@ -40,10 +40,8 @@
 				<% if current_user.email_addresses.any? %>
 				<div class="row">
 					<div class="col">
-					<strong>Emails: </strong>
-					<% current_user.email_addresses.each do |email_address| %>
-					<br><%= email_address %> (<em><%= email_address.activated? ? "activated" : "not activated" %></em>)
-					<% end %>
+						<strong>Email addresses: </strong>
+						<%= render current_user.email_addresses %>
 				  </div>
 				</div>
 				<% end %>

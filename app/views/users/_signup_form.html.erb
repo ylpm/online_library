@@ -6,68 +6,49 @@
 
 	  <%= tag.div class: "d-flex flex-wrap" do %>
 		
-			<%= tag.div class: "flex-fill me-2 mb-3" do %>	
-					
-				<%= person_form.label :first_name, "First name*", class: "form-label" %>
-						
-			  <% if @user.person.errors.messages[:first_name].any? %>
-				  <%= tag.div class: "alert alert-danger" do %>
-					  <%= render 'shared/errors/error_message', error_message: @user.person.errors.messages[:first_name].first %>
-						<%= person_form.text_field :first_name, class: "form-control", required: true, autofocus: true %>
-					<% end %>
-				<% else %>
-				  <%= person_form.text_field :first_name, class: "form-control", required: true, autofocus: true %>
-				<% end %>
-				
+			<%= tag.div class: "flex-fill me-2 mb-3" do %>
+			
+        <%= render 'form_field', form: person_form, 
+ 			                          field: {sym: :first_name, str: "First name*", type: :text_field},
+ 											       required: true, 
+ 													  autofocus: true  %>
+
 			<% end %>
 			
-			<%= tag.div class: "flex-fill me-2 mb-3" do %>	
+			<%= tag.div class: "flex-fill me-2 mb-3" do %>
 			
-				<%= person_form.label :last_name, "Last name*", class: "form-label" %>
-			
-			  <% if @user.person.errors.messages[:last_name].any? %>
-				  <%= tag.div class: "alert alert-danger" do %>
-					  <%= render 'shared/errors/error_message', error_message: @user.person.errors.messages[:last_name].first %>
-						<%= person_form.text_field :last_name, class: "form-control", required: true%>
-					<% end %>
-				<% else %>
-				  <%= person_form.text_field :last_name, class: "form-control", required: true %>
-				<% end %>
-				
+        <%= render 'form_field', form: person_form, 
+ 			                          field: {sym: :last_name, str: "Last name*", type: :text_field},
+ 											       required: true,
+ 													  autofocus: false  %>
+
 			<% end %>
 			
-		<% end %>	
-	
+		<% end %>
+
+
 	  <%= tag.div class: "d-flex flex-wrap" do %>
 		
 			<%= tag.div class: "flex-fill me-2 mb-3" do %>
-
-				  <%= user_form.label :username, "Username*", class: "form-label" %>
-
-			 	  <% if @user.errors.messages[:username].any? %>
-			 		  <%= tag.div class: "alert alert-danger" do %>
-			 			  <%= render 'shared/errors/error_message', error_message: @user.errors.messages[:username].first %>
-			 				<%= user_form.text_field :username, class: "form-control", required: true %>
-			 			<% end %>
-			 		<% else %>
-			 		  <%= user_form.text_field :username, class: "form-control", required: true %>
-			 		<% end %>
+			
+	        <%= render 'form_field', form: user_form, 
+	 			                          field: {sym: :username, str: "Username*", type: :text_field},
+	 											       required: true,
+	 													  autofocus: false  %>
 	
 			<% end %>
 
 			<%= person_form.fields_for :email_addresses do |email_form| %>
+			
 				<%= tag.div class: "flex-fill me-2 mb-3" do %>
-				  <%= email_form.label :email_address, "Email address*", class: "form-label"%>
+				
+		      <%= render 'form_field', form: email_form, 
+				                          field: {sym: :address, str: "Email address*", type: :email_field},
+												       required: true,
+														  autofocus: false  %>
 
-				  <% if email_form.object.errors.messages[:address].any? %>
-					  <%= tag.div class: "alert alert-danger" do %>
-						  <%= render 'shared/errors/error_message', error_message: email_form.object.errors.messages[:address].first %>
-							<%= email_form.email_field :address, class: "form-control", required: true %>
-						<% end %>
-					<% else %>
-					  <%= email_form.email_field :address, class: "form-control", required: true %>
-					<% end %>				
 				<% end %>
+				
 			<% end %>
 
 		<% end %>
@@ -79,32 +60,20 @@
 		
 		<%= tag.div class: "flex-fill me-2 mb-3" do %>
 		
-			<%= user_form.label :password, "Password*", class: "form-label"%>
-			
-		  <% if @user.errors.messages[:password].any? %>
-			  <%= tag.div class: "alert alert-danger" do %>
-				  <%= render 'shared/errors/error_message', error_message: @user.errors.messages[:password].first %>
-					<%= user_form.password_field :password, class: "form-control", required: true %>
-				<% end %>
-			<% else %>
-			  <%= user_form.password_field :password, class: "form-control", required: true %>
-			<% end %>
+      <%= render 'form_field', form: user_form, 
+		                          field: {sym: :password, str: "Password*", type: :password_field},
+										       required: true,
+												  autofocus: false  %>
 			
 		<% end %>
 		
 		<%= tag.div class: "flex-fill me-2 mb-3" do %>
 		
-			<%= user_form.label :password_confirmation, "Confirmation*", class: "form-label"%>
-		
-		  <% if @user.errors.messages[:password_confirmation].any? %>
-			  <%= tag.div class: "alert alert-danger" do %>
-				  <%= render 'shared/errors/error_message', error_message: @user.errors.messages[:password_confirmation].first %>
-					<%= user_form.password_field :password_confirmation, class: "form-control", required: true %>
-				<% end %>
-			<% else %>
-			  <%= user_form.password_field :password_confirmation, class: "form-control", required: true %>
-			<% end %>
-			
+      <%= render 'form_field', form: user_form, 
+		                          field: {sym: :password_confirmation, str: "Confirmation*", type: :password_field},
+										       required: true,
+												  autofocus: false  %>
+	
 		<% end %>
 		
 	<% end %>
