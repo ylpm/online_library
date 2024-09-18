@@ -40,11 +40,13 @@
 
 			<%= person_form.fields_for :email_addresses do |email_form| %>
 			
+			  <% str, required = email_form.object.eql?(@user.person.email_addresses.first) ? ["Email Address*", true] : ["Email Address", false] %>
+			
 				<%= tag.div class: "flex-fill me-2 mb-3" do %>
 				
 		      <%= render 'form_field', form: email_form, 
-				                          field: {sym: :address, str: "Email address*", type: :email_field},
-												       required: true,
+				                          field: {sym: :address, str: str, type: :email_field},
+												       required: required,
 														  autofocus: false  %>
 
 				<% end %>

@@ -28,9 +28,8 @@ module PersonableHandler
 
     personable = klass.create(personable_params)
     
-    if personable.valid? && personable.email_addresses.any?
+    if personable.persisted? && personable.person.email_addresses.any?
       personable.person.update_column(:primary_email_address_id, personable.email_addresses.first.id)
-      personable.save
     end
     
     return personable unless block_given?

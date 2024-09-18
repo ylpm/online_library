@@ -96,7 +96,9 @@
 				<% end %>
 				<%= tag.hr %>
 	      
-				<%= render @user.email_addresses %> <%#= render @user.email_addresses.select {|e| e.persisted? } %>
+				<% @stored_email_addresses = @user.email_addresses.select {|e| e.persisted? } %>
+				<%#= render @user.email_addresses %> 
+				<%= render @stored_email_addresses %>
 				
 			<% end %>	
 
@@ -116,7 +118,7 @@
 								<%= person_form.select :primary_email_address_id, @user.email_addresses.map {|e| [e.address, e.id]}, class: "form-control" %>
 							<% end %>
 						<% else %>
-						  <%= person_form.select :primary_email_address_id, @user.email_addresses.map {|e| [e.address, e.id]}, class: "form-control" %>
+						  <%= person_form.select :primary_email_address_id, @stored_email_addresses.map {|e| [e.address, e.id]}, class: "form-control" %>
 						<% end %>
 				
 		 			<% end %>	
@@ -125,26 +127,26 @@
 		
 		<% end %>
 		
-		<%#= tag.div class: "d-flex flex-wrap" do %>
+		<%= tag.div class: "d-flex flex-wrap" do %>
 		
-			<%#= person_form.fields_for :email_addresses do |email_form| %>
+			<%= person_form.fields_for :email_addresses do |email_form| %>
 			
-			  <%# unless email_form.object.persisted? %>
+			  <% unless email_form.object.persisted? %>
 			
-					<%#= tag.div class: "flex-fill me-2 mb-3" do %>
+					<%= tag.div class: "flex-fill me-2 mb-3" do %>
 				
-			      <%#= render 'form_field', form: email_form, 
+			      <%= render 'form_field', form: email_form, 
 					                          field: {sym: :address, str: "Add an email address", type: :email_field},
 													       required: false,
 															  autofocus: false  %>
 
-					<%# end %>
+					<% end %>
 					
-				<%# end %>
+				<% end %>
 				
-			<%# end %>
+			<% end %>
 		
-		<%# end %>	
+		<% end %>	
 			
   <% end %> <!-- end of: user_form.fields_for :person ... -->
 	

@@ -30,7 +30,8 @@ class UsersController < ApplicationController
   def new
     new_personable(User) do |new_user|
       @user = new_user
-      @user.person.email_addresses.build # 2.times { @user.person.email_addresses.build }
+      # @user.person.email_addresses.build #
+      2.times { @user.person.email_addresses.build }
     end
   end
 
@@ -52,6 +53,7 @@ class UsersController < ApplicationController
             redirect_to root_url, status: :see_other
           end
         else
+          @user.person.email_addresses.build if @user.person.email_addresses.length == 1 # one? no funciona
           format.turbo_stream
           format.html {render :new, status: :unprocessable_entity}
         end
@@ -80,7 +82,7 @@ class UsersController < ApplicationController
 
   def setting
     @user = current_user
-    # @user.person.email_addresses.build # para adicionar otra direccion de email
+    @user.person.email_addresses.build # para adicionar otra direccion de email
   end
 
   def update
@@ -90,17 +92,17 @@ class UsersController < ApplicationController
         if success
           format.html do
             flash[:success] = "You have updated your settings successfully!"
-            redirect_to profile_me_url, status: :see_other
+            redirect_to setting_me_url, status: :see_other # redirect_to profile_me_url
             # redirect_to user_url(current_user.username), status: :see_other
           end
         else
           @user = current_user
+          @user.person.email_addresses.build if @user.person.email_addresses.select{|e| !e.persisted?}.empty?
           format.turbo_stream
           format.html {render :setting, status: :unprocessable_entity}
         end
       end
     end
-    
   end
 
   def destroy
@@ -125,6 +127,10 @@ class UsersController < ApplicationController
   end
     
   def user_params
+    if params[:user][:person_attributes].has_key?(:email_addresses_attributes)
+      params[:user][:person_attributes][:email_addresses_attributes].delete_if { |id, email| email[:address].blank? }
+    end
+    
     params.require(:user).permit(
       :username,
       :password,

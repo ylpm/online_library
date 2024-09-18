@@ -76,7 +76,7 @@ module SessionsHelper
   def confirm_authenticity
     cookies.delete(:_auth)
     cookies[:_auth] = { value:   true,
-                        expires: 5.minutes.from_now }
+                        expires: 7.minutes.from_now }
   end
 
   def authenticity_confirmed?
