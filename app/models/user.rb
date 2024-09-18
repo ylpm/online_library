@@ -28,49 +28,38 @@ class User < ApplicationRecord
                                           if: -> { password.present? },
                                    allow_nil: true
 
-
-  def User.custom_create(attrs = {})
-    # return nil unless attrs[:first_name] && attrs[:last_name] && attrs[:username]
-
-    person = Person.create first_name: attrs[:first_name],
-                            last_name: attrs[:last_name],
-                           personable: User.new(username: attrs[:username],
-                                                password: attrs[:password],
-                                                password_confirmation: attrs[:password_confirmation])
-
-    return nil unless person && person.valid?
-
-    person.update_attribute(:middle_name, attrs[:middle_name]) if attrs[:middle_name]
-    person.update_attribute(:birthday, attrs[:birthday]) if attrs[:birthday]
-
-    if email = attrs[:email]
-      if email.respond_to? :each
-        email.each do |address|
-          person.email_addresses.create(address: address)
-        end
-      else
-        person.email_addresses.create(address: email)
-      end
-    end
-
-    person.user
+  # Sobreescribir el destroy
+  def destroy
+    # Es necesario eliminar primero todas las sessiones asociadas
+    # antes de destruir el usuario, porque si algunas de las sesiones
+    # fueron abiertas con direccion de email en vez de con username,
+    # entonces da error de integridad referencial, ya que, por el orden que
+    # declaradas estan las asociaciones al inicio de la clase:
+    # primero "include Personable" y luego "has_many :sessions", entonces
+    # primero trata de eliminar las direcciones de email y luego las sesiones,
+    # y como hay sesiones que tienen referencias a direcciones de email, entonces
+    # da el error de integridad referencial. Una forma de resolverlo
+    # es declarando primero  "has_many :sessions" y luego "include Personable"
+    # pero no es confiable descansar en esto.
+    self.sessions.each {|s| s.destroy}
+    super
   end
 
   def to_s = "#{self.person.first_name} #{self.person.last_name} <#{self.username}>"
   
   # Find user for authentication
-  def User.find_by_login(arg)
-    raise ArgumentError, "Argument must be a String, not a #{arg.class}" unless arg.instance_of? String
-    
-    unless arg.blank?
-      arg.downcase!
-      if user = find_by_username(arg) 
-        return user 
-      elsif email = EmailAddress.find_by_address(arg)
-        return email.owner.user if email.activated?
-      end
-    end
-  end
+  # def User.find_by_login(arg)
+  #   raise ArgumentError, "Argument must be a String, not a #{arg.class}" unless arg.instance_of? String
+  #
+  #   unless arg.blank?
+  #     arg.downcase!
+  #     if user = find_by_username(arg)
+  #       return user
+  #     elsif email = EmailAddress.find_by_address(arg)
+  #       return email.owner.user if email.activated?
+  #     end
+  #   end
+  # end
 
 
   private

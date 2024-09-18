@@ -1,5 +1,7 @@
 class SessionsController < ApplicationController
   
+  before_action :cancel_friendly_forwarding, only: :destroy # except: [:new, :create, :toggle_status]
+  
   before_action :redirect_if_logged_in, only: [:new, :create]
   
   before_action only: :create do
@@ -15,11 +17,11 @@ class SessionsController < ApplicationController
   def create
     respond_to do |format|
       if @user&.authenticate(params[:login][:password])
-        forwarding_url = requested_url
+        forwarding_url = friendly_forwarding_url
         new_session_for @user, email_address: @email_address, persistent: @remember_me
         format.html do
           flash[:success] = "You have logged in successfully!"
-          redirect_to(forwarding_url || root_path, status: :see_other) and return
+          redirect_to(forwarding_url || root_url, status: :see_other) and return
         end
       else
         @login_error_message = "Ooops! no match"

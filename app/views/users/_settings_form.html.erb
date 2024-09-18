@@ -1,4 +1,6 @@
-<%= render 'shared/user_icon', css_class:"bi d-block mx-auto mb-4 rounded-circle" %>
+<%#= render 'shared/user_icon', css_class:"bi d-block mx-auto mb-4 rounded-circle" %>
+
+<%= avatar(css_class: "bi d-block mx-auto mb-4", width: 40, height: 40) || gravatar(css_class: "bi d-block mx-auto mb-4", width: 40, height: 40) %>
 
 <%= form_with model: @user, url: setting_me_path do |user_form| %>
 
@@ -38,7 +40,11 @@
 
 			<% end %>
 			
-			<%= tag.div class: "flex-fill me-2 mb-3" do %>
+	  <% end %>
+			
+		<%= tag.div class: "d-flex flex-wrap" do %>	
+			
+			<%= tag.div class: "flex-fill pe-2 mb-3" do %>
 			
         <%= render 'form_field', form: person_form, 
  			                          field: {sym: :birthday, str: "Birthday", type: :date_field},
@@ -47,12 +53,7 @@
 
 		  <% end %>
 			
-		<% end %>
-	
-	
-	  <%= tag.div class: "d-flex flex-wrap" do %>
-
-	    <%= tag.div class: "flex-fill me-2 mb-3" do %>
+	    <%= tag.div class: "flex-fill mb-3" do %>
 
 			  <%= person_form.label :gender, class: "form-label" %>
 		  
@@ -67,6 +68,11 @@
 				<% end %>
 				
 			<% end %>
+			
+		<% end %>
+
+
+   <%= tag.div class: "d-flex flex-wrap mt-5" do %>
 
 			<%= tag.div class: "flex-fill me-2 mb-3" do %>
 				
@@ -78,18 +84,67 @@
 
 			<% end %>
 
+	 <% end %>
+
+
+   <%= tag.div class: "d-flex flex-wrap mt-5" do %> 	
+
 		  <%= tag.div class: "flex-fill me-2 mb-3" do %>
 			  
 				<%= tag.label class: "form-label" do %>
-				  Email <%= pluralize(@user.email_addresses.count, "address").split(/\s/).last.capitalize %>
+				  EMAIL <%= pluralize(@user.email_addresses.count, "address").split(/\s/).last.upcase %>
 				<% end %>
-				<br>
+				<%= tag.hr %>
 	      
-				<strong><%= render @user.email_addresses %></strong>
+				<%= render @user.email_addresses %> <%#= render @user.email_addresses.select {|e| e.persisted? } %>
 				
 			<% end %>	
 
 		<% end %>
+		
+		<% if @user.email_addresses.many? %>
+				
+		    <%= tag.div class: "d-flex flex-wrap" do %>
+
+		 		  <%= tag.div class: "flex-fill me-2 mb-3" do %>
+					
+					  <%= person_form.label :primary_email_address_id, "Primary Email Address", class: "form-label" %>
+												
+						<% if person_form.object.errors.messages[:primary_email_address_id].any? %>
+						  <%= tag.div class: "alert alert-danger" do %>
+							  <%= render 'shared/errors/error_message', error_message: person_form.object.errors.messages[:primary_email_address_id].first %>
+								<%= person_form.select :primary_email_address_id, @user.email_addresses.map {|e| [e.address, e.id]}, class: "form-control" %>
+							<% end %>
+						<% else %>
+						  <%= person_form.select :primary_email_address_id, @user.email_addresses.map {|e| [e.address, e.id]}, class: "form-control" %>
+						<% end %>
+				
+		 			<% end %>	
+
+		 		<% end %>
+		
+		<% end %>
+		
+		<%#= tag.div class: "d-flex flex-wrap" do %>
+		
+			<%#= person_form.fields_for :email_addresses do |email_form| %>
+			
+			  <%# unless email_form.object.persisted? %>
+			
+					<%#= tag.div class: "flex-fill me-2 mb-3" do %>
+				
+			      <%#= render 'form_field', form: email_form, 
+					                          field: {sym: :address, str: "Add an email address", type: :email_field},
+													       required: false,
+															  autofocus: false  %>
+
+					<%# end %>
+					
+				<%# end %>
+				
+			<%# end %>
+		
+		<%# end %>	
 			
   <% end %> <!-- end of: user_form.fields_for :person ... -->
 	
@@ -104,7 +159,6 @@
 		
       <%= render 'form_field', form: user_form, 
 		                          field: {sym: :password, str: "New Password", type: :password_field},
-												 field_type: :password_field,
 										       required: false,
 												  autofocus: false  %>
 			

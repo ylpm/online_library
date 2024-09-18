@@ -1,9 +1,16 @@
 class Person < ApplicationRecord
   
   delegated_type :personable, types: %w[User Author], dependent: :destroy
-  
+
   has_many :email_addresses, inverse_of: :owner, dependent: :destroy
   accepts_nested_attributes_for :email_addresses
+  
+  belongs_to :primary_email_address, class_name: "EmailAddress", optional: true #, -> {EmailAddress.where(owner_id: id)}
+  # accepts_nested_attributes_for :primary_email_address
+  
+  def primary_image # PROVISIONAL
+    nil
+  end
   
   enum gender: {
       Not_Specified: "Not Specified",
@@ -41,10 +48,9 @@ class Person < ApplicationRecord
   
   validates :birthday, presence: false,
                            with: :birthday_cannot_be_future
-  
-  # validates :personable_type, presence: true # esta validacion no es necesaria puesto que la relacion 
-                                               # delegated_type declarada al inicio ya exige la presencia 
-                                               # de un personable.
+                           
+  validates :primary_email_address, presence: false,
+                                        with: :primary_email_address_must_belong_to_the_person
   
   def full_name
     middle_name ? "#{first_name} #{middle_name} #{last_name}"
@@ -52,6 +58,15 @@ class Person < ApplicationRecord
   end
   
   def to_s = "#{self.full_name} <#{email_addresses.first}>"
+  
+  # Sobreescribir el metodo destroy
+  def destroy
+    # Antes de eliminar la persona, limpiar la referencia de primary_email_address
+    # llamo update_column en lugar de update_attribute o simplemente update
+    # para circunvalar las validaciones y actualizar 
+    update_column(:primary_email_address_id, nil)
+    super
+  end
     
   private
   
@@ -65,5 +80,11 @@ class Person < ApplicationRecord
     if birthday
       errors.add(:birthday, "says you are under 8 years") unless birthday <= 8.years.ago
     end
-  end     
+  end
+  
+  def primary_email_address_must_belong_to_the_person
+    if primary_email_address_id.present?
+      errors.add(:primary_email_address, "must be one of the #{first_name}'s email addresses") unless email_addresses.include?(primary_email_address)
+    end
+  end
 end

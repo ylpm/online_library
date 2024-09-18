@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_13_192922) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_17_125934) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,6 +22,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_13_192922) do
     t.string "activation_digest"
     t.boolean "activated", default: false
     t.datetime "activated_at"
+    t.string "gravatar_style"
     t.index ["address"], name: "index_email_addresses_on_address", unique: true
     t.index ["owner_id"], name: "index_email_addresses_on_owner_id"
   end
@@ -36,7 +37,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_13_192922) do
     t.string "personable_type", null: false
     t.integer "personable_id", null: false
     t.string "gender", default: "Not Specified", null: false
+    t.bigint "primary_email_address_id"
     t.index ["personable_type", "personable_id"], name: "index_people_on_personable_type_and_personable_id", unique: true
+    t.index ["primary_email_address_id"], name: "index_people_on_primary_email_address_id", unique: true
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -59,6 +62,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_13_192922) do
   end
 
   add_foreign_key "email_addresses", "people", column: "owner_id"
+  add_foreign_key "people", "email_addresses", column: "primary_email_address_id"
   add_foreign_key "sessions", "email_addresses"
   add_foreign_key "sessions", "users"
 end

@@ -98,40 +98,49 @@ module SessionsHelper
   def do_friendly_forwarding_unless(url, with_flash: {message: nil, type: nil})
     if block_given?
       unless yield
-        store_requested_url
+        # store_requested_url
+        session[:_ffurl] = request.original_url if request.get?
         redirect_unless(url, with_flash: {message: with_flash[:message], type: with_flash[:type]}) { false }
       end
     end
   end
   
-  def store_requested_url
-    session[:_rurl] = request.original_url if request.get?
-  end
-
-  def requested_url
-    session[:_rurl]
+  def friendly_forwarding_url
+    session[:_ffurl]
   end
   
-  def reset_requested_url
-    session.delete(:_rurl)
-  end
-  
-  def friendly_forwarding_abandoned?
-    (!doing_login? && !doing_credential_me?)
-  end
-  
-  def doing_login?
-    request.original_url.match?(login_url)
-    # params[:controller].match?('sessions') && params[:action].match?(/new|create/)
-  end
-  
-  def doing_credential_me?
-    request.original_url.match?(credential_me_url)
+  def cancel_friendly_forwarding
+    session.delete(:_ffurl)
   end
   
   def credential_needed?
-    !requested_url.nil?
+    !friendly_forwarding_url.nil?
   end
+  
+  # def store_requested_url
+  #   session[:_rurl] = request.original_url if request.get?
+  # end
+
+  # def requested_url
+  #   session[:_rurl]
+  # end
+  #
+  # def reset_requested_url
+  #   session.delete(:_rurl)
+  # end
+  
+  # def doing_login?
+  #   request.original_url.match?(login_url)
+  #   # params[:controller].match?('sessions') && params[:action].match?(/new|create/)
+  # end
+  #
+  # def doing_credential_me?
+  #   request.original_url.match?(credential_me_url)
+  # end
+  
+  # def credential_needed?
+  #   !requested_url.nil?
+  # end
   
   # ******************************************
   

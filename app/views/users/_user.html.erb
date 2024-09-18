@@ -1,0 +1,9 @@
+<div class="flex-fill me-2 bg-light rounded-3 p-5 mb-5">
+	  <p>Name: <%= user.full_name %></p>
+		<p>Gender: <%= user.gender %></p>
+		<p>Birthday: <%= user.birthday %></p>
+		<p>Username: <%= user.username %></p>
+		<p>Created at: <%= user.created_at %></p>
+		<p><%= render user.email_addresses %></p>
+		<br/>
+</div>

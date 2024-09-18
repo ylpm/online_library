@@ -185,3 +185,31 @@ class RememberMeTest < UserLoginTest
     delete logout_me_path
   end
 end
+
+class UserDestroyAfterLogin < ValidLoginTest
+  
+  # probando la sobreescritura del metodo destroy en la clase User
+  
+  test "should destroy the user after login with username" do
+    do_login_with :username
+    check_status_after_valid_login
+    remove_user_and_check_status
+  end
+  
+  test "should destroy the user after login with email address" do
+    do_login_with :email_address
+    check_status_after_valid_login
+    remove_user_and_check_status 
+  end
+  
+  private
+  
+  def remove_user_and_check_status
+    assert_difference 'User.count', -1 do
+      delete remove_me_path
+    end
+    assert_response :see_other
+    assert_redirected_to root_url
+    assert_not is_logged_in?
+  end
+end

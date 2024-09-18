@@ -3,25 +3,21 @@ module Personable
 
   included do
     has_one :person, as: :personable, touch: true, dependent: :destroy
+    
     accepts_nested_attributes_for :person
+    
+    # delegate *Person.instance_methods(false), to: :person
+    # delegate *Person.singleton_methods, to: :class
+    
+    delegate :first_name, :middle_name, :last_name, :full_name,
+             :birthday,
+             :gender, :gender?,
+             :email_addresses, :primary_email_address,
+             :primary_image,
+             to: :person
   end
   
   class_methods do
   end
-  
-  def first_name = self.person.first_name
-  
-  def middle_name = self.person.middle_name
-  
-  def last_name = self.person.last_name
-    
-  def full_name = self.person.full_name
-    
-  def gender = self.person.gender
-    
-  def gender? = self.person.gender?
-  
-  def birthday = self.person.birthday
-  
-  def email_addresses = self.person.email_addresses
+
 end

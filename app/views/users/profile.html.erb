@@ -40,7 +40,8 @@
 				<% if current_user.email_addresses.any? %>
 				<div class="row">
 					<div class="col">
-						<strong>Email addresses: </strong>
+						<strong>Email <%= current_user.email_addresses.many? ? "addresses" : "address" %> </strong>
+						<%= tag.hr %>
 						<%= render current_user.email_addresses %>
 				  </div>
 				</div>

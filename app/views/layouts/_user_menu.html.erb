@@ -1,12 +1,12 @@
 <%= tag.div class:"dropdown" do %> <!-- class:"dropdown text-end" -->
   <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-		<%= render 'shared/user_icon', css_class:"rounded-circle" %>
+		<%= avatar || gravatar || render('shared/user_icon', css_class:"rounded-circle") %>
   </a>
 	
   <%= tag.ul class:"dropdown-menu dropdown-menu-end text-small" do %>
 		<li class="dropdown-header">
 			<div class="d-flex gap-2">
-			  <svg class="rounded-circle" width="40" height="40"><use xlink:href="#people-circle"/></svg>
+				<%= avatar(width: 40, height: 40) || gravatar(width: 40, height: 40) || render('shared/user_icon', css_class:"rounded-circle", width: 40, height: 40) %>
 				<div>
 			    <div class="login-identifier emph-item"><%= current_session.login_identifier %></div>
 					<%= current_user.full_name %>
