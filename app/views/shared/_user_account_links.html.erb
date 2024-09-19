@@ -6,10 +6,10 @@
     <% end %>
 <% else %>
     <% if context == :login %>
-      <%#= link_to "Sign up", signup_path %>
-	  <%= link_to "Forgot your password?", '#' %><br />
+      <%= link_to "Sign up", signup_path %><br />
+	    <%= link_to "Forgot your password?", '#' %><br />
     <% elsif context == :signup %>
-      <!-- <%#= link_to "Login", login_path %><br /> -->
+      <%= link_to "Login", login_path %><br />
     <% end %>
     <%= link_to "Activate email", '#' %><br />
     <%= link_to "Unlock account", '#' %><br />
