@@ -1,9 +1,9 @@
-<% provide :title, 'Home' %>
+<% # provide :title, 'Home' %>
 
 <div class="center">
   <% if logged_in? %>
 	<h1>Welcome! <%= current_user.person.first_name %></h1>
 	<% else %>
-  <%= image_tag("colors.svg", class: "bi me-2", width: "60%", height: "60%") %>
+  <%#= image_tag("colors.svg", class: "bi me-2", width: "60%", height: "60%") %>
 	<% end %>
 </div>

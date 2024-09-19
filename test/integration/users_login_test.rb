@@ -35,7 +35,7 @@ class InvalidLoginTest < UserLoginTest
   
   def check_status_after_failed_login
     assert_not is_logged_in?
-    assert_select "div.alert-danger", "Ooops! no match"
+    assert_select "div.alert-danger", "Invalid username or password"
     assert flash.empty?
   end
 end

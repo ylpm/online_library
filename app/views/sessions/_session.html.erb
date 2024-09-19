@@ -1,0 +1,6 @@
+<%= tag.div do %>
+  <p>Created_at: <%= session.created_at %></p>
+	<p>Updated_at: <%= session.updated_at %></p>
+	<p>Email: <%= session.email_address %></p>
+	<p>Remembered: <%= session.remembered? %></p>
+<% end %>

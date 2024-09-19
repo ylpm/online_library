@@ -1,6 +1,6 @@
 module ApplicationHelper
   
-  def base_title = "Online Library"
+  def base_title = "PIXELART"
   
   def full_title(page_title = '') = page_title.blank? ? base_title : "#{page_title} | #{base_title}"
     

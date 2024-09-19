@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
           redirect_to(forwarding_url || root_url, status: :see_other) and return
         end
       else
-        @login_error_message = "Ooops! no match"
+        @login_error_message = "Invalid username or password" # "Ooops! no match"
         format.turbo_stream
         format.html {render :new, status: :unprocessable_entity}
       end
@@ -49,7 +49,7 @@ class SessionsController < ApplicationController
   
   def set_user
     # @user = User.find_by_login(params[:session][:login])
-    @login_identifier = params[:login][:identifier]
+    @login_identifier = params[:login][:identifier].downcase
     
     unless @user = User.find_by_username(@login_identifier)
       @email_address = EmailAddress.find_by_address(@login_identifier)

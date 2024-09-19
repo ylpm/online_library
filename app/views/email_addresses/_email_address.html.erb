@@ -1,6 +1,6 @@
 <%= tag.div do %>
   <%= link_to gravatar(email_address, width: 40, height: 40), "https://gravatar.com/emails", target: "_blank", rel: "noopener" %>
-	<strong><%= email_address %></strong><%= " - Primary" if email_address.owner.email_addresses.many? && email_address.primary? %>
+	<strong><%= email_address %></strong><%= " - Primary" if email_address.owner.email_addresses.select{|e| e.persisted?}.many? && email_address.primary? %>
 	<%= link_to("Activate", "#", class: "form-links text-small") unless email_address.activated? %>
 	<%= tag.hr %>
 <% end %>

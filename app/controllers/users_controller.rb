@@ -18,6 +18,8 @@ class UsersController < ApplicationController
   before_action only: [:setting, :update, :destroy] do
     do_friendly_forwarding_unless(credential_me_url) { authenticity_confirmed? }
   end
+  
+  # before_action :do_nothing_if_no_change, only: :update
 
   before_action :check_the_requested_user_exists, only: :show  
 
@@ -30,8 +32,7 @@ class UsersController < ApplicationController
   def new
     new_personable(User) do |new_user|
       @user = new_user
-      # @user.person.email_addresses.build #
-      2.times { @user.person.email_addresses.build }
+      @user.person.email_addresses.build # 2.times { @user.person.email_addresses.build }
     end
   end
 
@@ -53,11 +54,11 @@ class UsersController < ApplicationController
             redirect_to root_url, status: :see_other
           end
         else
-          @user.person.email_addresses.build if @user.person.email_addresses.length == 1 # one? no funciona
+          # @user.person.email_addresses.build if @user.person.email_addresses.length == 1 # @user.person.email_addresses.one? no funciona
           format.turbo_stream
           format.html {render :new, status: :unprocessable_entity}
         end
-      end                               
+      end
     end
   end
 
@@ -86,23 +87,49 @@ class UsersController < ApplicationController
   end
 
   def update
-    update_personable(current_user, user_params) do |success|
-      confirm_authenticity
-      respond_to do |format|
-        if success
-          format.html do
-            flash[:success] = "You have updated your settings successfully!"
-            redirect_to setting_me_url, status: :see_other # redirect_to profile_me_url
-            # redirect_to user_url(current_user.username), status: :see_other
+    respond_to do |format|
+      if changes_for_update # => IMPLEMENTAR ESTE METODO....!!!!
+        update_personable(current_user, user_params) do |success|
+          confirm_authenticity
+          if success
+            format.html do
+              flash[:success] = "You have updated your settings successfully!"
+              redirect_to setting_me_url, status: :see_other # redirect_to profile_me_url
+              # redirect_to user_url(current_user.username), status: :see_other
+            end
+          else
+            @user = current_user
+            @user.person.email_addresses.build if @user.person.email_addresses.select{|e| !e.persisted?}.empty?
+            format.turbo_stream
+            format.html {render :setting, status: :unprocessable_entity}
           end
-        else
-          @user = current_user
-          @user.person.email_addresses.build if @user.person.email_addresses.select{|e| !e.persisted?}.empty?
-          format.turbo_stream
-          format.html {render :setting, status: :unprocessable_entity}
         end
+      else
+        flash.now[:info] = "No changes made" # revisar que se vea este flash cuando no hay cambios en el form
+        @user = current_user
+        format.turbo_stream
       end
     end
+    
+    
+    # update_personable(current_user, user_params) do |success|
+    #   confirm_authenticity
+    #   respond_to do |format|
+    #     if success
+    #       format.html do
+    #         flash[:success] = "You have updated your settings successfully!"
+    #         redirect_to setting_me_url, status: :see_other # redirect_to profile_me_url
+    #         # redirect_to user_url(current_user.username), status: :see_other
+    #       end
+    #     else
+    #       @user = current_user
+    #       @user.person.email_addresses.build if @user.person.email_addresses.select{|e| !e.persisted?}.empty?
+    #       format.turbo_stream
+    #       format.html {render :setting, status: :unprocessable_entity}
+    #     end
+    #   end
+    # end
+    
   end
 
   def destroy
@@ -145,6 +172,11 @@ class UsersController < ApplicationController
                           email_addresses_attributes: [:address]
                          ]
       )
+  end
+  
+  def changes_for_update
+    # if current_user.attributes.slice(*user_params.keys) == user_params
+    true
   end
 
   def person_params = params[:user][:person]

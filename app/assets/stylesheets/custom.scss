@@ -23,22 +23,41 @@ $dark-gray: rgb(24, 23, 23);
   }
 }
 
+// Cambio de color para el botón "login"
+.btn-outline-primary {
+  border-color: #2a11BE;
+  color: #2A11BE;
+  &:hover{
+    background-color: #2a11BE;
+    border-color: #2a11BE;
+    color: #ffffff
+  }
+}
+
+// Cambio de color para el botón "signup"
+.btn-primary {
+  background-color: #2a11BE;
+  border-color: #2a11BE;
+  &:hover{
+    background-color: #1F07AA;
+    border-color: #1F07AA;
+    color: #ffffff
+  }
+}
+
+.pixelart-checkbox {
+       background-color: green !important;
+   }
+
+/*
+input#login_remember_me:checked {
+       background-color: green !important;
+}
+*/
+
 .text-small {
   font-size: 85%;
 }
-
-
-/*
-.dropdown-toggle:not(:focus) {
-  outline: 0;
-}*/
-
-/* lo mismo anterior */
-// no pone el borde al hacer click en el dropdown menu
-.dropdown-toggle {
-  outline: 0;
-}
-
 
 .emph-item {
   color: black;
@@ -55,9 +74,25 @@ $dark-gray: rgb(24, 23, 23);
 
 /* Flash messages*/
 
+.alert {
+  //margin: 0;
+  //border-radius: 0 !important;
+  text-align: center;
+}
+
 div.top-alert {
   //margin: 0;
-  border-radius: 0;
+  border-radius: 0 !important;
+}
+
+.alert-success, .alert-info, .alert-warning, .alert-danger {
+    background-color: #ACB1FF !important; /* Tono más claro de #2a11BE */
+    border-color: #ACB1FF !important;
+    color: #fff !important;;
+}
+
+.btn-close {
+  color: #fff !important;
 }
 
 /*#error_explanation {
@@ -77,4 +112,23 @@ div.top-alert {
       text-decoration: none;
     }
   }
+}
+
+/* Footer */
+
+/*
+.dark-footer {
+  //background-color: #1F07AA; // $dark-violet;
+  //box-shadow: inset 0 3.5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+}
+*/
+
+.dark-footer {
+  background-color: #1F07AA;
+  //box-shadow: inset 0 3.5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  //color: #ffffff;
+}
+
+.invert {
+  filter: invert(100%);
 }
