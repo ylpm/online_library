@@ -119,7 +119,7 @@ class UniquenessEmailAddressAttrsTest < EmailAddressTest
   test "email address should be unique" do
     duplicated_test_email = @test_email.dup
     @test_email.save 
-    # duplicated_test_email.address.upcase! # ya no es necesario cuando se agrega el callback downcase_address
+    duplicated_test_email.address.upcase! # ya no es necesario cuando se agrega el callback downcase_address
     assert_not duplicated_test_email.valid?
   end
 

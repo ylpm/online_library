@@ -28,9 +28,16 @@ class EmailAddress < ApplicationRecord
   validates :address, presence: true,
                         length: {maximum: 255},
                         format: {with: VALID_EMAIL_FORMAT},
-                    uniqueness: { case_sensitive: false }
+                    uniqueness: { case_sensitive: false } # scope: :owner_id
+  
+  validates :address, with: :unique_for_its_owner
   
   def to_s = address
+    
+  # def ==(email_address)
+  #   return false unless email_address.respond_to?(:address)
+  #   self.address.match?(/#{email_address.address}/i)
+  # end
     
   private
   
@@ -42,5 +49,16 @@ class EmailAddress < ApplicationRecord
     # self.activation_digest = EmailAddress.digest(address)
     self.activated_at = Time.now
     self.activated = true
+  end
+  
+  def unique_for_its_owner
+    return if self.nil? || self.address.nil? || self.owner.nil?
+    self.owner.email_addresses.each_with_index do |email_address, index|
+      next if self.eql?(email_address) 
+      if self.address.match?(/#{email_address.address}/i)
+        self.errors.add(:address, "is repeated as #{email_address.address}")
+        return
+      end
+    end
   end
 end

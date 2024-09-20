@@ -136,7 +136,7 @@ class UniquenessUserAttrsTest < UserTest
   test "username should be unique" do
     @duplicated_test_user = @test_user.dup
     assert @test_user.save
-    # @duplicated_test_user.username.upcase! # ya no es necesario cuando se agrega el callback downcase_username
+    @duplicated_test_user.username.upcase!
     assert_not @duplicated_test_user.valid?, "The username \'#{@duplicated_test_user.username}\' has been taken by another user before"
   end
 end

@@ -13,7 +13,7 @@
        <%= render 'form_field', form: person_form, 
 			                         field: {sym: :first_name, str: "First name*", type: :text_field},
 											      required: true, 
-													 autofocus: true  %>
+													 autofocus: user_form.object.errors.empty?  %>
 
 			<% end %>
 

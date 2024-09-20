@@ -7,20 +7,20 @@
 	  <%= tag.div class: "d-flex flex-wrap" do %>
 		
 			<%= tag.div class: "flex-fill me-2 mb-3" do %>
-			
+						
         <%= render 'form_field', form: person_form, 
  			                          field: {sym: :first_name, str: "First name*", type: :text_field},
  											       required: true, 
- 													  autofocus: true  %>
+ 													  autofocus: user_form.object.errors.empty? %>
 
 			<% end %>
 			
 			<%= tag.div class: "flex-fill me-2 mb-3" do %>
-			
+						
         <%= render 'form_field', form: person_form, 
  			                          field: {sym: :last_name, str: "Last name*", type: :text_field},
  											       required: true,
- 													  autofocus: false  %>
+ 													  autofocus: false %>
 
 			<% end %>
 			
@@ -30,24 +30,29 @@
 	  <%= tag.div class: "d-flex flex-wrap" do %>
 		
 			<%= tag.div class: "flex-fill me-2 mb-3" do %>
-			
+						
 	        <%= render 'form_field', form: user_form, 
 	 			                          field: {sym: :username, str: "Username*", type: :text_field},
 	 											       required: true,
-	 													  autofocus: false  %>
+	 													  autofocus: false %>
 	
 			<% end %>
 
 			<%= person_form.fields_for :email_addresses do |email_form| %>
-			
-			  <% str, required = email_form.object.eql?(@user.person.email_addresses.first) ? ["Email Address*", true] : ["Email Address", false] %>
+			  
+				<% if @user.email_addresses.many? %>
+			    <% email_priority_str, required = email_form.object.eql?(@user.person.email_addresses.first) ? ["(Primary)*", true] 
+				                                                                                               : ["(Alternative, optional)", false] %>
+				<% end %>
 			
 				<%= tag.div class: "flex-fill me-2 mb-3" do %>
 				
+				 
+				
 		      <%= render 'form_field', form: email_form, 
-				                          field: {sym: :address, str: str, type: :email_field},
+				                          field: {sym: :address, str: "Email Address #{email_priority_str}", type: :email_field},
 												       required: required,
-														  autofocus: false  %>
+														  autofocus: false %>
 
 				<% end %>
 				
@@ -65,7 +70,7 @@
       <%= render 'form_field', form: user_form, 
 		                          field: {sym: :password, str: "Password*", type: :password_field},
 										       required: true,
-												  autofocus: false  %>
+												  autofocus: false %>
 			
 		<% end %>
 		
@@ -74,7 +79,7 @@
       <%= render 'form_field', form: user_form, 
 		                          field: {sym: :password_confirmation, str: "Confirmation*", type: :password_field},
 										       required: true,
-												  autofocus: false  %>
+												  autofocus: false %>
 	
 		<% end %>
 		
