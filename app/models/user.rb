@@ -15,7 +15,7 @@ class User < ApplicationRecord
                                   too_long: "allows 30 chars maximum" },
                          format: { with: VALID_USERNAME_REGEXP, 
                                 message: "starts with a letter and allows hyphens, dots and numbers after, p.e. john.doe"},
-                         uniqueness: true # { case_sensitive: false } esto no es necesario cuando se añade el callback downcase_username
+                         uniqueness: { case_sensitive: false }
                          
   VALID_PASSWORD_REGEXP = /\A(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\W]).{8,}$\z/
   validates :password, presence: true,

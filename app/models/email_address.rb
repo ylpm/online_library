@@ -28,7 +28,7 @@ class EmailAddress < ApplicationRecord
   validates :address, presence: true,
                         length: {maximum: 255},
                         format: {with: VALID_EMAIL_FORMAT},
-                    uniqueness: true # { case_sensitive: false }
+                    uniqueness: { case_sensitive: false }
   
   def to_s = address
     
