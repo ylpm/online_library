@@ -40,17 +40,15 @@
 
 			<%= person_form.fields_for :email_addresses do |email_form| %>
 			  
-				<% if @user.email_addresses.many? %>
-			    <% email_priority_str, required = email_form.object.eql?(@user.person.email_addresses.first) ? ["(Primary)*", true] 
-				                                                                                               : ["(Alternative, optional)", false] %>
-				<% end %>
+				<%# if @user.email_addresses.many? %>
+			    <% email_str_label, required = email_form.object.eql?(@user.person.email_addresses.first) ? ["Email Address*", true] 
+				                                                                                            : ["Email Address", false] %>
+				<%# end %>
 			
 				<%= tag.div class: "flex-fill me-2 mb-3" do %>
 				
-				 
-				
 		      <%= render 'form_field', form: email_form, 
-				                          field: {sym: :address, str: "Email Address #{email_priority_str}", type: :email_field},
+				                          field: {sym: :address, str: email_str_label, type: :email_field},
 												       required: required,
 														  autofocus: false %>
 
