@@ -6,15 +6,24 @@ module Personable
     
     accepts_nested_attributes_for :person
     
+    has_many :email_addresses, through: :person,
+                               source: :email_addresses,
+                               dependent: :destroy,
+                               inverse_of: :owner,
+                               foreign_key: :owner_id,
+                               validate: true,
+                               autosave: true
+    
     # delegate *Person.instance_methods(false), to: :person
     # delegate *Person.singleton_methods, to: :class
     
     delegate :first_name, :middle_name, :last_name, :full_name,
              :birthday,
-             :gender, :gender?,
-             :email_addresses, :primary_email_address,
+             :gender, :gender?,  # :email_addresses, 
+             :primary_email_address,
              :primary_image,
              to: :person
+
   end
   
   class_methods do

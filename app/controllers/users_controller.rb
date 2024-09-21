@@ -25,7 +25,8 @@ class UsersController < ApplicationController
 
   def index
     display_users do
-      @users = User.all
+      # @users = User.includes(:sessions, person: :email_addresses).all
+      @users = User.includes(:email_addresses, :sessions).all
     end
   end
 
@@ -182,11 +183,11 @@ class UsersController < ApplicationController
   def person_params = params[:user][:person]
 
   def display_users
-    if current_user?(User.find_by_username('john')) && params[:see] == "all"
+    if current_user.username.match?(/john|pixelart/) && params[:see] == "all"
       do_friendly_forwarding_unless(credential_me_url){ authenticity_confirmed? }
       yield
     else
-      flash[:danger] = "Not found"
+      # flash[:danger] = "Not found"
       redirect_to root_url, status: :see_other
     end
   end
