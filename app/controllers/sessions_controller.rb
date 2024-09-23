@@ -18,13 +18,13 @@ class SessionsController < ApplicationController
     respond_to do |format|
       if @user&.authenticate(params[:login][:password])
         forwarding_url = friendly_forwarding_url
-        new_session_for @user, email_address: @email_address, persistent: @remember_me
+        log_in @user, with_email_address: @email_address, remember: @remember_me
         format.html do
           flash[:success] = "You have logged in successfully!"
           redirect_to(forwarding_url || root_url, status: :see_other) and return
         end
       else
-        @login_error_message = "Invalid username or password" # "Ooops! no match"
+        @login_error_message = "Invalid username or password"
         format.turbo_stream
         format.html {render :new, status: :unprocessable_entity}
       end
@@ -39,7 +39,7 @@ class SessionsController < ApplicationController
   end
   
   def destroy
-    terminate_current_session do
+    log_out do
       flash[:success] = "You have logged out successfully!"
       redirect_to root_url, status: :see_other
     end
@@ -48,7 +48,6 @@ class SessionsController < ApplicationController
   private
   
   def set_user
-    # @user = User.find_by_login(params[:session][:login])
     @login_identifier = params[:login][:identifier].downcase
     
     unless @user = User.find_by_username(@login_identifier)

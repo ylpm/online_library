@@ -6,8 +6,7 @@ class Person < ApplicationRecord
   accepts_nested_attributes_for :email_addresses
   
   belongs_to :primary_email_address, class_name: "EmailAddress", optional: true #, -> {EmailAddress.where(owner_id: id)}
-  # accepts_nested_attributes_for :primary_email_address
-  
+    
   def primary_image # PROVISIONAL
     nil
   end

@@ -3,8 +3,7 @@ class User < ApplicationRecord
   
   has_many :sessions, dependent: :destroy
   
-  has_secure_password # requires a password_digest field at database level users table and the bcrypt gem
-                      # adds two virtual attributes to User model: password and password_confirmation
+  has_secure_password
   
   before_save :downcase_username
   
@@ -40,8 +39,8 @@ class User < ApplicationRecord
     # y como hay sesiones que tienen referencias a direcciones de email, entonces
     # da el error de integridad referencial. Una forma de resolverlo
     # es declarando primero  "has_many :sessions" y luego "include Personable"
-    # pero no es confiable descansar en esto.
-    self.sessions.each {|s| s.destroy}
+    # pero no es confiable delegar en esto.
+    self.sessions.destroy_all # self.sessions.each {|s| s.destroy}
     super
   end
 

@@ -1,26 +1,23 @@
 class EmailAddress < ApplicationRecord
-  belongs_to :owner, class_name: 'Person'
+  belongs_to :owner, class_name: 'Person', inverse_of: :email_addresses, required: true
   
-  has_one :mark_as_primary_for, class_name: 'Person', foreign_key: :primary_email_address_id, inverse_of: :primary_email_address
+  # has_one :owner_marked_as_primary, required: false,
+  #                                   class_name: 'Person',
+  #                                   foreign_key: :primary_email_address_id,
+  #                                   inverse_of: :primary_email_address
   
-  has_many :sessions, inverse_of: :email_address
+  has_many :identified_sessions, class_name: 'Session', inverse_of: :email_address_identifier
   
-  default_scope { order(created_at: :asc) } # para mejorar rendimiento, indexar la columna created_at
+  default_scope -> { includes(:owner).order(created_at: :asc) } # al recuperar las direcciones de email, 
+                                                                # se recucuperan tambien su owner medainte eagger loading,
+                                                                # y las direcciones se recuperan en el mismo orden en que fueron creadas.
+                                                                # Para mejorar rendimiento, indexar la columna created_at
   
   def primary?
-    !mark_as_primary_for.nil?
+    # !owner_marked_as_primary.nil?
+    owner.primary_email_address.eql?(self)
   end
       
-	# ## CALLBACKS:
-	# ### Hay dos formas de usar los callbacks:
-	# ### 	1. pasandoles un bloque
-	# ### 	2. referenciando un metodo 
-
-	# ### ejemplo de callback pasandole un bloque
-	# before_save do 
-	# 	address.downcase!
-	# end
-	# ### ejemplo de callback referenciando un metodo
   before_save :downcase_address
   before_save :activate_email_address # provisional
   

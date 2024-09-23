@@ -1,12 +1,16 @@
 class Session < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, inverse_of: :sessions
   
-  belongs_to :email_address, required: false, inverse_of: :sessions
+  belongs_to :email_address_identifier, required: false, 
+                                        class_name: 'EmailAddress',
+                                        foreign_key: :email_address_id,
+                                        inverse_of: :identified_sessions
+                                        
   
-  attr_reader :remember_token # attr_accessor :remember_token
+  attr_reader :remember_token
   
   def login_identifier
-    (email_address.address if email_address) || user.username
+    (email_address_identifier.address if !email_address_identifier.nil?) || user.username
   end
     
   def remember
@@ -39,7 +43,6 @@ class Session < ApplicationRecord
   private
   
   def set_session_digest
-    # self.remember_token = Session.new_token
     @remember_token = Session.new_token
     update_attribute(:session_digest, Session.digest(remember_token))
     session_digest
