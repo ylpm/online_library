@@ -4,7 +4,7 @@ module SessionsHelper
   
   def log_in(user, with_email_address: nil, remember: false)
     reset_session
-    new_session_for(@user, email_address_identifier: with_email_address, persistent: remember)
+    new_session_for(user, email_address_identifier: with_email_address, persistent: remember)
     confirm_authenticity
   end
   
@@ -26,9 +26,9 @@ module SessionsHelper
     else
       delete_tracking_cookies
     end
-    if @current_session && @current_session.remember_token.blank?
-      @current_session.rescue_remember_token(cookies[:_rt])
-    end
+    # if @current_session && @current_session.remember_token.blank?
+    #   @current_session.rescue_remember_token(cookies[:_rt])
+    # end
     @current_session
   end
   
