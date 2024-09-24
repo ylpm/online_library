@@ -73,7 +73,6 @@ class PresencePersonAttrsTest < PersonTest
   end
 end
 
-
 class LengthPersonAttrsTest < PersonTest
 
   def setup
@@ -178,7 +177,7 @@ class AssociatedEmailAddressesDestructionTest < PersonTest
   test "associated email addresses should be destroyed" do
     @test_person.save
     assert_difference 'EmailAddress.count', -@test_person.email_addresses.length do
-      @test_person.destroy
+      @test_person.personable.destroy
     end
   end
   

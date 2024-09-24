@@ -1,17 +1,11 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
-  
-  TEST_PASSWORD = "*Abc123*".freeze
-  
+    
   def setup
-    # @test_user = users(:john)
-    @test_user = Person.create(first_name: "Sample", 
-                                last_name: "Person", 
-                               personable: User.new(username: "sample_username",
-                                                    password: TEST_PASSWORD,
-                                                    password_confirmation: TEST_PASSWORD)
-                               ).user
+    @test_user = users(:john)
+    @test_user.primary_email_address = @test_user.email_addresses.first
+    @test_user.save
   end
 
   test "user should be valid" do
@@ -138,5 +132,13 @@ class UniquenessUserAttrsTest < UserTest
     assert @test_user.save
     @duplicated_test_user.username.upcase!
     assert_not @duplicated_test_user.valid?, "The username \'#{@duplicated_test_user.username}\' has been taken by another user before"
+  end
+end
+
+class AssociatedSessionsDestructionTest < UserTest
+  test "associated sessions should be destroyed" do
+    assert_difference 'Session.count', -@test_user.sessions.length do
+      @test_user.destroy
+    end
   end
 end

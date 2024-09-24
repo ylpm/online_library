@@ -16,13 +16,15 @@ module Personable
                                validate: true,
                                autosave: true
     
+    has_one :primary_email_address, through: :person,
+                                    source: :primary_email_address
+    
     # delegate *Person.instance_methods(false), to: :person
     # delegate *Person.singleton_methods, to: :class
     
     delegate :first_name, :middle_name, :last_name, :full_name,
              :birthday,
-             :gender, :gender?,  # :email_addresses, 
-             :primary_email_address,
+             :gender, :gender?,
              :primary_image,
              to: :person
 
