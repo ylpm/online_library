@@ -5,7 +5,7 @@ class Person < ApplicationRecord
   has_many :email_addresses, inverse_of: :owner, dependent: :destroy
   accepts_nested_attributes_for :email_addresses
   
-  belongs_to :primary_email_address, class_name: "EmailAddress", optional: true #, -> {EmailAddress.where(owner_id: id)}
+  belongs_to :primary_email_address, class_name: "EmailAddress", optional: true
     
   def primary_image # PROVISIONAL
     nil
@@ -48,6 +48,8 @@ class Person < ApplicationRecord
   validates :birthday, presence: false,
                            with: :birthday_cannot_be_future
                            
+  validates :gender, presence: true
+  
   validates :primary_email_address, presence: false,
                                         with: :primary_email_address_must_belong_to_the_person
   

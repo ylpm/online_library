@@ -7,3 +7,7 @@ john:
 mary:
   username: "mary"
   password_digest: <%= User.digest("Abcde123*") %>
+
+bob:
+  username: "bob"
+  password_digest: <%= User.digest("Abcde123*") %>

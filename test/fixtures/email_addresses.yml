@@ -18,3 +18,7 @@ john_at_yahoo:
 mary_at_gmail:
   address: "mary@gmail.com"
   owner: mary
+
+bob_at_gmail:
+  address: "bob@gmail.com"
+  owner: bob
