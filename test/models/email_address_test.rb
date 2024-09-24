@@ -52,7 +52,7 @@ class LengthEmailAddressAttrsTest < EmailAddressTest
   def setup
     super
     @too_long_email_address = "foo" + "o" * 241 + "@example.com"
-    @message_for_failing_test_of_too_long_length = "#{@too_long_email_address} chars) is too long" 
+    @message_for_failing_test_of_too_long_length = "(#{@too_long_email_address.length} chars) is too long" 
   end
 
   test "email address should not be too long" do
@@ -111,10 +111,6 @@ class FormatEmailAddressAttrsTest < EmailAddressTest
 end
 
 class UniquenessEmailAddressAttrsTest < EmailAddressTest
-  def setup
-    super
-    # @test_person = people(:john)
-  end
   
   test "email address should be unique" do
     duplicated_test_email = @test_email.dup
