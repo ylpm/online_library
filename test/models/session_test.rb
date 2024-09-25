@@ -12,7 +12,7 @@ class SessionTest < ActiveSupport::TestCase
   
   test "should be associated to a user" do
     @john_most_recent_session.user = nil
-    assert_not @john_most_recent_session.valid?
+    assert_not @john_most_recent_session.valid?, "A session have to belong a user"
   end
 
   test "login identifier should be an email address if email address identifier is set" do
@@ -31,6 +31,15 @@ class SessionTest < ActiveSupport::TestCase
 end
 
 class SessionRememberingTest < SessionTest
+  test "remember/forget mechanism" do
+    @john_most_recent_session.forget
+    assert_not @john_most_recent_session.remembered?
+    assert @john_most_recent_session.forgotten?
+    @john_most_recent_session.remember
+    assert_not @john_most_recent_session.forgotten?
+    assert @john_most_recent_session.remembered?
+  end
+  
   test "remember_with? should return true if remember token matches session digest" do
     assert @john_most_recent_session.remembered_with?('1234567')
   end
@@ -45,5 +54,13 @@ class SessionRememberingTest < SessionTest
     assert_not @john_most_recent_session.remembered_with?('')
     assert_not @john_most_recent_session.remembered?
     assert @john_most_recent_session.forgotten?
+  end
+  
+  test "rescuing a session" do
+    rescued_session = Session.rescue(@john_most_recent_session.id, '1234567')
+    assert_equal @john_most_recent_session, rescued_session
+    @john_most_recent_session.destroy
+    rescued_session = Session.rescue(@john_most_recent_session.id, '1234567')
+    assert rescued_session.nil?
   end
 end

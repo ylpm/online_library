@@ -85,7 +85,6 @@ module SessionsHelper
   def do_friendly_forwarding_unless(url, with_flash: {message: nil, type: nil})
     if block_given?
       unless yield
-        # store_requested_url
         session[:_ffurl] = request.original_url if request.get?
         redirect_unless(url, with_flash: {message: with_flash[:message], 
                                              type: with_flash[:type]}) { false }
@@ -111,7 +110,7 @@ module SessionsHelper
     raise ArgumentError, "Invalid user" unless user.instance_of?(User)
     raise ArgumentError, "Invalid email address" unless email_address_identifier.nil? || email_address_identifier.instance_of?(EmailAddress)
     @current_user = user
-    @current_session = @current_user.sessions.create!(email_address_identifier: email_address_identifier)
+    @current_session = @current_user.sessions.create(email_address_identifier: email_address_identifier)
     @current_session.remember if persistent
     start_session_tracking # set necessary cookies
     return @current_session unless block_given?
@@ -142,8 +141,12 @@ module SessionsHelper
   def handle_session_remembering
     # Discard remember cookies unless they remember a real session, i.e., if they are not fake
     unless rescued_session = Session.rescue(cookies.encrypted[:_ri], cookies[:_rt])
-      @current_session.forget if @current_session
-      delete_remember_cookies
+      if @current_session.nil?
+        delete_tracking_cookies
+      else
+        @current_session.forget
+        delete_remember_cookies
+      end
       return
     end
     
