@@ -49,7 +49,7 @@ module SessionsHelper
     
   def current_user
     raise "No current user" unless logged_in?
-    @current_user || current_session.user
+    @current_user || @current_user = current_session.user
   end
   
   def current_user?(user)
