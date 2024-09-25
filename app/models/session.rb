@@ -10,7 +10,9 @@ class Session < ApplicationRecord
   attr_reader :remember_token
   
   def login_identifier
-    (email_address_identifier.address if !email_address_identifier.nil?) || user.username
+    return email_address_identifier.address unless email_address_identifier.nil?
+    user.username
+    # (email_address_identifier.address if !email_address_identifier.nil?) || user.username
   end
     
   def remember
@@ -32,13 +34,25 @@ class Session < ApplicationRecord
     session_digest.nil?
   end
   
-  def remembered_with?(remember_token)
-    Session.token_match?(remember_token, session_digest)
+  def Session.rescue(id, token)
+    rescued_session = Session.find_by_id(id)
+    if rescued_session&.remembered_with?(token)
+      return rescued_session
+    end
+    nil
   end
   
-  def rescue_remember_token(remember_token)
-    @remember_token = remember_token if remembered? && @remember_token.blank? && remembered_with?(remember_token)
+  def remembered_with?(remember_token)
+    if Session.token_match?(remember_token, session_digest)
+      @remember_token = remember_token
+      return true
+    end
+    false
   end
+  
+  # def rescue_remember_token(remember_token)
+  #   @remember_token = remember_token if remembered? && @remember_token.blank? && remembered_with?(remember_token)
+  # end
   
   private
   

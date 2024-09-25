@@ -1,15 +1,20 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-first_john_session:
+john_first_session:
   user: john
   email_address_identifier: john_at_hey
   created_at: <%= 3.days.ago %>
 
-second_john_session:
+john_second_session:
   user: john
   created_at: <%= 2.days.ago %>
 
-third_john_session:
+john_most_recent_session:
   user: john 
   email_address_identifier: john_at_gmail
   created_at: <%= 1.day.ago %>
+  session_digest: <%= Session.digest('1234567') %>
+
+mary_first_session:
+  user: mary
+  created_at: <%= 3.days.ago %>

@@ -9,31 +9,17 @@ module SessionsHelper
   end
   
   def current_session
-    return @current_session if @current_session
-    
-    if session_id = session[:_sid]
-      @current_session = Session.find_by_id(session_id)
-      update_remembering_status
-    elsif old_session_id = cookies.encrypted[:_ri]
-      old_remember_token = cookies[:_rt]
-      delete_tracking_cookies
-      if old_session = Session.find_by_id(old_session_id)
-        if old_session.remembered_with?(old_remember_token)
-          new_session_for(old_session.user, email_address_identifier: old_session.email_address_identifier, persistent: true)        
-        end
-        old_session.destroy
-      end
-    else
-      delete_tracking_cookies
+    unless @current_session
+      @current_session = Session.find_by_id(session[:_sid])
+      handle_session_remembering
     end
-    # if @current_session && @current_session.remember_token.blank?
-    #   @current_session.rescue_remember_token(cookies[:_rt])
-    # end
-    @current_session
+    
+    return @current_session unless block_given?
+    yield @current_session
   end
   
   def current_session?(session)
-    raise ArgumentError, "Argument must be an instance of Session" unless session.instance_of? Session
+    raise ArgumentError, "Argument must be an instance of Session" unless session.instance_of?(Session)
     session == current_session
   end
   
@@ -67,7 +53,7 @@ module SessionsHelper
   end
   
   def current_user?(user)
-    raise ArgumentError, "Argument must be an instance of User" unless user.instance_of? User
+    raise ArgumentError, "Argument must be an instance of User" unless user.instance_of?(User)
     user == current_user
   end
   
@@ -119,37 +105,17 @@ module SessionsHelper
     !friendly_forwarding_url.nil?
   end
   
-  # def store_requested_url
-  #   session[:_rurl] = request.original_url if request.get?
-  # end
-
-  # def requested_url
-  #   session[:_rurl]
-  # end
-  #
-  # def reset_requested_url
-  #   session.delete(:_rurl)
-  # end
-  
-  # def doing_login?
-  #   request.original_url.match?(login_url)
-  #   # params[:controller].match?('sessions') && params[:action].match?(/new|create/)
-  # end
-  #
-  # def doing_credential_me?
-  #   request.original_url.match?(credential_me_url)
-  # end
-  
-  
   private
   
   def new_session_for(user, email_address_identifier: nil, persistent: false)
-    raise ArgumentError, "Invalid user" unless user.instance_of? User
+    raise ArgumentError, "Invalid user" unless user.instance_of?(User)
     raise ArgumentError, "Invalid email address" unless email_address_identifier.nil? || email_address_identifier.instance_of?(EmailAddress)
     @current_user = user
     @current_session = @current_user.sessions.create!(email_address_identifier: email_address_identifier)
     @current_session.remember if persistent
     start_session_tracking # set necessary cookies
+    return @current_session unless block_given?
+    yield @current_session
   end
 
   def start_session_tracking
@@ -171,6 +137,36 @@ module SessionsHelper
       current_session.forget
       delete_remember_cookies
     end
+  end
+  
+  def handle_session_remembering
+    # Discard remember cookies unless they remember a real session, i.e., if they are not fake
+    unless rescued_session = Session.rescue(cookies.encrypted[:_ri], cookies[:_rt])
+      @current_session.forget if @current_session
+      delete_remember_cookies
+      return
+    end
+    
+    # ELSE:
+    # Restart the remembered session if needed
+    if @current_session.nil?
+      delete_tracking_cookies
+      new_session_for(rescued_session.user, email_address_identifier: rescued_session.email_address_identifier, persistent: true)
+      rescued_session.destroy
+      return 
+    end
+    
+    # ELSE:
+    # Discard remember cookies unless they do remember the current session
+    unless @current_session.eql?(rescued_session)
+      @current_session.forget
+      delete_remember_cookies
+      return 
+    end
+    
+    # ELSE:
+    # Restore the current session integrity (rescue remember token)
+    @current_session = rescued_session
   end
   
   def delete_remember_cookies
