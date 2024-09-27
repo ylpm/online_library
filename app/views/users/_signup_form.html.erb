@@ -40,10 +40,8 @@
 
 			<%= person_form.fields_for :email_addresses do |email_form| %>
 			  
-				<%# if @user.email_addresses.many? %>
-			    <% email_str_label, required = email_form.object.eql?(@user.person.email_addresses.first) ? ["Email Address*", true] 
-				                                                                                            : ["Email Address", false] %>
-				<%# end %>
+			  <% email_str_label = ( required = email_form.object.eql?(@user.person.email_addresses.first) ) ? "Email Address*"
+				                                                                                               : "Email Address" %>
 			
 				<%= tag.div class: "flex-fill me-2 mb-3" do %>
 				

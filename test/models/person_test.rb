@@ -43,6 +43,11 @@ class PresencePersonAttrsTest < PersonTest
     assert @test_person.valid?, "The birthday attribute can be missing"
   end
   
+  test "birthday should be past" do
+    @test_person.birthday = 1.day.from_now
+    assert_not @test_person.valid?, "The birthday attribute #{@test_person.errors[:birthday].first} (i.e. after today #{Date.today})"
+  end
+  
   test "gender should be present" do
     @test_person.gender = nil
     assert_not @test_person.valid?, "The gender attribute can't be missing"
@@ -63,13 +68,27 @@ class PresencePersonAttrsTest < PersonTest
     assert @test_person.valid?, "The primary email address attribute can be missing"
   end
   
-  test "should accept any of his email addresses, and reject any other, as his primary email address" do
+  test "should accept as primary only an owned activated email address" do
     john_at_hey = email_addresses(:john_at_hey)
+    assert john_at_hey.activated?
     @test_person.primary_email_address = john_at_hey
-    assert @test_person.valid?, "#{john_at_hey} should be accepted as primary"
+    assert @test_person.valid?, "#{john_at_hey} should be accepted as primary. It belongs to the person and is activated"
+  end
+  
+  test "should not accept as primary an owned email address which is not activated" do
+    john_at_aol = email_addresses(:john_at_aol)
+    assert_not john_at_aol.activated?
+    @test_person.primary_email_address = john_at_aol
+    assert_not @test_person.valid?, "#{john_at_aol} should be rejected as primary. It belogns to the person but is not activated"
+    assert_equal @test_person.errors[:primary_email_address].first, "must be activated"
+  end
+  
+  test "should not accept as primary an email address owned by somebody else" do
     mary_at_gmail = email_addresses(:mary_at_gmail)
+    assert mary_at_gmail.activated?
     @test_person.primary_email_address = mary_at_gmail
-    assert_not @test_person.valid?, "#{mary_at_gmail} should be rejected as primary"
+    assert_not @test_person.valid?, "#{mary_at_gmail} should be rejected as primary. It doesn't belog to the person"
+    assert_equal @test_person.errors[:primary_email_address].first, "must be one of the #{@test_person.first_name}'s email addresses"
   end
 end
 

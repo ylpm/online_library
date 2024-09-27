@@ -92,19 +92,17 @@
 		  <%= tag.div class: "flex-fill me-2 mb-3" do %>
 			  
 				<%= tag.label class: "form-label" do %>
-				  EMAIL <%= pluralize(@user.email_addresses.count, "address").split(/\s/).last.upcase %>
+				  EMAIL <%= pluralize(@user.registered_email_addresses.count, "address").split(/\s/).last.upcase %>
 				<% end %>
 				<%= tag.hr %>
 	      
-				<% @stored_email_addresses = @user.email_addresses.select {|e| e.persisted? } %>
-				<%#= render @user.email_addresses %> 
-				<%= render @stored_email_addresses %>
+				<%= render @user.registered_email_addresses %>
 				
 			<% end %>	
 
 		<% end %>
 		
-		<% if @stored_email_addresses.many? %>
+		<% if person_form.object.activated_email_addresses.many? %>
 				
 		    <%= tag.div class: "d-flex flex-wrap" do %>
 
@@ -115,10 +113,10 @@
 						<% if person_form.object.errors.messages[:primary_email_address_id].any? %>
 						  <%= tag.div class: "alert alert-danger" do %>
 							  <%= render 'shared/errors/error_message', error_message: person_form.object.errors.messages[:primary_email_address_id].first %>
-								<%= person_form.select :primary_email_address_id, @user.email_addresses.map {|e| [e.address, e.id]}, class: "form-control" %>
+								<%= person_form.select :primary_email_address_id, person_form.object.activated_email_addresses.map {|e| [e.address, e.id]}, class: "form-control selection" %>
 							<% end %>
 						<% else %>
-						  <%= person_form.select :primary_email_address_id, @stored_email_addresses.map {|e| [e.address, e.id]}, class: "form-control" %>
+						  <%= person_form.select :primary_email_address_id, person_form.object.activated_email_addresses.map {|e| [e.address, e.id]}, class: "form-control selection" %>
 						<% end %>
 				
 		 			<% end %>	

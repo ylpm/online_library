@@ -4,7 +4,7 @@ module Personable
   included do
     has_one :person, as: :personable, touch: true, dependent: :destroy
     
-    default_scope -> { includes(:person).order(created_at: :asc) } # por defecto, se hace un eagger loading del person asociado
+    default_scope -> { includes(:person).order(created_at: :asc) } # por defecto, se hace un eagger loading del person asociado al personable
     
     accepts_nested_attributes_for :person
     
@@ -25,6 +25,7 @@ module Personable
     delegate :first_name, :middle_name, :last_name, :full_name,
              :birthday,
              :gender, :gender?,
+             :registered_email_addresses, :activated_email_addresses,
              :primary_image,
              to: :person
 

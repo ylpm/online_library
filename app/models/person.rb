@@ -4,88 +4,96 @@ class Person < ApplicationRecord
 
   has_many :email_addresses, inverse_of: :owner, dependent: :destroy
   accepts_nested_attributes_for :email_addresses
+    
+  def registered_email_addresses = email_addresses.select{ |e| e.persisted? }
+  
+  def activated_email_addresses = email_addresses.where(activated: true)
   
   belongs_to :primary_email_address, class_name: "EmailAddress", optional: true
     
-  def primary_image # PROVISIONAL
-    nil
-  end
-  
-  enum gender: {
-      Not_Specified: "Not Specified",
-      Man: "Man",
-      Woman: "Woman"
-    }
-    
-  def gender? = (self.gender.match?("Man") || self.gender.match?("Woman"))
   
   VALID_FIRST_NAME_REGEXP = /\A[a-z]{3,50}\Z/i.freeze # solo letras
   validates :first_name, presence: true,
-                           length: {minimum: 3, maximum: 50,
-                                  too_short: "allows 3 chars minimum",
-                                   too_long: "allows 50 chars maximum"},
-                           format: {with: VALID_FIRST_NAME_REGEXP, 
-                                 message: "only allows letters" }
+                           length: { minimum: 3, maximum: 50,
+                                   too_short: "allows 3 chars minimum",
+                                    too_long: "allows 50 chars maximum" },
+                           format: { with: VALID_FIRST_NAME_REGEXP, 
+                                  message: "only allows letters" }
                             
   # comienza con letra y puede contener espacios y giones, p.e., "De Varens", "Perez-Gonzalez". 
   # NO puede estar ausente pero puede ser de longitud 1
   VALID_LAST_NAME_REGEXP = /\A[a-z]([a-z\s\-]+)*\Z/i.freeze 
   validates :last_name, presence: true,
-                          length: {maximum: 50,
-                                  too_long: "allows 50 chars maximum"},
-                          format: {with: VALID_LAST_NAME_REGEXP, 
-                                message: "uses letters, spaces and hyphens"  }
+                          length: { maximum: 50,
+                                   too_long: "allows 50 chars maximum" },
+                          format: { with: VALID_LAST_NAME_REGEXP, 
+                                 message: "uses letters, spaces and hyphens"  }
     
    # EL MISMO FORMATO DE last_name, solo que
    # puede estar ausente, de ahi /\A(...)?\Z/i
    VALID_MIDDLE_NAME_REGEXP = /\A(#{VALID_LAST_NAME_REGEXP})?\Z/i.freeze 
-   validates :middle_name, presence: false,
-                             length: {maximum: 50,
-                                     too_long: "allows 50 chars maximum"},
-                             format: {with: VALID_MIDDLE_NAME_REGEXP, 
-                                   message: "only allows letters" }
+   validates :middle_name, length: { maximum: 50,
+                                    too_long: "allows 50 chars maximum" },
+                           format: { with: VALID_MIDDLE_NAME_REGEXP, 
+                                  message: "only allows letters" }
   
-  validates :birthday, presence: false,
-                           with: :birthday_cannot_be_future
-                           
+  
+  def full_name = "#{first_name} #{middle_name} #{last_name}".strip.gsub(/\s+/,?\s)
+    
+  def to_s = "#{self.full_name} <#{primary_email_address || email_addresses.first}>".strip
+  
+  validates :birthday, comparison: { less_than_or_equal_to: Date.today, 
+                                                   message: "can't be in the future",
+                                                        if: -> { birthday.present? } }
+                             # with: :birthday_cannot_be_future
+
+
+  enum gender: {
+    Not_Specified: "Not Specified",
+    Man: "Man",
+    Woman: "Woman"
+  }
+  
   validates :gender, presence: true
   
-  validates :primary_email_address, presence: false,
-                                        with: :primary_email_address_must_belong_to_the_person
+  def gender? = (self.gender.match?("Man") || self.gender.match?("Woman"))                           
   
-  def full_name
-    middle_name ? "#{first_name} #{middle_name} #{last_name}"
-                : "#{first_name} #{last_name}"
+  
+  validates :primary_email_address, with: :primary_email_address_belongs_to_the_person,
+                                      if: -> { primary_email_address.present? }
+    
+  def primary_image # PROVISIONAL
+    nil
   end
-  
-  def to_s = "#{self.full_name} <#{email_addresses.first}>"
   
   # Sobreescribir el metodo destroy
   def destroy
-    # Antes de eliminar la persona, limpiar la referencia de primary_email_address
-    # llamo update_column en lugar de update_attribute o simplemente update
-    # para circunvalar las validaciones y actualizar 
+    # Antes de eliminar la persona, limpiar la referencia de primary_email_address,
+    # pues de lo contrario, al tratar de eliminar primero los email addresses asociadas,
+    # si alguna esta establecida como la primary, no la podra eliminar y lanzara un error
     update_column(:primary_email_address_id, nil)
     super
   end
     
   private
   
-  def birthday_cannot_be_future
-    if birthday
-      errors.add(:birthday, "can't be in the future") unless birthday <= Date.today
-    end
-  end
+  # # CUSTOM VALIDATORS
+  def primary_email_address_belongs_to_the_person
+    # if  primary_email_address_id.present?
+     errors.add(:primary_email_address, "must be one of the #{first_name}'s email addresses") and return unless email_addresses.include?(primary_email_address)
+     errors.add(:primary_email_address, "must be activated") unless primary_email_address.activated?
+    # end
+  end  
   
-  def birthday_cannot_be_under_8_years
-    if birthday
-      errors.add(:birthday, "says you are under 8 years") unless birthday <= 8.years.ago
-    end
-  end
+  # def birthday_cannot_be_future
+  #   if birthday
+  #     errors.add(:birthday, "can't be in the future") unless birthday <= Date.today
+  #   end
+  # end
   
-  def primary_email_address_must_belong_to_the_person
-    if primary_email_address_id.present?
-      errors.add(:primary_email_address, "must be one of the #{first_name}'s email addresses") unless email_addresses.include?(primary_email_address)
-    end
-  end
+  # def birthday_cannot_be_under_8_years
+  #   if birthday
+  #     errors.add(:birthday, "says you are under 8 years") unless birthday <= 8.years.ago
+  #   end
+  # end
 end

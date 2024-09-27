@@ -15,10 +15,17 @@ john_at_yahoo:
   owner: john
   activated: true
 
+john_at_aol:
+  address: "john@aol.com"
+  owner: john
+  activated: false
+
 mary_at_gmail:
   address: "mary@gmail.com"
   owner: mary
+  activated: true
 
 bob_at_gmail:
   address: "bob@gmail.com"
   owner: bob
+  activated: true

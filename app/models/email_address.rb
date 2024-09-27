@@ -9,7 +9,7 @@ class EmailAddress < ApplicationRecord
   has_many :identified_sessions, class_name: 'Session', inverse_of: :email_address_identifier
   
   default_scope -> { includes(:owner).order(created_at: :asc) } # al recuperar las direcciones de email, 
-                                                                # se recucuperan tambien su owner medainte eagger loading,
+                                                                # se recucuperan tambien su owner,
                                                                 # y las direcciones se recuperan en el mismo orden en que fueron creadas.
                                                                 # Para mejorar rendimiento, indexar la columna created_at
   
@@ -22,12 +22,16 @@ class EmailAddress < ApplicationRecord
   before_save :activate_email_address # provisional
   
   VALID_EMAIL_FORMAT = /\A[a-z][a-z0-9\.\+\-\_]*@[a-z0-9]+[a-z\d\-]*(\.[a-z\d\-]+)*\.[a-z]{2,}\z/i.freeze
-  validates :address, presence: true,
-                        length: {maximum: 255},
-                        format: {with: VALID_EMAIL_FORMAT},
-                    uniqueness: { case_sensitive: false } # scope: :owner_id
+  validates :address, confirmation: { case_sensitive: false },
+                          presence: true,
+                            length: { maximum: 255 },
+                            format: { with: VALID_EMAIL_FORMAT },
+                        uniqueness: { case_sensitive: false }
+  validates :address, with: :check_email_address_repetitions
   
-  validates :address, with: :unique_for_its_owner
+  # # UNCOMMENT THE FOLLOWING LINE TO MAKE THE address_confirmation MANDATORY
+  # # AND THUS, ALWAYS TRIGGER THE PREVIOUS confirmation: { case_sensitive: false } VALIDATOR ON :address ATTRIBUTE
+  # validates :address_confirmation, presence: true
   
   def to_s = address
     
@@ -48,9 +52,10 @@ class EmailAddress < ApplicationRecord
     self.activated = true
   end
   
-  def unique_for_its_owner
+  # custom validator
+  def check_email_address_repetitions
     return if self.nil? || self.address.nil? || self.owner.nil?
-    self.owner.email_addresses.each_with_index do |email_address, index|
+    self.owner.email_addresses.each do |email_address|
       next if self.eql?(email_address) 
       if self.address.match?(/#{email_address.address}/i)
         self.errors.add(:address, "is repeated as #{email_address.address}")
