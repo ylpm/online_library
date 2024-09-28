@@ -3,7 +3,6 @@ class User < ApplicationRecord
   
   has_many :sessions, dependent: :destroy
   
-  
   VALID_USERNAME_REGEXP = /\A[a-z]([\-\_\.]?[a-z\d]+)+\Z/i.freeze
   validates :username, presence: true,
                          length: { minimum: 3, too_short: "allows 3 chars minimum", 

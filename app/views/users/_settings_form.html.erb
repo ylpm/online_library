@@ -46,10 +46,9 @@
 			
 			<%= tag.div class: "flex-fill pe-2 mb-3" do %>
 			
-        <%= render 'form_field', form: person_form, 
- 			                          field: {sym: :birthday, str: "Birthday", type: :date_field},
- 											       required: false,
- 													  autofocus: false  %>
+			  <%= person_form.label :birthday, class: "form-label" %>
+				
+				<%= person_form.date_field :birthday, min: Person::BIRTHDAY_RANGE.min, max: Person::BIRTHDAY_RANGE.max, class: "form-control" %>
 
 		  <% end %>
 			
@@ -57,15 +56,15 @@
 
 			  <%= person_form.label :gender, class: "form-label" %>
 		  
-			  <% if @user.gender? %>
-				  <%= tag.div do %>
-					  <strong><%= @user.gender %></strong>
-					<% end %>
-				<% else %>
+			  <%# if @user.gender? %>
+				  <%#= tag.div do %>
+					  <!-- <strong><%#= @user.gender %></strong> -->
+					<%# end %>
+				<%# else %>
 				  <%= tag.div class: "flex-fill me-2 mb-3" do %>
-				    <%= person_form.select :gender, Person.genders.values, class: "form-control" %>
+				    <%= person_form.select :gender, gender_options_for(person_form.object), class: "form-control" %>
 					<% end %> 
-				<% end %>
+				<%# end %>
 				
 			<% end %>
 			
@@ -113,10 +112,10 @@
 						<% if person_form.object.errors.messages[:primary_email_address_id].any? %>
 						  <%= tag.div class: "alert alert-danger" do %>
 							  <%= render 'shared/errors/error_message', error_message: person_form.object.errors.messages[:primary_email_address_id].first %>
-								<%= person_form.select :primary_email_address_id, person_form.object.activated_email_addresses.map {|e| [e.address, e.id]}, class: "form-control selection" %>
+								<%= person_form.select :primary_email_address_id, primary_email_address_options_for(person_form.object, include_blank: false), class: "form-control selection" %>
 							<% end %>
 						<% else %>
-						  <%= person_form.select :primary_email_address_id, person_form.object.activated_email_addresses.map {|e| [e.address, e.id]}, class: "form-control selection" %>
+						  <%= person_form.select :primary_email_address_id, primary_email_address_options_for(person_form.object, include_blank: false), class: "form-control selection" %>
 						<% end %>
 				
 		 			<% end %>	

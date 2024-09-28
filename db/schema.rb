@@ -36,7 +36,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_17_125934) do
     t.datetime "updated_at", null: false
     t.string "personable_type", null: false
     t.integer "personable_id", null: false
-    t.string "gender", default: "Not Specified", null: false
+    t.string "gender"
     t.bigint "primary_email_address_id"
     t.index ["personable_type", "personable_id"], name: "index_people_on_personable_type_and_personable_id", unique: true
     t.index ["primary_email_address_id"], name: "index_people_on_primary_email_address_id", unique: true

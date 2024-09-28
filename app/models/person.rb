@@ -11,6 +11,8 @@ class Person < ApplicationRecord
   
   belongs_to :primary_email_address, class_name: "EmailAddress", optional: true
     
+  validates :primary_email_address, with: :primary_email_address_belongs_to_the_person,
+                                      if: -> { primary_email_address.present? }
   
   VALID_FIRST_NAME_REGEXP = /\A[a-z]{3,50}\Z/i.freeze # solo letras
   validates :first_name, presence: true,
@@ -31,7 +33,7 @@ class Person < ApplicationRecord
     
    # EL MISMO FORMATO DE last_name, solo que
    # puede estar ausente, de ahi /\A(...)?\Z/i
-   VALID_MIDDLE_NAME_REGEXP = /\A(#{VALID_LAST_NAME_REGEXP})?\Z/i.freeze 
+   VALID_MIDDLE_NAME_REGEXP = /\A(#{VALID_LAST_NAME_REGEXP})?\Z/i.freeze
    validates :middle_name, length: { maximum: 50,
                                     too_long: "allows 50 chars maximum" },
                            format: { with: VALID_MIDDLE_NAME_REGEXP, 
@@ -39,29 +41,36 @@ class Person < ApplicationRecord
   
   
   def full_name = "#{first_name} #{middle_name} #{last_name}".strip.gsub(/\s+/,?\s)
-    
+   
   def to_s = "#{self.full_name} <#{primary_email_address || email_addresses.first}>".strip
   
-  validates :birthday, comparison: { less_than_or_equal_to: Date.today, 
-                                                   message: "can't be in the future",
-                                                        if: -> { birthday.present? } }
+  BIRTHDAY_RANGE = (120.years.ago.to_date..Date.today.to_date).freeze
+  validates :birthday, comparison: { greater_than_or_equal_to: BIRTHDAY_RANGE.min,  # message: "can't be previous to 120 years ago",
+                                        less_than_or_equal_to: BIRTHDAY_RANGE.max,  # message: "can't be in the future",
+                                                      message: "must be between 120 years ago and today",
+                                                           if: -> { birthday.present? } }
                              # with: :birthday_cannot_be_future
 
+  # enum gender: {
+  #   Not_Specified: "Not Specified",
+  #   Man: "Man",
+  #   Woman: "Woman"
+  # }
+  # validates :gender, presence: true
+  # def gender? = (self.gender.match?("Man") || self.gender.match?("Woman"))
+  
+  def gender=(g)
+    super(g.nil? ? nil : g.downcase.capitalize)
+  end
+  
+  GENDERS = %w(Man Woman).freeze
+  
+  validates :gender, inclusion: { in: GENDERS,
+                                  message: "is not a valid gender",
+                                  if: -> { gender.present? } }
+      
+  # before_save :downcase_gender, if: -> { gender.present? }
 
-  enum gender: {
-    Not_Specified: "Not Specified",
-    Man: "Man",
-    Woman: "Woman"
-  }
-  
-  validates :gender, presence: true
-  
-  def gender? = (self.gender.match?("Man") || self.gender.match?("Woman"))                           
-  
-  
-  validates :primary_email_address, with: :primary_email_address_belongs_to_the_person,
-                                      if: -> { primary_email_address.present? }
-    
   def primary_image # PROVISIONAL
     nil
   end
@@ -83,7 +92,9 @@ class Person < ApplicationRecord
      errors.add(:primary_email_address, "must be one of the #{first_name}'s email addresses") and return unless email_addresses.include?(primary_email_address)
      errors.add(:primary_email_address, "must be activated") unless primary_email_address.activated?
     # end
-  end  
+  end
+  
+  # def downcase_gender = self.gender.downcase!
   
   # def birthday_cannot_be_future
   #   if birthday

@@ -42,15 +42,45 @@ class PresencePersonAttrsTest < PersonTest
     @test_person.birthday = nil
     assert @test_person.valid?, "The birthday attribute can be missing"
   end
-  
-  test "birthday should be past" do
-    @test_person.birthday = 1.day.from_now
-    assert_not @test_person.valid?, "The birthday attribute #{@test_person.errors[:birthday].first} (i.e. after today #{Date.today})"
+
+  test "should accept birthday in range (120 years ago - today)" do
+    valid_birthdays = [Person::BIRTHDAY_RANGE.min, 6.months.ago.to_date, Person::BIRTHDAY_RANGE.max]
+    valid_birthdays.each do |valid_birthday|
+      @test_person.birthday = valid_birthday
+      assert @test_person.valid?, "#{valid_birthday} is in the birthday's permitted range"
+      assert @test_person.errors[:birthday].empty?
+    end
   end
   
-  test "gender should be present" do
+  test "should not accept birthday out of range (120 years ago - today)" do
+    invalid_birthdays = [121.years.ago.to_date, 1.day.from_now.to_date]
+    invalid_birthdays.each do |invalid_birthday|
+      @test_person.birthday = invalid_birthday
+      assert_not @test_person.valid?, "#{invalid_birthday} is out of the birthday's permitted range"
+      assert_not @test_person.errors[:birthday].empty?
+      assert_equal "must be between 120 years ago and today",@test_person.errors[:birthday].first
+    end
+  end
+  
+  # test "birthday should not be future" do
+  #   @test_person.birthday = 1.day.from_now
+  #   assert_not @test_person.valid?, "The birthday attribute can't be after today #{Date.today})"
+  #   assert_not @test_person.errors[:birthday].empty?
+  #   assert_equal "can't be in the future",@test_person.errors[:birthday].first
+  # end
+  #
+  # test "birthday should not be previous 120 years ago" do
+  #   @test_person.birthday = 121.years.ago
+  #   assert_not @test_person.valid?, "The birthday attribute can't be previous to 120 years ago"
+  #   assert_not @test_person.errors[:birthday].empty?
+  #   # assert_equal "can't be previous to 120 years ago",@test_person.errors[:birthday].first
+  #   assert_equal "must be between 120 years ago and today",@test_person.errors[:birthday].first
+  # end
+  
+  test "gender can be missing" do
     @test_person.gender = nil
-    assert_not @test_person.valid?, "The gender attribute can't be missing"
+    assert @test_person.valid?, "The gender attribute can be nil"
+    assert @test_person.errors[:gender].empty?
   end
 
   test "personable type (subclass) should be present" do
@@ -80,7 +110,7 @@ class PresencePersonAttrsTest < PersonTest
     assert_not john_at_aol.activated?
     @test_person.primary_email_address = john_at_aol
     assert_not @test_person.valid?, "#{john_at_aol} should be rejected as primary. It belogns to the person but is not activated"
-    assert_equal @test_person.errors[:primary_email_address].first, "must be activated"
+    assert_equal "must be activated", @test_person.errors[:primary_email_address].first
   end
   
   test "should not accept as primary an email address owned by somebody else" do
@@ -88,7 +118,7 @@ class PresencePersonAttrsTest < PersonTest
     assert mary_at_gmail.activated?
     @test_person.primary_email_address = mary_at_gmail
     assert_not @test_person.valid?, "#{mary_at_gmail} should be rejected as primary. It doesn't belog to the person"
-    assert_equal @test_person.errors[:primary_email_address].first, "must be one of the #{@test_person.first_name}'s email addresses"
+    assert_equal "must be one of the #{@test_person.first_name}'s email addresses", @test_person.errors[:primary_email_address].first
   end
 end
 
@@ -175,19 +205,30 @@ class FormatPersonAttrsTest < PersonTest
   end
 
   test "should accept valid genders" do
-    Person.genders.keys.each do |valid_gender|
+    Person::GENDERS.each do |valid_gender|
       @test_person.gender = valid_gender
+      assert @test_person.valid?, "\"#{@test_person.gender}\" is a valid gender"
+      assert @test_person.errors[:gender].empty?
     end
-    assert @test_person.valid?, "\"#{@test_person.gender}\" is a valid gender"
+  end
+  
+  test "should accept valid gender variants" do
+    Person::GENDERS.each do |valid_gender|
+      @test_person.gender = valid_gender.upcase
+      assert @test_person.valid?, "\"#{valid_gender.upcase}\" is a valid gender"
+      assert @test_person.errors[:gender].empty?
+    end
   end
 
-  # test "should not accept invalid genders" do
-  #   invalid_genders = ["Invalid", "Other Gender",]
-  #   invalid_genders.each do |invalid_gender|
-  #     @test_person.gender = invalid_gender
-  #   end
-  #   assert_not @test_person.valid?, "\"#{@test_person.gender}\" is a valid gender"
-  # end
+  test "should not accept invalid genders" do
+    invalid_genders = ["invalid", "Other Gender",]
+    invalid_genders.each do |invalid_gender|
+      @test_person.gender = invalid_gender
+      assert_not @test_person.valid?, "\"#{invalid_gender}\" should not be a valid gender"
+      assert_not @test_person.errors[:gender].empty?
+      assert_equal "is not a valid gender", @test_person.errors[:gender].first
+    end
+  end
 
 end
 
