@@ -43,13 +43,14 @@ class Person < ApplicationRecord
   def full_name = "#{first_name} #{middle_name} #{last_name}".strip.gsub(/\s+/,?\s)
    
   def to_s = "#{self.full_name} <#{primary_email_address || email_addresses.first}>".strip
-  
-  BIRTHDAY_RANGE = (120.years.ago.to_date..Date.today.to_date).freeze
-  validates :birthday, comparison: { greater_than_or_equal_to: BIRTHDAY_RANGE.min,  # message: "can't be previous to 120 years ago",
-                                        less_than_or_equal_to: BIRTHDAY_RANGE.max,  # message: "can't be in the future",
-                                                      message: "must be between 120 years ago and today",
-                                                           if: -> { birthday.present? } }
-                             # with: :birthday_cannot_be_future
+    
+    
+  BIRTHDAYS = { OLDEST: Date.new(120.years.ago.year, 1, 1), YOUNGEST: Date.today}
+  BIRTHDAYS[:PERMITTED] = BIRTHDAYS[:OLDEST]..BIRTHDAYS[:YOUNGEST]
+  BIRTHDAYS.freeze
+  validates :birthday, inclusion: { in: BIRTHDAYS[:PERMITTED],
+                               message: "must be between #{BIRTHDAYS[:OLDEST]} and today",
+                                    if: -> { birthday.present? } }
 
   # enum gender: {
   #   Not_Specified: "Not Specified",
@@ -63,10 +64,10 @@ class Person < ApplicationRecord
     super(g.nil? ? nil : g.downcase.capitalize)
   end
   
-  GENDERS = %w(Man Woman).freeze
+  GENDERS = Set.new(%w(Man Woman)).freeze
   
   validates :gender, inclusion: { in: GENDERS,
-                                  message: "is not a valid gender",
+                             message: "is not a valid gender",
                                   if: -> { gender.present? } }
       
   # before_save :downcase_gender, if: -> { gender.present? }
@@ -95,12 +96,6 @@ class Person < ApplicationRecord
   end
   
   # def downcase_gender = self.gender.downcase!
-  
-  # def birthday_cannot_be_future
-  #   if birthday
-  #     errors.add(:birthday, "can't be in the future") unless birthday <= Date.today
-  #   end
-  # end
   
   # def birthday_cannot_be_under_8_years
   #   if birthday

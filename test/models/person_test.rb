@@ -7,6 +7,7 @@ class PersonTest < ActiveSupport::TestCase
 
   test "should be valid" do
     assert @test_person.valid?
+    assert @test_person.errors.empty?
   end
 end
 
@@ -21,65 +22,46 @@ class PresencePersonAttrsTest < PersonTest
   test "first name should be present" do
     @test_person.first_name = @blank_string
     assert_not @test_person.valid?, "The first name \"#{@test_person.first_name}\" (blank) #{@message_for_failing_test_of_presence}"
+    assert_not @test_person.errors[:first_name].empty?
+    assert_equal "can't be blank", @test_person.errors[:first_name].first
   end
 
-  test "middle name can be missing" do
-    @test_person.middle_name = ''
-    assert @test_person.valid?, "The middle name can be missing"
+  test "middle name should be optional" do
+    @test_person.middle_name = nil
+    assert @test_person.valid?, "A nil middle name is permitted"
+    assert @test_person.errors[:middle_name].empty?
   end
 
   test "middle name if present should not be blank string" do
     @test_person.middle_name = @blank_string
     assert_not @test_person.valid?, "The middle name \"#{@test_person.middle_name}\" (blank) #{@message_for_failing_test_of_presence}"
+    assert_not @test_person.errors[:middle_name].empty?
+    assert_equal "only allows letters", @test_person.errors[:middle_name].first
+  end
+  
+  test "last name should be present" do
+    @test_person.last_name = nil
+    assert_not @test_person.valid?, "A nil last name is not permitted"
+    assert_not @test_person.errors[:last_name].empty?
+    assert_equal "can't be blank", @test_person.errors[:last_name].first
   end
 
-  test "last name should be present" do
+  test "last name should not be a blank string" do
     @test_person.last_name = @blank_string
     assert_not @test_person.valid?, "The last name \"#{@test_person.last_name}\" (blank) #{@message_for_failing_test_of_presence}"
+    assert_not @test_person.errors[:last_name].empty?
+    assert_equal "can't be blank", @test_person.errors[:last_name].first
   end
 
-  test "birthday can be missing" do
+  test "birthday should be optional" do
     @test_person.birthday = nil
-    assert @test_person.valid?, "The birthday attribute can be missing"
-  end
-
-  test "should accept birthday in range (120 years ago - today)" do
-    valid_birthdays = [Person::BIRTHDAY_RANGE.min, 6.months.ago.to_date, Person::BIRTHDAY_RANGE.max]
-    valid_birthdays.each do |valid_birthday|
-      @test_person.birthday = valid_birthday
-      assert @test_person.valid?, "#{valid_birthday} is in the birthday's permitted range"
-      assert @test_person.errors[:birthday].empty?
-    end
+    assert @test_person.valid?, "A nil birthday means that it has not been set by the user"
+    assert @test_person.errors[:birthday].empty?
   end
   
-  test "should not accept birthday out of range (120 years ago - today)" do
-    invalid_birthdays = [121.years.ago.to_date, 1.day.from_now.to_date]
-    invalid_birthdays.each do |invalid_birthday|
-      @test_person.birthday = invalid_birthday
-      assert_not @test_person.valid?, "#{invalid_birthday} is out of the birthday's permitted range"
-      assert_not @test_person.errors[:birthday].empty?
-      assert_equal "must be between 120 years ago and today",@test_person.errors[:birthday].first
-    end
-  end
-  
-  # test "birthday should not be future" do
-  #   @test_person.birthday = 1.day.from_now
-  #   assert_not @test_person.valid?, "The birthday attribute can't be after today #{Date.today})"
-  #   assert_not @test_person.errors[:birthday].empty?
-  #   assert_equal "can't be in the future",@test_person.errors[:birthday].first
-  # end
-  #
-  # test "birthday should not be previous 120 years ago" do
-  #   @test_person.birthday = 121.years.ago
-  #   assert_not @test_person.valid?, "The birthday attribute can't be previous to 120 years ago"
-  #   assert_not @test_person.errors[:birthday].empty?
-  #   # assert_equal "can't be previous to 120 years ago",@test_person.errors[:birthday].first
-  #   assert_equal "must be between 120 years ago and today",@test_person.errors[:birthday].first
-  # end
-  
-  test "gender can be missing" do
+  test "gender should be optional" do
     @test_person.gender = nil
-    assert @test_person.valid?, "The gender attribute can be nil"
+    assert @test_person.valid?, "A nil gender means that it has not been set by the user"
     assert @test_person.errors[:gender].empty?
   end
 
@@ -93,7 +75,7 @@ class PresencePersonAttrsTest < PersonTest
     assert_not @test_person.valid?, "The personable id can't be missing"
   end
   
-  test "primary email address can be missing" do
+  test "primary email address should be optional" do
     @test_person.primary_email_address = nil
     assert @test_person.valid?, "The primary email address attribute can be missing"
   end
@@ -168,7 +150,7 @@ class FormatPersonAttrsTest < PersonTest
     end
   end
 
-  test "should reject invalid first names" do
+  test "should not accept invalid first names" do
     invalid_names = %w[Fo Fo. 123 1Fo Foo1 Fo_o]
     invalid_names.each do |invalid_name|
       @test_person.first_name = invalid_name
@@ -183,7 +165,7 @@ class FormatPersonAttrsTest < PersonTest
     end
   end
 
-  test "should reject invalid middle names" do
+  test "should not accept invalid middle names" do
     @invalid_names.each do |invalid_name|
       @test_person.first_name = invalid_name
       assert_not @test_person.valid?, "\"#{invalid_name}\" should be an invalid middle name"
@@ -197,7 +179,7 @@ class FormatPersonAttrsTest < PersonTest
     end
   end
 
-  test "should reject invalid last names" do
+  test "should not accept invalid last names" do
     @invalid_names.each do |invalid_name|
       @test_person.first_name = invalid_name
       assert_not @test_person.valid?, "\"#{invalid_name}\" should be an invalid middle name"
@@ -229,7 +211,35 @@ class FormatPersonAttrsTest < PersonTest
       assert_equal "is not a valid gender", @test_person.errors[:gender].first
     end
   end
-
+  
+  test "should accept birthday in range (120 years ago - today)" do
+    valid_birthdays = [ Person::BIRTHDAYS[:OLDEST], 
+                        Date.today.prev_year(100),
+                        Date.today.prev_year(50),
+                        Date.today.prev_year(20),
+                        Date.today.prev_year(5),
+                        Date.today.prev_year,
+                        Date.today.prev_month(6),
+                        Date.today.prev_month,
+                        Date.today.prev_week,
+                        Date.today.prev_day,
+                        Date.today ]
+    valid_birthdays.each do |valid_birthday|
+      @test_person.birthday = valid_birthday
+      assert @test_person.valid?, "#{valid_birthday} is in the birthday's permitted range"
+      assert @test_person.errors[:birthday].empty?
+    end
+  end
+  
+  test "should not accept birthday out of range (120 years ago - today)" do
+    invalid_birthdays = [ Person::BIRTHDAYS[:OLDEST].prev_day, Date.today.next_day ]
+    invalid_birthdays.each do |invalid_birthday|
+      @test_person.birthday = invalid_birthday
+      assert_not @test_person.valid?, "#{invalid_birthday} should be out of the birthday's permitted range"
+      assert_not @test_person.errors[:birthday].empty?
+      assert_equal "must be between #{Person::BIRTHDAYS[:OLDEST]} and today",@test_person.errors[:birthday].first
+    end
+  end
 end
 
 class AssociatedEmailAddressesDestructionTest < PersonTest

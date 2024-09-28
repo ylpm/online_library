@@ -48,7 +48,7 @@
 			
 			  <%= person_form.label :birthday, class: "form-label" %>
 				
-				<%= person_form.date_field :birthday, min: Person::BIRTHDAY_RANGE.min, max: Person::BIRTHDAY_RANGE.max, class: "form-control" %>
+				<%= person_form.date_field :birthday, min: Person::BIRTHDAYS[:OLDEST], max: Person::BIRTHDAYS[:YOUNGEST], class: "form-control" %>
 
 		  <% end %>
 			
