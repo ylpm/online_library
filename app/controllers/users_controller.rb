@@ -19,7 +19,7 @@ class UsersController < ApplicationController
     do_friendly_forwarding_unless(credential_me_url) { authenticity_confirmed? }
   end
   
-  before_action :check_the_requested_user_exists, only: :show  
+  before_action :check_the_requested_user_exists, only: :show
 
   def new
     new_personable(User) do |new_user|
@@ -78,7 +78,7 @@ class UsersController < ApplicationController
     @user.person.email_addresses.build # para adicionar otra direccion de email
   end
 
-  def update    
+  def update 
     update_personable(current_user, user_params) do |success|
       confirm_authenticity
       respond_to do |format|

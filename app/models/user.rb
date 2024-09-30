@@ -3,6 +3,8 @@ class User < ApplicationRecord
   
   has_many :sessions, dependent: :destroy
   
+  before_validation :clean_username
+  
   VALID_USERNAME_REGEXP = /\A[a-z]([\-\_\.]?[a-z\d]+)+\Z/i.freeze
   validates :username, presence: true,
                          length: { minimum: 3, too_short: "allows 3 chars minimum", 
@@ -10,38 +12,20 @@ class User < ApplicationRecord
                          format: { with: VALID_USERNAME_REGEXP, 
                                 message: "starts with a letter and allows hyphens, dots and numbers after, p.e. john.doe"},
                          uniqueness: { case_sensitive: false }
-  before_save :downcase_username
+  # before_save :downcase_username
   
   has_secure_password                       
   VALID_PASSWORD_REGEXP = /\A(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\W]).{8,}$\z/.freeze
   validates :password, presence: true,
                          length: { minimum: 8,
                                  too_short: "allows 8 chars minimum"},
-                         format: { with: VALID_PASSWORD_REGEXP, 
+                         format: { with: VALID_PASSWORD_REGEXP,
                                 message: "must have uppercase and lowercase letters, numbers, and special characters"} ,
                       allow_nil: true
-  
-  
-  
-  
-  # esto que sigue no es necesario,
-  # pq has_secure_password se encarga de hacerlo,
-  # y esa es la razon por la cual siempre se verifica que
-  # el password coincida con el password_confirmation,
-  # porque has_secure_password obliga a que se ejecute
-  # la validacion de confirmacion sobre el password
-  # mediante validates :password_confirmation, presence: true.
-  # (Poner esta explicacion en el documento sobre las validaciones)
-  
-  # validates :password_confirmation, presence: true,
-  #                                         if: -> { password.present? },
-  #                                  allow_nil: true
-  
-  
-  
-  
-  
 
+
+  def to_s = "#{self.person.full_name} <#{self.username}>"
+  
   # Sobreescribir el destroy
   def destroy
     # Es necesario eliminar primero todas las sessiones asociadas
@@ -58,10 +42,6 @@ class User < ApplicationRecord
     self.sessions.destroy_all # self.sessions.each {|s| s.destroy}
     super
   end
-
-  # def to_s = "#{self.person.first_name} #{self.person.last_name} <#{self.username}>"
-  def to_s = "#{self.person.full_name} <#{self.username}>"
-    
   
   # Find user for authentication
   # def User.find_by_login(arg)
@@ -80,6 +60,10 @@ class User < ApplicationRecord
 
   private
   
-  def downcase_username = self.username.downcase!
+  def clean_username
+    self.username = username.blank? ? nil : username.strip.downcase
+  end
+  
+  # def downcase_username = self.username.downcase!
     
 end

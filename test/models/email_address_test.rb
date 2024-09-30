@@ -5,7 +5,7 @@ class EmailAddressTest < ActiveSupport::TestCase
     @test_email = email_addresses(:john_at_hey)
   end
   
-  test "fixture email address should be valid" do
+  test "should be valid" do
     assert @test_email.valid?
   end  
 end

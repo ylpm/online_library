@@ -91,17 +91,17 @@
 		  <%= tag.div class: "flex-fill me-2 mb-3" do %>
 			  
 				<%= tag.label class: "form-label" do %>
-				  EMAIL <%= pluralize(@user.registered_email_addresses.count, "address").split(/\s/).last.upcase %>
+				  EMAIL <%= pluralize(@user.email_addresses.select(&:persisted?).count, "address").split(/\s/).last.upcase %>
 				<% end %>
 				<%= tag.hr %>
 	      
-				<%= render @user.registered_email_addresses %>
+				<%= render @user.email_addresses.select(&:persisted?) %>
 				
 			<% end %>	
 
 		<% end %>
 		
-		<% if person_form.object.activated_email_addresses.many? %>
+		<% if person_form.object.email_addresses.activated.many? %>
 				
 		    <%= tag.div class: "d-flex flex-wrap" do %>
 

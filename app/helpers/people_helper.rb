@@ -6,8 +6,7 @@ module PeopleHelper
   end
   
   def primary_email_address_options_for(person, include_blank: true)
-    return unless person.respond_to?(:activated_email_addresses) && person.respond_to?(:primary_email_address)
-    options_for_select(attribute_options(person.activated_email_addresses.map {|e| [e.address, e.id]}, include_blank: include_blank), 
+    options_for_select(attribute_options(person.email_addresses.activated.map {|e| [e.address, e.id]}, include_blank: include_blank), 
                        person.primary_email_address.id)
   end
   

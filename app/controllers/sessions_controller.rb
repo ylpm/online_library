@@ -48,7 +48,7 @@ class SessionsController < ApplicationController
   private
   
   def set_user
-    @login_identifier = params[:login][:identifier].downcase
+    @login_identifier = params[:login][:identifier].strip.downcase
     
     unless @user = User.find_by_username(@login_identifier)
       @email_address = EmailAddress.find_by_address(@login_identifier)

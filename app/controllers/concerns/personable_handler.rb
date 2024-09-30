@@ -44,6 +44,8 @@ module PersonableHandler
  
     updated = personable.update(personable_params)
     
+    # debugger # !!!!!!!!!!!!!!!!
+    
     return updated unless block_given?
     
     yield updated

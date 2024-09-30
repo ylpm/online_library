@@ -1,11 +1,16 @@
-class Session < ApplicationRecord
+class Session < ApplicationRecord  
   belongs_to :user, inverse_of: :sessions
   
   belongs_to :email_address_identifier, required: false, 
                                         class_name: 'EmailAddress',
                                         foreign_key: :email_address_id,
                                         inverse_of: :identified_sessions
-                                        
+  
+  scope :username_based, -> { where(email_address_id: nil) }
+  scope :email_address_based, -> { where("email_address_id IS NOT NULL") }
+  scope :forgotten, -> { where(session_digest: nil) }
+  scope :remembered, -> { where("session_digest IS NOT NULL") }
+  
   
   attr_reader :remember_token
   

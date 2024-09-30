@@ -16,11 +16,14 @@ end
 class PresenceUserAttrsTest < UserTest
   def setup
     super
+    @blanks = {nil: nil, empty:'', whitespaces: '    '}
   end
 
   test "username should be present" do
-    @test_user.username = ''
-    assert_not @test_user.valid?, "The username \'#{@test_user.username}\' (empty string) should not be considered as present"
+    @blanks.each do |key, value|
+      @test_user.username = value
+      assert_not @test_user.valid?, "The username \'#{value}\' (blank) should not be considered as present"
+    end
   end
   
   test "password should be present (nonblank)" do
@@ -61,6 +64,16 @@ class FormatUserAttrsTest < UserTest
   def setup
     super
   end
+  
+  test "should clean and accept unclean usernames" do
+    unclean_usernames = [ "   foo",
+                          "foobar   ",
+                        "   foo   " ]
+    unclean_usernames.each do |unclen_username|
+      @test_user.username = unclen_username
+      assert @test_user.valid?, "#{unclen_username} should be clean and accepted as a valid username"
+    end
+  end
 
   test "username validation should accept valid usernames" do
     valid_usernames = [ "foo",
@@ -82,8 +95,6 @@ class FormatUserAttrsTest < UserTest
   test "username validation should not accept invalid username" do
     invalid_usernames = [ "fo",
                           "foo bar",
-                          "foobar ",
-                          " foobar",
                           "123foobar",
                           ".foobar",
                           "-foobar",

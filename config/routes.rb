@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   # draw :current_user
   
   APP_ROUTES = Dir[Rails.root.join('config/routes/*.rb')].map { |file| File.basename(file, '.rb').to_sym }  
-  APP_ROUTES.each {|routes| draw routes}
+  APP_ROUTES.each { |routes| draw routes }
     
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   
