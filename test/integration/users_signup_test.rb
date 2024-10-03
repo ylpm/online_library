@@ -6,21 +6,17 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_no_difference 'User.count' do
       post signup_path, params: {user: {person_attributes: {first_name: '1',
-                                                           middle_name: '123',
                                                              last_name: '',
-                                                              birthday: 5.years.from_now, # nacimiento en el futuro
-                                            email_addresses_attributes: {'0' => {address: 'foo@'}
-                                                           }
-                                        },
+                                            email_addresses_attributes: {'0' => {address: 'foo@'} } },
                                                  username: '**',
                                                  password: 'foo',
-                                    password_confirmation: 'bar'}
-                                },
-                           xhr: true # xhr indica que la respuesta es con turbo stream
+                                    password_confirmation: 'bar'} },
+                           xhr: true # xhr indica que se esta haciendo una solicitud AJAX 
+                                     # y que el controlador debe responder adecuadamente
+                                     # en este caso con turbo stream
     end
     assert_not is_logged_in?
-    # assert_select 'div#error_count'
-    # assert_select 'div.alert', 'The form contains 8 errors'
+    assert_select 'div.alert-danger', count: 6
   end
   
   test "valid signup information" do
@@ -30,13 +26,10 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
       assert_difference 'User.count', 1, "A new user should be signed up" do
         post signup_path, params: {user: {person_attributes: {first_name: 'Example',
                                                                last_name: 'User',
-                                                email_address_attributes: {'0' => {address: 'user@example.com'}
-                                                             }
-                                         },
+                                                email_address_attributes: {'0' => {address: 'user@example.com'} } },
                                                    username: 'example_user',
                                                    password: 'Abcde123*',
-                                      password_confirmation: 'Abcde123*'}
-                                  }
+                                      password_confirmation: 'Abcde123*'} }
       end
     end
     assert is_logged_in?

@@ -14,7 +14,7 @@ module ActiveSupport
     
     # def test_title_for_page(page = nil) = page ? "#{page.to_s.capitalize} | #{@base_title}" : @base_title
     
-    def new_session_for(user, email_address: nil, persistent: false)
+    def login_as(user, email_address: nil, persistent: false)
       raise ArgumentError, "Invalid user" unless user.instance_of? User
       raise ArgumentError, "Invalid email address" unless email_address.nil? || email_address.instance_of?(EmailAddress)
       new_session = user.sessions.create(email_address: email_address)
@@ -40,7 +40,7 @@ module ActionDispatch
       post login_path, params: {login: {identifier: email_address ? email_address : user.username,
                                           password: password,
                                        remember_me: remember_me ? '1' : '0'}}
-    end 
+    end
     
   end
 end

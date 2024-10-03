@@ -17,7 +17,9 @@ class InvalidLoginTest < UserLoginTest
     assert_no_difference "Session.count" do
       post login_path, params: {login: {identifier: "invalid_username", 
                                           password: ""}}, 
-                          xhr: true # xhr indica que la respuesta es con turbo stream
+                          xhr: true # xhr indica que se esta haciendo una solicitud AJAX 
+                                    # y que el controlador debe responder adecuadamente
+                                    # en este caso con turbo stream
     end
     check_status_after_failed_login
   end

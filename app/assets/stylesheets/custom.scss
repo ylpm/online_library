@@ -88,7 +88,7 @@ div.top-alert {
 .alert-success, .alert-info, .alert-warning, .alert-danger {
     background-color: #ACB1FF !important; /* Tono más claro de #2a11BE */
     border-color: #ACB1FF !important;
-    color: #fff !important;;
+    color: #fff !important;
 }
 
 .btn-close {
@@ -102,6 +102,11 @@ div.top-alert {
     margin: 0 0 30px 0;
   }
 }*/
+
+.field_with_errors {
+  // color: red;
+  dispaly: none;
+}
 
 .form-links {
   a {

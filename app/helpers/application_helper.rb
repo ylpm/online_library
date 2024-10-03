@@ -17,5 +17,17 @@ module ApplicationHelper
     end
     errors
   end
+  
+  def render_form_field_for(form = nil, attribute: nil)
+    return if form.nil? || attribute.nil? || !block_given?
+    
+    if form.object.errors[attribute].empty?
+      yield
+    else
+     tag.div class: "alert alert-danger" do
+      yield
+     end
+    end
+  end
 
 end

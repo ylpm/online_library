@@ -74,7 +74,9 @@ module SessionsHelper
   end
   
   def redirect_if_logged_in
-    redirect_unless(root_url) { !logged_in? }
+    return unless logged_in?
+    redirect_to(root_url, status: :see_other) and return
+    # redirect_unless(root_url) { !logged_in? }
   end
 
   def redirect_unless_logged_in(url, with_flash: {message: nil, type: nil})

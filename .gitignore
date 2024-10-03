@@ -39,3 +39,6 @@ storage/test.*
 
 # Ignore .DS_Store file on macOS
 .DS_Store
+
+# SPECIAL FILES
+/app/views/users/_oldsettings_form.html.erb
