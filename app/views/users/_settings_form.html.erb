@@ -8,15 +8,19 @@
 
 	  <%= tag.div class: "d-flex flex-wrap" do %>
 		
-			<%= tag.div class: "flex-fill me-2 mb-3" do %>	
+			<%= tag.div class: "flex-fill me-2 mb-3" do %>
 			
 			  <%= render_form_field_for person_form, attribute: :first_name do %>
 				
-					<%= person_form.label :first_name, "First name*", class: "form-label" %>
-				  
-			    <%= render 'shared/errors/error_message', error_message: person_form.object.errors.messages[:first_name].first %>
+				  <%= tag.div class: "form-group" do %>
+				
+						<%= person_form.label :first_name, "First name*", class: "form-label" %>
+					
+						<%= render_error_for person_form, attribute: :first_name %>
 			  
-					<%= person_form.text_field :first_name, class: "form-control", required: true, autofocus: user_form.object.errors.empty? %>
+						<%= person_form.text_field :first_name, class: "form-control", required: true, autofocus: user_form.object.errors.empty? %>
+						
+					<% end %>
 					
 				<% end %>
 
@@ -26,11 +30,15 @@
 			
 			  <%= render_form_field_for person_form, attribute: :middle_name do %>
 				
-					<%= person_form.label :middle_name, "Middle name", class: "form-label" %>
-				  
-			    <%= render 'shared/errors/error_message', error_message: person_form.object.errors.messages[:middle_name].first %>
-			  
-					<%= person_form.text_field :middle_name, class: "form-control", required: false, autofocus: false %>
+				  <%= tag.div class: "form-group" do %>
+				
+					  <%= person_form.label :middle_name, "Middle name", class: "form-label" %>
+					
+					  <%= render_error_for person_form, attribute: :middle_name %>
+				  			  
+					  <%= person_form.text_field :middle_name, class: "form-control", required: false, autofocus: false %>
+						
+					<% end %>
 					
 				<% end %>
 
@@ -45,11 +53,15 @@
 			
 			  <%= render_form_field_for person_form, attribute: :last_name do %>
 				
-					<%= person_form.label :last_name, "Last name*", class: "form-label" %>
-				  
-			    <%= render 'shared/errors/error_message', error_message: person_form.object.errors.messages[:last_name].first %>
-			  
-					<%= person_form.text_field :last_name, class: "form-control", required: true, autofocus: false %>
+				  <%= tag.div class: "form-group" do %>
+				
+					  <%= person_form.label :last_name, "Last name*", class: "form-label" %>
+					
+					  <%= render_error_for person_form, attribute: :last_name %>
+
+					  <%= person_form.text_field :last_name, class: "form-control", required: true, autofocus: false %>
+						
+					<% end %>
 					
 				<% end %>
 
@@ -61,25 +73,33 @@
 			
 			<%= tag.div class: "flex-fill pe-2 mb-3" do %>
 			
-			  <%= person_form.label :birthday, class: "form-label" %>
+			  <%= tag.div class: "form-group" do %>
+			
+			    <%= person_form.label :birthday, class: "form-label" %>
 				
-				<%= person_form.date_field :birthday, min: Person::BIRTHDAYS[:OLDEST], max: Person::BIRTHDAYS[:YOUNGEST], class: "form-control" %>
+				  <%= person_form.date_field :birthday, min: Person::BIRTHDAYS[:OLDEST], max: Person::BIRTHDAYS[:YOUNGEST], class: "form-control" %>
+					
+				<% end %>
 
 		  <% end %>
 			
 	    <%= tag.div class: "flex-fill mb-3" do %>
+			
+			  <%= tag.div class: "form-group" do %>
 
-			  <%= person_form.label :gender, class: "form-label" %>
+				  <%= person_form.label :gender, class: "form-label" %>
 		  
-			  <%# if @user.gender? %>
-				  <%#= tag.div do %>
-					  <!-- <strong><%#= @user.gender %></strong> -->
+				  <%# if @user.gender? %>
+					  <%#= tag.div do %>
+						  <!-- <strong><%#= @user.gender %></strong> -->
+						<%# end %>
+					<%# else %>
+					  <%= tag.div class: "flex-fill me-2 mb-3" do %>
+					    <%= person_form.select :gender, gender_options_for(person_form.object), class: "form-control" %>
+						<% end %> 
 					<%# end %>
-				<%# else %>
-				  <%= tag.div class: "flex-fill me-2 mb-3" do %>
-				    <%= person_form.select :gender, gender_options_for(person_form.object), class: "form-control" %>
-					<% end %> 
-				<%# end %>
+					
+				<% end %>
 				
 			<% end %>
 			
@@ -90,10 +110,14 @@
 
 			<%= tag.div class: "flex-fill me-2 mb-3" do %>
 				
-			  <%= user_form.label :username, "Username", class: "form-label" %>
+				<%= tag.div class: "form-group" do %>
 				
-			  <%= tag.div do %>
-				  <strong><%= @user.username %></strong>
+				  <%= user_form.label :username, "Username", class: "form-label" %>
+
+				  <%= tag.div do %>
+					  <strong><%= @user.username %></strong>
+					<% end %>
+					
 				<% end %>
 
 			<% end %>
@@ -104,13 +128,17 @@
    <%= tag.div class: "d-flex flex-wrap mt-5" do %> 	
 
 		  <%= tag.div class: "flex-fill me-2 mb-3" do %>
+			
+			  <%= tag.div class: "form-group" do %>
 			  
-				<%= tag.label class: "form-label" do %>
-				  EMAIL <%= pluralize(@user.email_addresses.select(&:persisted?).count, "address").split(/\s/).last.upcase %>
-				<% end %>
-				<%= tag.hr %>
+					<%= tag.label class: "form-label" do %>
+					  EMAIL <%= pluralize(@user.email_addresses.select(&:persisted?).count, "address").split(/\s/).last.upcase %>
+					<% end %>
+					<%= tag.hr %>
 	      
-				<%= render @user.email_addresses.select(&:persisted?) %>
+					<%= render @user.email_addresses.select(&:persisted?) %>
+					
+				<% end %>
 				
 			<% end %>	
 
@@ -122,15 +150,16 @@
 
 		 		  <%= tag.div class: "flex-fill me-2 mb-3" do %>
 					
-					  <%= person_form.label :primary_email_address_id, "Primary Email Address", class: "form-label" %>
-												
-						<% if person_form.object.errors.messages[:primary_email_address_id].any? %>
-						  <%= tag.div class: "alert alert-danger" do %>
-							  <%= render 'shared/errors/error_message', error_message: person_form.object.errors.messages[:primary_email_address_id].first %>
-								<%= person_form.select :primary_email_address_id, primary_email_address_options_for(person_form.object, include_blank: false), class: "form-control selection" %>
+					  <%= render_form_field_for person_form, attribute: :primary_email_address_id do %>
+						
+						  <%= tag.div class: "form-group" do %>
+			
+								<%= person_form.label :primary_email_address_id, "Primary Email Address", class: "form-label" %>
+		  
+								<%= person_form.select :primary_email_address_id, primary_email_address_options_for(person_form.object, include_blank: false), class: "form-control" %>
+								
 							<% end %>
-						<% else %>
-						  <%= person_form.select :primary_email_address_id, primary_email_address_options_for(person_form.object, include_blank: false), class: "form-control selection" %>
+				
 						<% end %>
 				
 		 			<% end %>	
@@ -148,12 +177,16 @@
 					<%= tag.div class: "flex-fill me-2 mb-3" do %>
 					
 					  <%= render_form_field_for email_form, attribute: :address do %>
+						
+						  <%= tag.div class: "form-group" do %>
 			
-							<%= email_form.label :address, "Add an email address", class: "form-label" %>
-			  
-					    <%= render 'shared/errors/error_message', error_message: email_form.object.errors.messages[:address].first %>
+							  <%= email_form.label :address, "Add an email address", class: "form-label" %>
+							
+							  <%= render_error_for email_form, attribute: :address %>
 		  
-							<%= email_form.email_field :address, class: "form-control", required: false, autofocus: false %>
+							  <%= email_form.email_field :address, class: "form-control", required: false, autofocus: false %>
+								
+							<% end %>
 				
 						<% end %>
 
@@ -178,11 +211,15 @@
 		
 		  <%= render_form_field_for user_form, attribute: :password do %>
 			
-				<%= user_form.label :password, "New Password", class: "form-label" %>
-			  
-		    <%= render 'shared/errors/error_message', error_message: user_form.object.errors.messages[:password].first %>
+			  <%= tag.div class: "form-group" do %>
+			
+				  <%= user_form.label :password, "New Password", class: "form-label" %>
+				
+				  <%= render_error_for user_form, attribute: :password %>
 		  
-				<%= user_form.password_field :password, class: "form-control", required: false, autofocus: false %>
+				  <%= user_form.password_field :password, class: "form-control", required: false, autofocus: false %>
+					
+				<% end %>
 				
 			<% end %>
 			
@@ -192,11 +229,15 @@
 		
 		  <%= render_form_field_for user_form, attribute: :password_confirmation do %>
 			
-				<%= user_form.label :password_confirmation, "Confirmation", class: "form-label" %>
-			  
-		    <%= render 'shared/errors/error_message', error_message: user_form.object.errors.messages[:password_confirmation].first %>
+			  <%= tag.div class: "form-group" do %>
+			
+				  <%= user_form.label :password_confirmation, "Confirmation", class: "form-label" %>
+				
+				  <%= render_error_for user_form, attribute: :password_confirmation %>
 		  
-				<%= user_form.password_field :password_confirmation, class: "form-control", required: false, autofocus: false %>
+				  <%= user_form.password_field :password_confirmation, class: "form-control", required: false, autofocus: false %>
+					
+				<% end %>
 				
 			<% end %>
 			
@@ -205,7 +246,9 @@
 	<% end %>
 			
   <%= tag.div class: "actions center py-3" do %>
-		<%= user_form.submit "Update settings", class: "btn btn-primary w-100"  %>
+	  <%= tag.div class: "form-group" do %>
+		  <%= user_form.submit "Update settings", class: "btn btn-primary w-100"  %>
+		<% end %>
 	<% end %>	
 
 			

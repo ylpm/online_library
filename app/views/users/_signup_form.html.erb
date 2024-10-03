@@ -10,11 +10,15 @@
 			
 			  <%= render_form_field_for person_form, attribute: :first_name do %>
 				
-					<%= person_form.label :first_name, "First name*", class: "form-label" %>
-				  
-			    <%= render 'shared/errors/error_message', error_message: person_form.object.errors.messages[:first_name].first %>
+				  <%= tag.div class: "form-group" do %>
+				
+						<%= person_form.label :first_name, "First name*", class: "form-label" %>
+						
+						<%= render_error_for person_form, attribute: :first_name %>
 			  
-					<%= person_form.text_field :first_name, class: "form-control", required: true, autofocus: user_form.object.errors.empty? %>
+						<%= person_form.text_field :first_name, class: "form-control", required: true, autofocus: user_form.object.errors.empty? %>
+						
+					<% end %>
 					
 				<% end %>
 
@@ -24,11 +28,15 @@
 			
 			  <%= render_form_field_for person_form, attribute: :last_name do %>
 				
-					<%= person_form.label :last_name, "Last name*", class: "form-label" %>
-				  
-			    <%= render 'shared/errors/error_message', error_message: person_form.object.errors.messages[:last_name].first %>
+				  <%= tag.div class: "form-group" do %>
+				
+					  <%= person_form.label :last_name, "Last name*", class: "form-label" %>
+						
+						<%= render_error_for person_form, attribute: :last_name %>
 			  
-					<%= person_form.text_field :last_name, class: "form-control", required: true, autofocus: false %>
+					  <%= person_form.text_field :last_name, class: "form-control", required: true, autofocus: false %>
+						
+					<% end %>
 					
 				<% end %>
 
@@ -42,12 +50,16 @@
 			<%= tag.div class: "flex-fill me-2 mb-3" do %>
 			
 				  <%= render_form_field_for user_form, attribute: :username do %>
+					  
+						<%= tag.div class: "form-group" do %>
 			
-						<%= user_form.label :username, "Username*", class: "form-label" %>
-			  
-				    <%= render 'shared/errors/error_message', error_message: user_form.object.errors.messages[:username].first %>
+						  <%= user_form.label :username, "Username*", class: "form-label" %>
+							
+							<%= render_error_for user_form, attribute: :username %>
 		  
-						<%= user_form.text_field :username, class: "form-control", required: true, autofocus: false %>
+						  <%= user_form.text_field :username, class: "form-control", required: true, autofocus: false %>
+							
+						<% end %>
 				
 					<% end %>
 	
@@ -61,12 +73,16 @@
 				<%= tag.div class: "flex-fill me-2 mb-3" do %>
 				
 				  <%= render_form_field_for email_form, attribute: :address do %>
+					
+					  <%= tag.div class: "form-group" do %>
 		
-						<%= email_form.label :address, email_str_label, class: "form-label" %>
-		  
-				    <%= render 'shared/errors/error_message', error_message: email_form.object.errors.messages[:address].first %>
-	  
-						<%= email_form.email_field :address, class: "form-control", required: required, autofocus: false %>
+						  <%= email_form.label :address, email_str_label, class: "form-label" %>
+							
+							<%= render_error_for email_form, attribute: :address %>
+		  	  
+						  <%= email_form.email_field :address, class: "form-control", required: required, autofocus: false %>
+							
+						<% end %>
 			
 					<% end %>
 
@@ -86,9 +102,9 @@
 		  <%= render_form_field_for user_form, attribute: :password do %>
 			
 				<%= user_form.label :password, "Password*", class: "form-label" %>
-			  
-		    <%= render 'shared/errors/error_message', error_message: user_form.object.errors.messages[:password].first %>
-		  
+				
+				<%= render_error_for user_form, attribute: :password %>
+			  		  
 				<%= user_form.password_field :password, class: "form-control", required: true, autofocus: false %>
 				
 			<% end %>
@@ -99,11 +115,15 @@
 		
 		  <%= render_form_field_for user_form, attribute: :password_confirmation do %>
 			
-				<%= user_form.label :password_confirmation, "Confirmation*", class: "form-label" %>
-			  
-		    <%= render 'shared/errors/error_message', error_message: user_form.object.errors.messages[:password_confirmation].first %>
-		  
-				<%= user_form.password_field :password_confirmation, class: "form-control", required: true, autofocus: false %>
+			  <%= tag.div class: "form-group" do %>
+			
+				  <%= user_form.label :password_confirmation, "Confirmation*", class: "form-label" %>
+					
+					<%= render_error_for user_form, attribute: :password_confirmation %>
+			  		  
+				  <%= user_form.password_field :password_confirmation, class: "form-control", required: true, autofocus: false %>
+					
+				<% end %>	
 				
 			<% end %>
 	
@@ -111,8 +131,10 @@
 		
 	<% end %>
 			
-  <%= tag.div class: "actions center py-3" do %>
-		<%= user_form.submit "Sign up", class: "btn btn-primary w-100"  %>
+  <%= tag.div class: "actions center py-3 me-2" do %>
+	  <%= tag.div class: "form-group" do %>
+		  <%= user_form.submit "Sign up", class: "btn btn-primary w-100"  %>
+		<% end %>
 	<% end %>	
 
 			

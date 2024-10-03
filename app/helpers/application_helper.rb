@@ -29,5 +29,15 @@ module ApplicationHelper
      end
     end
   end
+  
+  def render_error_for(form = nil, attribute: nil, css_class: nil)
+    return if form.nil? || attribute.nil?
+    
+    unless form.object.errors.messages[attribute].first.blank?
+    	tag.div class: "#{ css_class + " " unless css_class.nil? }field_with_errors text-small" do
+    		form.object.errors.messages[attribute].first
+    	end
+    end
+  end
 
 end
