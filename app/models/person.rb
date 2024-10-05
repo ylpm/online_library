@@ -1,7 +1,7 @@
 class Person < ApplicationRecord
   
   delegated_type :personable, types: %w[User Author], dependent: :destroy
-
+  
   has_many :email_addresses, inverse_of: :owner, dependent: :destroy
   accepts_nested_attributes_for :email_addresses
   
@@ -9,6 +9,8 @@ class Person < ApplicationRecord
   
   validates :primary_email_address, with: :primary_email_address_must_belong_to_the_person_and_be_activated, 
                                     allow_nil: true
+                                    
+  before_destroy -> { update_column(:primary_email_address_id, nil) }, prepend: true
    
   scope :with_primary_email_address, -> { where("primary_email_address_id IS NOT NULL") }
   scope :without_primary_email_address, -> { where(primary_email_address_id: nil) }
@@ -16,7 +18,7 @@ class Person < ApplicationRecord
   #                                           message: "must be one of the #{first_name}'s activated email addresses",
   #                                                if: -> { primary_email_address.present? } }
 
-  before_validation :clean_attributes
+  before_validation :normalize_attributes
   
   VALID_FIRST_NAME_REGEXP = /\A[a-z]{2,50}\Z/i.freeze # solo letras
   validates :first_name, presence: true,
@@ -25,7 +27,7 @@ class Person < ApplicationRecord
                            format: { with: VALID_FIRST_NAME_REGEXP, 
                                   message: "only allows letters" }
          
-  # Comienza con letra y puede contener espacios y giones, p.e., "von Neumann", "Perez-Gonzalez". 
+  # Comienza con letra y puede contener espacios y guiones, p.e., "von Neumann", "Perez-Gonzalez". 
   # NO puede estar ausente pero puede ser de longitud 1
   VALID_LAST_NAME_REGEXP = /\A[a-z]([a-z\s\-]+)*\Z/i.freeze 
   validates :last_name, presence: true,
@@ -86,23 +88,18 @@ class Person < ApplicationRecord
     nil
   end
     
-  # Sobreescribir el metodo destroy
-  def destroy
-    # Antes de eliminar la persona, limpiar la referencia de primary_email_address,
-    # pues de lo contrario, al tratar de eliminar primero los email addresses asociadas,
-    # si alguna esta establecida como la primary, no la podra eliminar y lanzara un error
-    update_column(:primary_email_address_id, nil)
-    super
-  end
-    
   private
   
-  def clean_attributes
+  # Triggered by before_validation callback
+  def normalize_attributes
     self.first_name = first_name.blank? ? nil : first_name.strip
     self.middle_name = middle_name.blank? ? nil : middle_name.strip
     self.last_name = last_name.blank? ? nil : last_name.strip
-    self.gender =  gender.blank? ? nil : gender.strip.downcase.capitalize
+    self.gender =  gender.blank? ? nil : gender.strip.downcase.capitalize # titleize no puede ser usado en lugar de donwncase.capitalize
+                                                                          # porque en caso de que se entren valores como 'maN', titleize
+                                                                          # devuelve 'Ma N'
   end
+    
   
   # # CUSTOM VALIDATORS
   def primary_email_address_must_belong_to_the_person_and_be_activated
@@ -111,4 +108,5 @@ class Person < ApplicationRecord
      errors.add(:primary_email_address, "must be activated") unless primary_email_address.activated?
     end
   end
+
 end

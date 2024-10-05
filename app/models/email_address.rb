@@ -19,16 +19,21 @@ class EmailAddress < ApplicationRecord
     !owner_marked_as_primary.nil?
   end
       
-  before_save :downcase_address,
-              :activate # provisional
-  
+  before_save do
+    self.address.downcase!
+    # provisional activation:
+    self.activated_at = Time.now
+    self.activated = true
+  end
+                
   VALID_EMAIL_FORMAT = /\A[a-z][a-z0-9\.\+\-\_]*@[a-z0-9]+[a-z\d\-]*(\.[a-z\d\-]+)*\.[a-z]{2,}\z/i.freeze
   validates :address, confirmation: { case_sensitive: false },
                           presence: true,
                             length: { maximum: 255 },
                             format: { with: VALID_EMAIL_FORMAT },
+                              with: :check_email_address_repetitions, # placed before uniqueness to check first if the user has already used it
                         uniqueness: { case_sensitive: false }
-  validates :address, with: :check_email_address_repetitions
+  # validates :address, with: :check_email_address_repetitions
   
   # # UNCOMMENT THE FOLLOWING LINE TO MAKE THE address_confirmation MANDATORY
   # # AND THUS, ALWAYS TRIGGER THE PREVIOUS confirmation: { case_sensitive: false } VALIDATOR ON :address ATTRIBUTE
@@ -42,16 +47,6 @@ class EmailAddress < ApplicationRecord
   # end
     
   private
-  
-  # Invoked by the before_save callback
-  def downcase_address = address.downcase!
-  
-  # ... provisional until the email activation subsystem get ready
-  def activate
-    # self.activation_digest = EmailAddress.digest(address)
-    self.activated_at = Time.now
-    self.activated = true
-  end
   
   # Custom validator
   def check_email_address_repetitions

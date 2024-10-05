@@ -3,7 +3,17 @@ class User < ApplicationRecord
   
   has_many :sessions, dependent: :destroy
   
-  before_validation :clean_username
+  before_destroy -> { self.sessions.destroy_all }, prepend: true  # Es necesario eliminar primero todas las sessiones asociadas
+                                                                  # antes de destruir el usuario, porque si algunas de las sesiones
+                                                                  # fueron abiertas con direccion de email en vez de con username,
+                                                                  # entonces da error de integridad referencial, ya que, por el orden que
+                                                                  # declaradas estan las asociaciones al inicio de la clase:
+                                                                  # primero "include Personable" y luego "has_many :sessions", entonces
+                                                                  # primero trata de eliminar las direcciones de email y luego las sesiones,
+                                                                  # y como hay sesiones que tienen referencias a direcciones de email, entonces
+                                                                  # da el error de integridad referencial.
+                                                                    
+  before_validation -> { self.username = username.blank? ? nil : username.strip.downcase }
   
   VALID_USERNAME_REGEXP = /\A[a-z]([\-\_\.]?[a-z\d]+)+\Z/i.freeze
   validates :username, presence: true,
@@ -26,23 +36,6 @@ class User < ApplicationRecord
 
   def to_s = "#{self.person.full_name} <#{self.username}>"
   
-  # Sobreescribir el destroy
-  def destroy
-    # Es necesario eliminar primero todas las sessiones asociadas
-    # antes de destruir el usuario, porque si algunas de las sesiones
-    # fueron abiertas con direccion de email en vez de con username,
-    # entonces da error de integridad referencial, ya que, por el orden que
-    # declaradas estan las asociaciones al inicio de la clase:
-    # primero "include Personable" y luego "has_many :sessions", entonces
-    # primero trata de eliminar las direcciones de email y luego las sesiones,
-    # y como hay sesiones que tienen referencias a direcciones de email, entonces
-    # da el error de integridad referencial. Una forma de resolverlo
-    # es declarando primero  "has_many :sessions" y luego "include Personable"
-    # pero no es confiable delegar en esto.
-    self.sessions.destroy_all # self.sessions.each {|s| s.destroy}
-    super
-  end
-  
   # Find user for authentication
   # def User.find_by_login(arg)
   #   raise ArgumentError, "Argument must be a String, not a #{arg.class}" unless arg.instance_of? String
@@ -56,14 +49,5 @@ class User < ApplicationRecord
   #     end
   #   end
   # end
-
-
-  private
-  
-  def clean_username
-    self.username = username.blank? ? nil : username.strip.downcase
-  end
-  
-  # def downcase_username = self.username.downcase!
     
 end
