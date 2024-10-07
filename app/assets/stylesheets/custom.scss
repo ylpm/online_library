@@ -105,7 +105,10 @@ div.top-alert {
 
 .field_with_errors {
   // color: red;
-  dispaly: none;
+  input {
+    color: orange;
+  }
+  // dispaly: none;
 }
 
 .form-links {

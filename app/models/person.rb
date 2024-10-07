@@ -2,7 +2,7 @@ class Person < ApplicationRecord
   
   delegated_type :personable, types: %w[User Author], dependent: :destroy
   
-  has_many :email_addresses, inverse_of: :owner, dependent: :destroy
+  has_many :email_addresses, inverse_of: :owner, dependent: :destroy #, before_add: :check_email_address_repetitions
   accepts_nested_attributes_for :email_addresses
   
   belongs_to :primary_email_address, class_name: "EmailAddress", optional: true
@@ -84,11 +84,18 @@ class Person < ApplicationRecord
   end
   scope :no_gender, -> { where(gender: nil) }
   
-  def primary_image # PROVISIONAL
-    nil
-  end
+  def primary_image = nil # PROVISIONAL
     
   private
+  
+  # def check_email_address_repetitions(email_address)
+  #   self.email_addresses.each do |email|
+  #     if email.address.match?(/\A#{email_address.address}\z/i)
+  #       # self.errors.add(:email_addresses, "you are already using this email address")
+  #       throw(:abort)
+  #     end
+  #   end
+  # end
   
   # Triggered by before_validation callback
   def normalize_attributes

@@ -31,9 +31,8 @@ class EmailAddress < ApplicationRecord
                           presence: true,
                             length: { maximum: 255 },
                             format: { with: VALID_EMAIL_FORMAT },
-                              with: :check_email_address_repetitions, # placed before uniqueness to check first if the user has already used it
-                        uniqueness: { case_sensitive: false }
-  # validates :address, with: :check_email_address_repetitions
+                        uniqueness: { case_sensitive: false },
+                            unless: :email_address_repeated?
   
   # # UNCOMMENT THE FOLLOWING LINE TO MAKE THE address_confirmation MANDATORY
   # # AND THUS, ALWAYS TRIGGER THE PREVIOUS confirmation: { case_sensitive: false } VALIDATOR ON :address ATTRIBUTE
@@ -43,20 +42,22 @@ class EmailAddress < ApplicationRecord
     
   # def ==(email_address)
   #   return false unless email_address.respond_to?(:address)
-  #   self.address.match?(/#{email_address.address}/i)
+  #   self.address.match?(/\A#{email_address.address}\z/i)
   # end
     
   private
   
   # Custom validator
-  def check_email_address_repetitions
-    return if self.nil? || self.address.nil? || self.owner.nil?
-    self.owner.email_addresses.each do |email_address|
-      next if self.eql?(email_address) 
-      if self.address.match?(/#{email_address.address}/i)
-        self.errors.add(:address, "is repeated as #{email_address.address}")
-        return
+  def email_address_repeated?
+    unless self.address.nil? || self.owner.nil?
+      self.owner.email_addresses.each do |email_address|
+        next if self.eql?(email_address)
+        if self.address.match?(/\A#{email_address.address}\z/i)
+          self.errors.add(:address, "you are repeating this email address")
+          return true
+        end
       end
     end
+    false
   end
 end
