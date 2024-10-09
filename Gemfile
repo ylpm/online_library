@@ -91,3 +91,4 @@ gem "bcrypt", "= 3.1.20"
 
 gem "rename", "= 1.1.0"
 
+gem "profanity", "= 0.1.3"

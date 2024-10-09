@@ -22,25 +22,26 @@ class Person < ApplicationRecord
   
   VALID_FIRST_NAME_REGEXP = /\A[a-z]{2,50}\Z/i.freeze # solo letras
   validates :first_name, presence: true,
-                           length: { minimum: 2, too_short: "allows %{count} chars minimum",
-                                     maximum: 50, too_long: "allows %{count} chars maximum" },
-                           format: { with: VALID_FIRST_NAME_REGEXP, 
-                                  message: "only allows letters" }
+                         profanity: true,
+                         length: { minimum: 2, too_short: "allows %{count} chars minimum",
+                                   maximum: 50, too_long: "allows %{count} chars maximum" },
+                         format: { with: VALID_FIRST_NAME_REGEXP, 
+                                   message: "only allows letters" }
          
   # Comienza con letra y puede contener espacios y guiones, p.e., "von Neumann", "Perez-Gonzalez". 
   # NO puede estar ausente pero puede ser de longitud 1
   VALID_LAST_NAME_REGEXP = /\A[a-z]([a-z\s\-]+)*\Z/i.freeze 
   validates :last_name, presence: true,
-                          length: { maximum: 50, too_long: "allows %{count} chars maximum" },
-                          format: { with: VALID_LAST_NAME_REGEXP, 
-                                 message: "uses letters, spaces and hyphens"  }
+                        profanity: true,
+                        length: { maximum: 50, too_long: "allows %{count} chars maximum" },
+                        format: { with: VALID_LAST_NAME_REGEXP, message: "uses letters, spaces and hyphens" }
                                  
   # EL MISMO FORMATO DE last_name, excepto que puede estar ausente: ...?\Z/
   # VALID_MIDDLE_NAME_REGEXP = /\A(#{VALID_LAST_NAME_REGEXP})?\Z/i.freeze
-  validates :middle_name, length: { maximum: 50, too_long: "allows %{count} chars maximum" },
-                          format: { with: VALID_LAST_NAME_REGEXP,
-                                 message: "only allows letters" },
-                       allow_nil: true
+  validates :middle_name, profanity: true,
+                          length: { maximum: 50, too_long: "allows %{count} chars maximum" },
+                          format: { with: VALID_LAST_NAME_REGEXP, message: "only allows letters" },
+                          allow_nil: true
 
 
   def full_name = "#{first_name} #{middle_name} #{last_name}".strip.gsub(/\s+/,?\s)
@@ -69,10 +70,6 @@ class Person < ApplicationRecord
   # validates :gender, presence: true
   # def gender? = (self.gender.match?("Man") || self.gender.match?("Woman"))
   
-  # def gender=(g)
-  #   super(g.nil? ? nil : g.downcase.capitalize)
-  # end
-  
   GENDERS = Set.new(%w(Man Woman)).freeze
   
   validates :gender, inclusion: { in: GENDERS,
@@ -99,15 +96,14 @@ class Person < ApplicationRecord
   
   # Triggered by before_validation callback
   def normalize_attributes
-    self.first_name = first_name.blank? ? nil : first_name.strip
-    self.middle_name = middle_name.blank? ? nil : middle_name.strip
-    self.last_name = last_name.blank? ? nil : last_name.strip
+    [:first_name, :middle_name, :last_name].each do |attr|
+      self[attr] = self[attr].blank? ? nil : self[attr].strip
+    end
     self.gender =  gender.blank? ? nil : gender.strip.downcase.capitalize # titleize no puede ser usado en lugar de donwncase.capitalize
                                                                           # porque en caso de que se entren valores como 'maN', titleize
                                                                           # devuelve 'Ma N'
   end
-    
-  
+
   # # CUSTOM VALIDATORS
   def primary_email_address_must_belong_to_the_person_and_be_activated
     if primary_email_address_id.present?

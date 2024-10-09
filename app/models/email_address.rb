@@ -26,11 +26,10 @@ class EmailAddress < ApplicationRecord
     self.activated = true
   end
                 
-  VALID_EMAIL_FORMAT = /\A[a-z][a-z0-9\.\+\-\_]*@[a-z0-9]+[a-z\d\-]*(\.[a-z\d\-]+)*\.[a-z]{2,}\z/i.freeze
   validates :address, confirmation: { case_sensitive: false },
                           presence: true,
+              email_address_format: true,
                             length: { maximum: 255 },
-                            format: { with: VALID_EMAIL_FORMAT },
                         uniqueness: { case_sensitive: false },
                             unless: :email_address_repeated?
   
@@ -39,12 +38,12 @@ class EmailAddress < ApplicationRecord
   # validates :address_confirmation, presence: true
   
   def to_s = address
-    
+
   # def ==(email_address)
   #   return false unless email_address.respond_to?(:address)
   #   self.address.match?(/\A#{email_address.address}\z/i)
   # end
-    
+
   private
   
   # Custom validator
